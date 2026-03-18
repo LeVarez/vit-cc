@@ -141,5 +141,42 @@ Use `recast` for write-back — it preserves original formatting for unchanged n
 | Self-review permission | Phase 2 |
 
 ---
+
+### Pitfall 9: Draft PR created before any commits exist on head branch
+
+**What goes wrong:**
+`gh pr create` requires at least one commit on the head branch that is not on the base. Creating the PR at `execute-phase` startup (before Wave 1 executor commits) always fails with "Head sha can't be blank."
+
+**How to avoid:**
+Defer PR creation to **after Wave 1 completes** — not at execute-phase startup. The first wave always produces commits; create the PR immediately after Wave 1 finishes, before Wave 2 starts.
+
+**Phase to address:** Phase 1
+
+---
+
+### Pitfall 10: Duplicate reviewer comments on re-verification
+
+**What goes wrong:**
+`verify-work` can run multiple times (gap closure cycles). If `gh pr ready` and reviewer spawn are gated only on Route A (not on current PR state), re-running verify-work on an already-promoted PR spawns a second reviewer and posts duplicate review comments.
+
+**How to avoid:**
+Check `gh pr view --json isDraft -q '.isDraft'` before calling `gh pr ready`. Only promote and spawn reviewer if PR is currently a draft. If already ready-for-review, skip both steps silently.
+
+**Phase to address:** Phase 1 and Phase 2
+
+---
+
+### Pitfall 11: GitHub secondary rate limit on parallel-heavy phases
+
+**What goes wrong:**
+GitHub caps content-creating API requests at 80/minute. A phase with 6+ concurrent plans simultaneously creating PRs, posting issue comments, and checking off sub-issues can hit this limit, causing silent `gh` failures.
+
+**How to avoid:**
+Add `|| true` on all `gh` calls and log rate-limit errors without aborting. For phases with many parallel plans, batch GitHub writes after wave completion rather than inline per-plan.
+
+**Phase to address:** Phase 1
+
+---
+
 *Pitfalls research for: GitHub PR lifecycle automation + AI doc/changelog agents in vit-cc*
 *Researched: 2026-03-18*
