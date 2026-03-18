@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 ## Current Position
 
 Phase: 1 of 3 (PR Lifecycle Foundation)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-18 — Roadmap created, ready to begin Phase 1 planning
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-18 — Completed 01-01-PLAN.md (PR column + draft PR creation)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 10%
 
 ## Performance Metrics
 
@@ -42,6 +42,8 @@ Progress: [░░░░░░░░░░] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- [01-01]: Idempotency uses gh pr list --head (live query) — STATE.md can be stale, GitHub is authoritative
+- [01-01]: pr:skipped written for both gh-unavailable and creation-failed — consistent signal for downstream
 - [Pre-phase]: Draft PR on execute-phase start (not plan-phase) — phase may span hours; PR should exist while code is being written
 - [Pre-phase]: PR reviewer runs automatically after verify (not manually) — reduces friction; reviewer always runs before human sees the PR
 - [Pre-phase]: Doc-updater runs per-phase (after all waves), not per-task — per-task is too granular and expensive; matches the commit boundary
@@ -59,6 +61,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18
-Stopped at: Roadmap and STATE.md created; REQUIREMENTS.md traceability already filled
+Last session: 2026-03-18 14:19
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None
