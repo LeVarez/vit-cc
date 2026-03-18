@@ -24,6 +24,21 @@ Each phase produces atomic commits on a feature branch, updates a `STATE.md` tra
 
 ---
 
+## Documentation
+
+Full documentation is available at **[https://LeVarez.github.io/vit-cc/](https://LeVarez.github.io/vit-cc/)**.
+
+The documentation site covers:
+- **Guide** — Getting started, core concepts, and workflow walkthroughs
+- **Commands** — Complete reference for all VIT slash commands
+- **Agents** — How each specialist agent works and when it is spawned
+- **Architecture** — System diagrams and technical deep-dives
+- **Contributing** — How to extend VIT with custom agents, commands, and workflows
+
+The site is built with VitePress, deployed automatically to GitHub Pages on every push to `main`, and supports dark mode, local search (Ctrl+K), and Mermaid diagram rendering.
+
+---
+
 ## Built with GSD
 
 VIT was developed using [GSD (Get Shit Done)](https://github.com/LeVarez/gsd-cc), the framework that preceded it. GSD's planning and execution methodology was used to build VIT itself — including the roadmap, phase plans, and every execution wave. VIT is GSD's successor with a stronger emphasis on GitHub integration, multi-milestone state management, and verification agents.

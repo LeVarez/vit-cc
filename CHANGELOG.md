@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Phase 01 (vitepress-foundation): VitePress 1.6.4 documentation site in docs/ with dark mode, local search, Mermaid diagram rendering via vitepress-plugin-mermaid, ASCII art logo on landing page, VIT branding in site header, five section stub pages, and GitHub Actions deploy workflow targeting GitHub Pages
+
 ## [1.0] - 2026-03-18
 
 ### Added
