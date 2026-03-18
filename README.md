@@ -5,7 +5,7 @@
 VIT gives Claude Code a structured, repeatable way to plan and execute software projects: one phase at a time, with atomic commits, parallel agents, CI feedback on GitHub issues, and persistent state that survives context resets.
 
 ```bash
-npx vit-cc
+npx vit-claude
 ```
 
 ---
@@ -50,7 +50,7 @@ The `/vit:review-feedback` command reads developer feedback comments from the is
 ## Install
 
 ```bash
-npx vit-cc
+npx vit-claude
 ```
 
 This copies all framework files into your project's `.claude/` directory and optionally adds the GitHub CI workflow. You can run it again to update.
@@ -182,7 +182,7 @@ State is stored in `.planning/STATE.md`, `.planning/MILESTONE.md`, and per-phase
 ## Update
 
 ```bash
-npx vit-cc          # Re-run to update (overwrites framework files, preserves your .planning/ data)
+npx vit-claude          # Re-run to update (overwrites framework files, preserves your .planning/ data)
 /vit:update         # Or use the in-session command
 ```
 

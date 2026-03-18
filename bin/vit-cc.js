@@ -44,6 +44,7 @@ ${installed.map(s => `    • ${s}`).join('\n')}
     Automatically posts CI results to phase issues on push.
 
   Docs: https://github.com/LeVarez/vit-cc
+  npm:  https://www.npmjs.com/package/vit-claude
 `);
   })
   .catch(err => {

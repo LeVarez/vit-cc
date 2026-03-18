@@ -1,5 +1,5 @@
 {
-  "name": "vit-cc",
+  "name": "vit-claude",
   "version": "1.10.1",
   "description": "Phase-based project execution framework for Claude Code with GitHub integration",
   "bin": {
