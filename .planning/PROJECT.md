@@ -1,8 +1,8 @@
-# vit-cc GitHub Sync & Agents Extension
+# vit-cc Documentation & Developer Guide
 
 ## What This Is
 
-vit-cc is a Claude Code agentic framework that orchestrates AI-driven development through phase-based workflows. This project extends the framework with full GitHub lifecycle integration — automatically creating and managing PRs through the execution and verification cycle — and adds three new agents: a PR reviewer, a changelog writer, and an automatic documentation updater.
+vit-cc is a Claude Code agentic framework that orchestrates AI-driven development through phase-based workflows. It includes full GitHub lifecycle integration, AI code review, and automated documentation agents. This milestone focuses on creating comprehensive documentation: a user guide covering all commands, agents, and skills, plus a developer guide explaining architecture, design patterns, and how to extend the framework with custom components.
 
 ## Core Value
 
@@ -32,7 +32,11 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 
 <!-- Current scope for next milestone. -->
 
-(Define with `/vit:new-milestone`)
+- [ ] User guide documenting all slash commands with usage, options, and examples
+- [ ] User guide documenting all agents with roles, inputs/outputs, and spawning context
+- [ ] Developer guide covering VIT architecture and design patterns
+- [ ] Developer guide explaining how to create custom agents, commands, and skills
+- [ ] Architecture documentation with data flow diagrams and state management
 
 ### Out of Scope
 
@@ -70,5 +74,14 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 | Inline diff comments capped at 5 | GitHub API 422 errors on large diffs | ✓ Good — fallback handles empty body edge case |
 | CHANGELOG ownership split | doc-updater writes [Unreleased]; changelog-writer promotes it | ✓ Good — no conflict, clean promotion |
 
+## Current Milestone: v1.1 Documentation & Developer Guide
+
+**Goal:** Create comprehensive user-facing and developer-facing documentation for the entire VIT framework.
+
+**Target features:**
+- User guide: all commands, agents, skills, and configuration reference
+- Developer guide: architecture, design patterns, extending with custom components
+- Architecture docs: data flow, state management, agent orchestration patterns
+
 ---
-*Last updated: 2026-03-18 after v1.0 milestone*
+*Last updated: 2026-03-19 after v1.1 milestone start*
