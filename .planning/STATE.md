@@ -12,8 +12,8 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 Milestone: v1.1
 Phase: 01 of 04 (VitePress Foundation)
 Plan: — of —
-Status: Ready to plan
-Last activity: 2026-03-18 — Roadmap created for v1.1 Documentation Site
+Status: Planned — ready to execute
+Last activity: 2026-03-18 — Phase 01 planned (2 plans, 2 waves)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -57,9 +57,9 @@ Resume file: None
 
 ## GitHub Issue Mapping
 
-| Phase | Feature Issue | Branch | PR | Assigned |
-|-------|---------------|--------|----|----------|
-| v1.1/01 | — | — | — | — |
-| v1.1/02 | — | — | — | — |
-| v1.1/03 | — | — | — | — |
-| v1.1/04 | — | — | — | — |
+| Phase | Feature Issue | Branch | PR | Assigned | Sub-issues |
+|-------|---------------|--------|----|----------|------------|
+| v1.1/01 | #21 | feature/v1.1-01-vitepress-foundation | — | — | #25, #26 |
+| v1.1/02 | #22 | feature/v1.1-02-getting-started-and-commands | — | — | — |
+| v1.1/03 | #23 | feature/v1.1-03-agent-reference-and-architecture | — | — | — |
+| v1.1/04 | #24 | feature/v1.1-04-advanced-and-contributors | — | — | — |
