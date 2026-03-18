@@ -1,0 +1,151 @@
+name: Phase CI
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'milestone/**'
+      - 'quick/**'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  test:
+    name: Run Phase Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run check
+        continue-on-error: true
+
+      - name: Run phase tests
+        id: run-tests
+        run: |
+          # Support both milestone-scoped (tests/phases/v1.6/) and legacy (tests/phases/) layouts
+          if [ -d "tests/phases" ] && find tests/phases -name "*.test.ts" -quit 2>/dev/null; then
+            npx vitest run tests/phases/ --reporter=json --outputFile=tests/phases/results.json 2>&1 || true
+            npx vitest run tests/phases/ --reporter=verbose 2>&1 | tee tests/phases/results.txt || true
+            echo "has_tests=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_tests=false" >> $GITHUB_OUTPUT
+            echo "No phase tests found — skipping"
+          fi
+
+      - name: Parse test results
+        id: parse
+        if: steps.run-tests.outputs.has_tests == 'true'
+        run: |
+          if [ -f tests/phases/results.json ]; then
+            TOTAL=$(cat tests/phases/results.json | grep -o '"numTotalTests":[0-9]*' | grep -o '[0-9]*' || echo "0")
+            PASSED=$(cat tests/phases/results.json | grep -o '"numPassedTests":[0-9]*' | grep -o '[0-9]*' || echo "0")
+            FAILED=$(cat tests/phases/results.json | grep -o '"numFailedTests":[0-9]*' | grep -o '[0-9]*' || echo "0")
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "passed=$PASSED" >> $GITHUB_OUTPUT
+            echo "failed=$FAILED" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Find linked GitHub issue
+        id: find-issue
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          # Extract milestone and phase from branch name
+          # New format: feature/v1.6-01-api-foundation → milestone=v1.6, phase=01
+          # Legacy format: feature/43-api-foundation → phase=43
+          MILESTONE=$(echo "$BRANCH" | sed 's|feature/||' | grep -o '^v[0-9]*\.[0-9]*')
+          if [ -n "$MILESTONE" ]; then
+            PHASE=$(echo "$BRANCH" | sed "s|feature/${MILESTONE}-||" | grep -o '^[0-9]*')
+            STATE_KEY="${MILESTONE}/${PHASE}"
+          else
+            PHASE=$(echo "$BRANCH" | sed 's|feature/||' | grep -o '^[0-9]*')
+            STATE_KEY="$PHASE"
+          fi
+          if [ -z "$PHASE" ]; then
+            echo "issue=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          # Look up issue number from STATE.md using milestone-scoped key
+          ISSUE=$(grep "| ${STATE_KEY} " .planning/STATE.md 2>/dev/null | grep -o '#[0-9][0-9]*' | head -1 | tr -d '#' || echo "")
+          echo "issue=$ISSUE" >> $GITHUB_OUTPUT
+          echo "phase=$PHASE" >> $GITHUB_OUTPUT
+          echo "milestone=$MILESTONE" >> $GITHUB_OUTPUT
+          echo "Found issue: $ISSUE for ${STATE_KEY}"
+
+      - name: Post results to GitHub issue
+        if: steps.find-issue.outputs.issue != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE="${{ steps.find-issue.outputs.issue }}"
+          PHASE="${{ steps.find-issue.outputs.phase }}"
+          BRANCH="${{ github.ref_name }}"
+          SHA="${{ github.sha }}"
+          SHORT_SHA="${SHA:0:7}"
+          HAS_TESTS="${{ steps.run-tests.outputs.has_tests }}"
+          TOTAL="${{ steps.parse.outputs.total }}"
+          PASSED="${{ steps.parse.outputs.passed }}"
+          FAILED="${{ steps.parse.outputs.failed }}"
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          MILESTONE="${{ steps.find-issue.outputs.milestone }}"
+          PHASE_DISPLAY="${MILESTONE:+${MILESTONE}/}${PHASE}"
+
+          if [ "$HAS_TESTS" = "false" ]; then
+            BODY="## 🔄 CI — Phase ${PHASE_DISPLAY} @ \`${SHORT_SHA}\`
+
+          **Branch:** \`${BRANCH}\`
+          **Status:** No phase tests yet — waiting for test generation
+
+          Tests are created by \`vit-test-writer\` after phase execution completes.
+
+          [View run](${RUN_URL})"
+
+          elif [ "$FAILED" = "0" ] || [ -z "$FAILED" ]; then
+            BODY="## ✅ CI Passed — Phase ${PHASE_DISPLAY} @ \`${SHORT_SHA}\`
+
+          **Branch:** \`${BRANCH}\`
+          **Tests:** ${PASSED}/${TOTAL} passed
+
+          All unit tests green. Ready for human review.
+
+          Run \`/vit:verify-work ${PHASE}\` to complete manual UAT.
+
+          [View run](${RUN_URL})"
+
+          else
+            # Get failing test names from results file
+            FAILURES=$(grep "FAIL\|✗\|× " tests/phases/results.txt 2>/dev/null | head -10 | sed 's/^/  /' || echo "  See run logs for details")
+            BODY="## ❌ CI Failed — Phase ${PHASE_DISPLAY} @ \`${SHORT_SHA}\`
+
+          **Branch:** \`${BRANCH}\`
+          **Tests:** ${PASSED}/${TOTAL} passed — **${FAILED} failing**
+
+          ### Failing tests
+          \`\`\`
+          ${FAILURES}
+          \`\`\`
+
+          Fix failures before running \`/vit:verify-work ${PHASE}\`.
+
+          [View run](${RUN_URL})"
+          fi
+
+          gh issue comment "$ISSUE" --body "$BODY" --repo "${{ github.repository }}"
+
+      - name: Fail job if tests failed
+        if: steps.run-tests.outputs.has_tests == 'true' && steps.parse.outputs.failed != '0' && steps.parse.outputs.failed != ''
+        run: |
+          echo "❌ ${FAILED} test(s) failed"
+          exit 1

@@ -1,0 +1,37 @@
+{
+  "name": "vit-claude",
+  "version": "1.10.1",
+  "description": "Phase-based project execution framework for Claude Code with GitHub integration",
+  "bin": {
+    "vit-claude": "bin/vit-cc.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "files/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "ai",
+    "workflow",
+    "github",
+    "ci",
+    "agents",
+    "planning"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeVarez/vit-cc.git"
+  },
+  "homepage": "https://github.com/LeVarez/vit-cc#readme",
+  "bugs": {
+    "url": "https://github.com/LeVarez/vit-cc/issues"
+  }
+}
