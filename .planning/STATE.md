@@ -5,32 +5,32 @@
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Every step of the VIT workflow is automatically reflected in GitHub — from execution to verification to merge — with zero manual GitHub operations.
-**Current focus:** Phase 2 — AI PR Reviewer
+**Current focus:** Phase 3 — Doc Updater
 
 ## Current Position
 
-Phase: 2 of 3 (AI PR Reviewer)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-03-18 — Completed 02-01-PLAN.md (vit-pr-reviewer agent definition)
+Phase: 2 of 3 (AI PR Reviewer) — Phase complete
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-03-18 — Completed 02-02-PLAN.md (verify-work reviewer wiring)
 
-Progress: [████░░░░░░] 40%
+Progress: [████████░░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
+- Total plans completed: 2
 - Average duration: 3 min
-- Total execution time: 3 min
+- Total execution time: 5 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 02-ai-pr-reviewer | 1/2 | 3 min | 3 min |
+| 02-ai-pr-reviewer | 2/2 | 5 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (3 min)
+- Last 5 plans: 02-01 (3 min), 02-02 (2 min)
 - Trend: —
 
 *Updated after each plan completion*
@@ -53,6 +53,9 @@ Recent decisions affecting current work:
 - [Pre-phase]: PR reviewer runs automatically after verify (not manually) — reduces friction; reviewer always runs before human sees the PR
 - [Pre-phase]: Doc-updater runs per-phase (after all waves), not per-task — per-task is too granular and expensive; matches the commit boundary
 - [Pre-phase]: Changelog-writer on complete-milestone (not per-phase) — release notes should cover the full milestone
+- [02-02]: Reviewer spawn gated on PR_PROMOTED=true from step 8.5 — no re-evaluation of route needed
+- [02-02]: REPO fetched via gh repo view at spawn time — avoids stale STATE.md data
+- [02-02]: vit-pr-reviewer model: sonnet/sonnet/haiku — matches vit-plan-checker pattern
 
 ### Pending Todos
 
@@ -66,6 +69,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T15:15:37Z
-Stopped at: Completed 02-01-PLAN.md — vit-pr-reviewer agent definition created
+Last session: 2026-03-18T15:19:53Z
+Stopped at: Completed 02-02-PLAN.md — verify-work reviewer wiring complete; Phase 02 done
 Resume file: None
