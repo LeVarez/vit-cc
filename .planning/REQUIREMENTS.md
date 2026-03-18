@@ -7,12 +7,12 @@
 
 ### PR Lifecycle
 
-- [ ] **PRL-01**: `execute-phase` creates a draft PR for the feature branch with idempotency guard (checks `gh pr list --head` before creating — never duplicates)
-- [ ] **PRL-02**: Draft PR always targets `milestone/vX.Y` as base branch, never `main`
-- [ ] **PRL-03**: PR body includes phase goal, feature issue link, and `Closes #N`
-- [ ] **PRL-04**: STATE.md GitHub Issue Mapping table gains a PR column (`pr#N` or `—`) for cross-command handoff
-- [ ] **PRL-05**: `verify-work` promotes draft PR to ready-for-review on Route A only (all success criteria pass)
-- [ ] **PRL-06**: All PR operations skip gracefully when `gh` CLI is unavailable or unauthenticated
+- [x] **PRL-01**: `execute-phase` creates a draft PR for the feature branch with idempotency guard (checks `gh pr list --head` before creating — never duplicates)
+- [x] **PRL-02**: Draft PR always targets `milestone/vX.Y` as base branch, never `main`
+- [x] **PRL-03**: PR body includes phase goal, feature issue link, and `Closes #N`
+- [x] **PRL-04**: STATE.md GitHub Issue Mapping table gains a PR column (`pr#N` or `—`) for cross-command handoff
+- [x] **PRL-05**: `verify-work` promotes draft PR to ready-for-review on Route A only (all success criteria pass)
+- [x] **PRL-06**: All PR operations skip gracefully when `gh` CLI is unavailable or unauthenticated
 
 ### PR Reviewer
 
@@ -58,12 +58,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRL-01 | Phase 1 | Pending |
-| PRL-02 | Phase 1 | Pending |
-| PRL-03 | Phase 1 | Pending |
-| PRL-04 | Phase 1 | Pending |
-| PRL-05 | Phase 1 | Pending |
-| PRL-06 | Phase 1 | Pending |
+| PRL-01 | Phase 1 | Complete |
+| PRL-02 | Phase 1 | Complete |
+| PRL-03 | Phase 1 | Complete |
+| PRL-04 | Phase 1 | Complete |
+| PRL-05 | Phase 1 | Complete |
+| PRL-06 | Phase 1 | Complete |
 | PRR-01 | Phase 2 | Pending |
 | PRR-02 | Phase 2 | Pending |
 | PRR-03 | Phase 2 | Pending |
