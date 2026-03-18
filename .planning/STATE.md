@@ -12,8 +12,8 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 Milestone: v1.0.1
 Phase: 01 of 05 (Infrastructure and Information Architecture)
 Plan: —
-Status: Ready to plan
-Last activity: 2026-03-18 — Roadmap created for v1.0.1
+Status: Planned — ready to execute
+Last activity: 2026-03-18 — Phase 01 planned (2 plans, 2 waves)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -63,7 +63,7 @@ Resume file: None
 
 | Phase | Feature Issue | Branch | PR | Assigned |
 |-------|---------------|--------|----|----------|
-| v1.0.1/01 | #28 | feature/v1.0.1-01-infrastructure-and-ia | — | — |
+| v1.0.1/01 | #28 | feature/v1.0.1-01-infrastructure-and-ia | — | — | Sub: #33, #34 |
 | v1.0.1/02 | #29 | feature/v1.0.1-02-getting-started-and-concepts | — | — |
 | v1.0.1/03 | #30 | feature/v1.0.1-03-command-reference | — | — |
 | v1.0.1/04 | #31 | feature/v1.0.1-04-agent-reference | — | — |
