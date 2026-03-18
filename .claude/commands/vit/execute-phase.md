@@ -115,6 +115,42 @@ Phase: $ARGUMENTS
 
    **After this step:** `WORK_DIR` holds the absolute path to the correct worktree. All subsequent bash commands must be prefixed with `cd "$WORK_DIR" &&`. All file paths are relative to `$WORK_DIR`.
 
+0.6. **State freshness check**
+
+   Pull latest state before execution to avoid stale STATE.md conflicts with other engineers:
+
+   ```bash
+   PULL_RESULT=$(cd "$WORK_DIR" && git pull --rebase origin HEAD 2>&1 || echo "PULL_FAILED")
+   ```
+
+   - If `PULL_RESULT` contains "CONFLICT": **STOP** — display "Merge conflicts found in $WORK_DIR — resolve conflicts before executing phase." Do not proceed.
+   - If `PULL_RESULT` contains "PULL_FAILED" or "fatal": Warn — "Could not reach remote — proceeding with local state. Ensure you have the latest changes from teammates." Continue.
+   - Otherwise: Log `◆ State synchronized with remote.` and continue.
+
+0.65. **Phase dependency check**
+
+   Check that all phases this phase depends on are complete in ROADMAP.md:
+
+   ```bash
+   PHASE_DEPS=$(grep -A10 "### Phase ${PHASE_NUM}:" "$WORK_DIR/.planning/ROADMAP.md" 2>/dev/null | grep "Depends on:" | head -1 | sed 's/.*Depends on:[[:space:]]*//' | tr ',' '\n' | grep -v "Nothing\|nothing")
+   ```
+
+   For each dependency phase number extracted:
+   ```bash
+   for DEP_LINE in $PHASE_DEPS; do
+     DEP_NUM=$(echo "$DEP_LINE" | grep -o '[0-9]*' | head -1)
+     if [ -n "$DEP_NUM" ]; then
+       DEP_STATUS=$(grep "| ${DEP_NUM}\." "$WORK_DIR/.planning/ROADMAP.md" 2>/dev/null | grep -o 'Complete\|In progress\|Not started' | head -1)
+       if [ "$DEP_STATUS" != "Complete" ]; then
+         echo "⚠ Dependency warning: Phase ${DEP_NUM} is '${DEP_STATUS}' — Phase ${PHASE_NUM} depends on it."
+         echo "  Proceeding anyway — ensure Phase ${DEP_NUM} is merged before this PR is reviewed."
+       fi
+     fi
+   done
+   ```
+
+   **Do NOT block** — only warn. Engineers may be running dependency phases in parallel worktrees.
+
 0.7. **Create draft PR**
 
    Check if gh CLI is available:
@@ -232,12 +268,91 @@ Phase: $ARGUMENTS
    - Group plans by wave number
    - Report wave structure to user
 
+3.5. **File conflict check**
+
+   Before executing, detect files this phase plans to modify that are also modified in other active feature branches:
+
+   ```bash
+   # Collect all files_modified from this phase's plans
+   PHASE_FILES=$(grep "^files_modified:" "$WORK_DIR/$PHASE_DIR"/*-PLAN.md 2>/dev/null \
+     | sed 's/files_modified:[[:space:]]*//' | tr -d '[]' | tr ',' '\n' | tr -d ' "' | grep -v '^$' | sort -u)
+
+   # Get other active feature branches on remote
+   OTHER_FEATURE_BRANCHES=$(cd "$WORK_DIR" && git branch -r 2>/dev/null \
+     | grep "feature/" | grep -v "$DESIGNATED_BRANCH" | grep -v "HEAD" | head -10)
+   ```
+
+   For each other branch, check overlap:
+   ```bash
+   CONFLICT_WARNINGS=""
+   for OTHER_BRANCH in $OTHER_FEATURE_BRANCHES; do
+     BRANCH_FILES=$(cd "$WORK_DIR" && git diff --name-only HEAD "origin/${OTHER_BRANCH#origin/}" 2>/dev/null | head -30)
+     OVERLAP=$(comm -12 <(echo "$PHASE_FILES" | sort) <(echo "$BRANCH_FILES" | sort) 2>/dev/null)
+     if [ -n "$OVERLAP" ]; then
+       CONFLICT_WARNINGS="${CONFLICT_WARNINGS}\n  [${OTHER_BRANCH}]: $(echo "$OVERLAP" | tr '\n' ', ')"
+     fi
+   done
+   ```
+
+   If `CONFLICT_WARNINGS` is non-empty, display:
+   ```
+   ⚠ File conflict risk — these files are modified in other active branches:
+   [conflict warnings]
+   Review with: git diff HEAD..origin/[branch] -- [file]
+   Coordinate with the engineer on [branch] before merging.
+   ```
+
+   **Do NOT block.** Continue to execution.
+
 4. **Execute waves**
    For each wave in order:
+
+   **Before spawning executors, separate human and Claude plans:**
+
+   For each plan in the wave, read its `execute_by` and `assigned_to` frontmatter:
+   ```bash
+   EXECUTE_BY=$(grep "^execute_by:" "$WORK_DIR/$PLAN_PATH" 2>/dev/null | sed 's/^execute_by:[[:space:]]*//' | tr -d '"')
+   ASSIGNED_TO=$(grep "^assigned_to:" "$WORK_DIR/$PLAN_PATH" 2>/dev/null | sed 's/^assigned_to:[[:space:]]*//' | tr -d '"')
+   ```
+
+   **If `EXECUTE_BY` is `human`:**
+   - Display handoff block (do NOT spawn vit-executor):
+     ```
+     📋 HUMAN TASK: [Plan name]
+     Assigned to: [ASSIGNED_TO or "Unassigned"]
+
+     Tasks:
+     [Extract and display task names from PLAN.md <task> blocks]
+
+     Mark complete: update execute_by to "done" in the plan frontmatter when finished,
+     then re-run /vit:execute-phase [N] to continue.
+     ```
+   - If gh available and ASSIGNED_TO looks like a GitHub handle (starts with @):
+     ```bash
+     SUB_ISSUE_NUM=$(grep "${MILESTONE}/${PHASE_NUM}" "$WORK_DIR/.planning/STATE.md" 2>/dev/null \
+       | grep -o '#[0-9]*' | head -1 | tr -d '#')
+     if [ -n "$SUB_ISSUE_NUM" ]; then
+       HANDLE=$(echo "$ASSIGNED_TO" | tr -d '@')
+       cd "$WORK_DIR" && gh issue edit "$SUB_ISSUE_NUM" --assignee "$HANDLE" 2>/dev/null || true
+     fi
+     ```
+   - Update STATE.md `Assigned` column for this phase:
+     ```bash
+     if [ -n "$ASSIGNED_TO" ]; then
+       sed -i '' "s/| ${MILESTONE}\/${PHASE_NUM} \([^|]*\)| \([^|]*\)| \([^|]*\)| \([^|]*\)| —/| ${MILESTONE}\/${PHASE_NUM} \1| \2| \3| \4| ${ASSIGNED_TO}/" \
+         "$WORK_DIR/.planning/STATE.md" 2>/dev/null || \
+       sed -i "s/| ${MILESTONE}\/${PHASE_NUM} \([^|]*\)| \([^|]*\)| \([^|]*\)| \([^|]*\)| —/| ${MILESTONE}\/${PHASE_NUM} \1| \2| \3| \4| ${ASSIGNED_TO}/" \
+         "$WORK_DIR/.planning/STATE.md" 2>/dev/null || true
+     fi
+     ```
+   - Skip this plan in wave execution — treat as complete for wave sequencing purposes
+
+   **If `EXECUTE_BY` is `claude` or empty (default):**
    - Spawn `vit-executor` for each plan in wave (parallel Task calls)
+
    - Wait for completion (Task blocks)
    - Verify SUMMARYs created
-   - **Per-wave push (Gap 5 safety):** Push commits to remote after each wave:
+   - **Per-wave push:** Push commits to remote after each wave:
      ```bash
      cd "$WORK_DIR" && git push origin HEAD 2>/dev/null || true
      ```
@@ -333,6 +448,26 @@ Phase: $ARGUMENTS
    cd "$WORK_DIR" && gh issue close $FEATURE_ISSUE 2>/dev/null || true
    ```
 
+   **Promote draft PR to ready-for-review:**
+   ```bash
+   PR_NUM=$(grep "| ${MILESTONE}/${PHASE_NUM} " "$WORK_DIR/.planning/STATE.md" 2>/dev/null \
+     | grep -o 'pr#[0-9]*' | grep -o '[0-9]*' | head -1)
+   if [ -n "$PR_NUM" ]; then
+     cd "$WORK_DIR" && gh pr ready "$PR_NUM" 2>/dev/null && \
+       echo "◆ PR #${PR_NUM} promoted to ready-for-review" || true
+     # Update STATE.md PR column: pr#N → pr#N(ready)
+     sed -i '' "s/pr#${PR_NUM} /pr#${PR_NUM}(ready) /" "$WORK_DIR/.planning/STATE.md" 2>/dev/null || \
+     sed -i "s/pr#${PR_NUM} /pr#${PR_NUM}(ready) /" "$WORK_DIR/.planning/STATE.md" 2>/dev/null || true
+     # Auto-assign reviewer from team config
+     DEFAULT_REVIEWER=$(cat "$WORK_DIR/.planning/config.json" 2>/dev/null \
+       | grep '"default_reviewer"' | sed 's/.*"default_reviewer"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/' || echo "")
+     if [ -n "$DEFAULT_REVIEWER" ]; then
+       cd "$WORK_DIR" && gh pr edit "$PR_NUM" --add-reviewer "$DEFAULT_REVIEWER" 2>/dev/null && \
+         echo "◆ Reviewer assigned: @${DEFAULT_REVIEWER}" || true
+     fi
+   fi
+   ```
+
    **If phase status is `gaps_found`:**
    ```bash
    cd "$WORK_DIR" && \
@@ -344,6 +479,67 @@ Phase: $ARGUMENTS
    $GAPS" 2>/dev/null || true
    ```
    (Leave issue open)
+
+8.7. **Readiness notifications**
+
+   After a phase passes verification, notify any phases that were waiting on it:
+
+   ```bash
+   UNBLOCKED=$(grep -n "Depends on.*Phase ${PHASE_NUM}\b" "$WORK_DIR/.planning/ROADMAP.md" 2>/dev/null)
+   ```
+
+   If any phases found in `UNBLOCKED`, for each:
+   ```bash
+   NEXT_PHASE_NUM=$(echo "$line" | ...)
+   NEXT_FEATURE_ISSUE=$(grep "| ${MILESTONE}/${NEXT_PHASE_NUM} " "$WORK_DIR/.planning/STATE.md" 2>/dev/null \
+     | grep -o '#[0-9]*' | head -1 | tr -d '#')
+   ```
+
+   Display:
+   ```
+   ◆ Dependency cleared — Phase [NEXT_PHASE_NUM] is now unblocked.
+     /vit:plan-phase [NEXT_PHASE_NUM] — ready to start
+   ```
+
+   If gh available and feature issue found:
+   ```bash
+   cd "$WORK_DIR" && gh issue comment "$NEXT_FEATURE_ISSUE" --body "## Dependency cleared ✓
+
+   Phase ${PHASE_NUM} is complete. Phase ${NEXT_PHASE_NUM} can now begin.
+
+   Run \`/vit:plan-phase ${NEXT_PHASE_NUM}\` to start planning." 2>/dev/null || true
+   ```
+
+8.8. **Create HANDOFF.md for next phase**
+
+   After phase completion, generate a handoff document for the engineer starting the next phase.
+
+   Find next phase:
+   ```bash
+   NEXT_PHASE_NUM=$((PHASE_NUM + 1))
+   NEXT_PHASE_DIR=$(ls -d "$WORK_DIR/.planning/phases/${MILESTONE}/${NEXT_PHASE_NUM}-"* 2>/dev/null | head -1)
+   if [ -z "$NEXT_PHASE_DIR" ]; then
+     # Phase dir doesn't exist yet — create it
+     NEXT_PHASE_NAME=$(grep "Phase ${NEXT_PHASE_NUM}:" "$WORK_DIR/.planning/ROADMAP.md" 2>/dev/null \
+       | sed 's/.*Phase [0-9]*: //' | head -1 | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | head -c 40)
+     if [ -n "$NEXT_PHASE_NAME" ]; then
+       mkdir -p "$WORK_DIR/.planning/phases/${MILESTONE}/$(printf '%02d' $NEXT_PHASE_NUM)-${NEXT_PHASE_NAME}"
+       NEXT_PHASE_DIR="$WORK_DIR/.planning/phases/${MILESTONE}/$(printf '%02d' $NEXT_PHASE_NUM)-${NEXT_PHASE_NAME}"
+     fi
+   fi
+   ```
+
+   If next phase exists and NEXT_PHASE_DIR is set, write `$NEXT_PHASE_DIR/HANDOFF.md` using the handoff template:
+   - Pull `What was built` from this phase's SUMMARY.md files (2-3 sentences each)
+   - Pull `Key decisions` from STATE.md recent decisions and VERIFICATION.md
+   - Pull `Files you'll interact with` from this phase's `files_modified` frontmatter values
+   - Pull `Known gaps` from VERIFICATION.md gaps section (if status was gaps_found, else "None")
+
+   Commit:
+   ```bash
+   cd "$WORK_DIR" && git add "$NEXT_PHASE_DIR/HANDOFF.md" 2>/dev/null && \
+     git commit -m "docs(phase-$(printf '%02d' $NEXT_PHASE_NUM)): add handoff from phase-$(printf '%02d' $PHASE_NUM)" 2>/dev/null || true
+   ```
 
 9. **Update requirements**
    Mark phase requirements as Complete:
@@ -362,6 +558,37 @@ Phase: $ARGUMENTS
     cd "$WORK_DIR" && git add .planning/REQUIREMENTS.md  # if updated
     cd "$WORK_DIR" && git commit -m "docs({phase}): complete {phase-name} phase"
     ```
+
+10.6. **Spawn doc-updater** (after phase completion commit)
+
+     Spawn vit-doc-updater to update documentation files and CHANGELOG:
+
+     ```
+     Task(
+       prompt="""
+     <context>
+     Phase Number: {PHASE_NUM}
+     Phase Name: {PHASE_NAME}
+     Phase Directory: {PHASE_DIR}
+     Working Directory: {WORK_DIR}
+     Milestone: {MILESTONE}
+     </context>
+
+     Read all SUMMARY.md and PLAN.md files in the phase directory.
+     Determine which documentation sections need updating.
+     Update only those sections in README.md and docs/ files.
+     Append a new entry to the [Unreleased] section of CHANGELOG.md.
+     Commit documentation changes.
+     """,
+       subagent_type="vit-doc-updater",
+       model="{doc_updater_model}",
+       description="Update docs for Phase {PHASE_NUM}"
+     ) || log "[doc-updater failed — continuing]"
+     ```
+
+     The `{doc_updater_model}` comes from the model lookup table (resolved in the workflow's resolve_model_profile step). In the command file, reference it as the model resolved for vit-doc-updater.
+
+     If the Task call fails or the agent crashes: log `[doc-updater failed — continuing]` and proceed to step 10.5 (push). The doc-updater is non-blocking — it must NEVER prevent execute-phase from completing.
 
 10.5. **Push to GitHub**
     Push the feature branch to origin:
@@ -571,13 +798,21 @@ After all plans in phase complete (step 7):
 </commit_rules>
 
 <success_criteria>
-- [ ] All incomplete plans in phase executed
+- [ ] State pulled from remote before execution (freshness check)
+- [ ] Phase dependencies verified (warning if not complete)
+- [ ] File conflict risks surfaced before wave execution
+- [ ] Human-assigned plans handed off (not executed by Claude)
+- [ ] All Claude-assigned plans executed
 - [ ] Each plan has SUMMARY.md
 - [ ] Phase goal verified (must_haves checked against codebase)
 - [ ] VERIFICATION.md created in phase directory
+- [ ] Draft PR promoted to ready-for-review after verification passes
+- [ ] STATE.md PR column updated to pr#N(ready)
 - [ ] STATE.md reflects phase completion
 - [ ] ROADMAP.md updated
 - [ ] REQUIREMENTS.md updated (phase requirements marked Complete)
 - [ ] GitHub feature issue closed or updated (if available)
+- [ ] Unblocked downstream phases notified
+- [ ] HANDOFF.md created for next phase
 - [ ] User informed of next steps
 </success_criteria>
