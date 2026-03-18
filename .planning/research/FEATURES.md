@@ -1,8 +1,8 @@
 # Feature Research
 
-**Domain:** GitHub-integrated agentic development workflow — PR lifecycle automation and auto-documentation
+**Domain:** Documentation site for a CLI/agentic framework (vit-cc)
 **Researched:** 2026-03-18
-**Confidence:** MEDIUM-HIGH (GitHub CLI docs HIGH, AI reviewer patterns MEDIUM, doc update patterns MEDIUM)
+**Confidence:** HIGH (VitePress official docs), MEDIUM (documentation best practices from multiple sources), MEDIUM (anti-feature patterns from practitioner community)
 
 ---
 
@@ -10,112 +10,131 @@
 
 ### Table Stakes (Users Expect These)
 
-Features that make the milestone scope feel complete. Missing any of these means the workflow has visible holes.
+Features that any credible developer tool documentation site must have. Missing these signals immaturity.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| Draft PR creation on phase start | Feature branches exist but are invisible to GitHub workflow; PRs represent in-progress work | LOW | `gh pr create --draft -t title -b body -B base`. Must be idempotent: check with `gh pr list --head branch --state open` before creating. |
-| PR title + body from phase context | A PR with no description is noise; reviewers need context without reading the branch | LOW | Title: phase name + issue number. Body: link to feature issue, phase goals from ROADMAP.md, link to PLAN.md. |
-| Draft → ready-for-review promotion | Reviewers should not be notified until the work is actually done and verified | LOW | `gh pr ready` (gh CLI). Must be triggered only after `verify-work` passes. GraphQL `markPullRequestReadyForReview` mutation is the underlying API. |
-| PR review comment (AI reviewer) | Code review is table stakes for any team workflow; automating it removes the "who reviews the AI's code?" question | MEDIUM | Agent reads the git diff, posts a structured review as a PR review comment via `gh pr review --comment`. |
-| CHANGELOG entry generation | Every release needs a changelog; the vit workflow already has SUMMARY.md files per phase — they should become release notes | MEDIUM | Reads all phase SUMMARY.md files when `complete-milestone` runs. Output follows Keep a Changelog format: Added / Changed / Fixed / Removed / Security / Deprecated under versioned heading. |
-| Incremental README updates | README drifts from code over time; per-plan updates keep it honest | MEDIUM | Agent reads diff of completed plan tasks, updates README sections that reference changed components. Scope-limited: only touch sections affected by the plan. |
-| Idempotent GitHub operations | The same command may be run twice (retries, reruns); duplicate PRs or double changelog entries break trust | LOW | All GH operations check state before acting. PR creation uses `gh pr list` guard. Changelog check reads CHANGELOG.md before appending. |
-| Graceful degradation without gh CLI | Not all users have `gh` installed or authenticated; existing VIT features must keep working | LOW | Wrap all GH operations in existence + auth checks. Skip silently, emit warning to issue comment if possible. Already a stated constraint in PROJECT.md. |
+| Getting started / quick-start guide | First thing every new user looks for; absence causes immediate abandonment | LOW | Should cover: install → first command → first project workflow in under 5 minutes of reading |
+| Complete command reference | CLI users bookmark reference docs; 30 commands with no canonical reference means constant README hunting | MEDIUM | One page per command: purpose, syntax, arguments, options, example output, GitHub effects. 30 commands = real content work, not code work |
+| Sidebar navigation with clear hierarchy | Users expect tree-nav with sections (Guide, Commands, Agents, Internals); absence breaks orientation | LOW | VitePress built-in. Requires careful IA design before implementation. Multi-level collapse needed |
+| Built-in search | "Ctrl+K to search" is universal expectation for docs sites; users search by keyword, not browse | LOW | VitePress has local search built in. Algolia DocSearch as upgrade option. No code required — config only |
+| Dark mode | Developer audiences default to dark mode; docs with only light mode feel unfinished | LOW | VitePress default theme built-in. No implementation cost beyond ensuring branding works in both modes |
+| Code blocks with copy button | Every code example should have one-click copy; typing commands from docs is friction | LOW | VitePress built-in behavior. Zero implementation cost |
+| Syntax highlighting in code blocks | Bash, YAML, JSON, Markdown code blocks need highlighting; unhighlighted blocks look unpolished | LOW | VitePress uses Shiki — built in, zero configuration beyond language selection |
+| Mobile responsive layout | Docs are read on phones and tablets; broken mobile = poor impression even if most users are on desktop | LOW | VitePress default theme is responsive. No additional work |
+| Clear installation instructions | New users need to know exactly how to install the tool; must cover npm/npx paths | LOW | Single page covering prerequisites, install commands, verification step |
+| Stable URLs / anchor links | Users share links to specific sections; if anchors change, shared links break | LOW | VitePress generates header anchors by default. Requires discipline in heading naming |
 
 ### Differentiators (Competitive Advantage)
 
-Features that go beyond what manual or basic CI automation provides.
+Features that elevate vit-cc docs above generic tool docs and reflect the framework's identity.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Structured AI review with severity tiers | Unlike generic review bots, a severity-categorized review (block-merge / should-fix / nit) lets the developer know exactly what requires action | MEDIUM | Industry standard emerging in 2026: "Action Required" / "Recommended" / "Minor". Categories: correctness, security, performance, style, standards. File + line + severity + rationale in each finding. |
-| Review scoped to phase diff, not full codebase | Reviewing only what changed in this phase avoids noise from existing code debt | LOW | Pass `git diff milestone/vX.Y...feature/vX.Y-N` to reviewer agent, not full codebase scan. |
-| Auto-linking PR to feature issue | Closes the issue automatically when PR merges, no manual `Closes #N` needed | LOW | Include `Closes #ISSUE_NUMBER` in PR body using issue number from STATE.md. |
-| Per-plan doc update (not per-merge) | Docs updated incrementally as plans complete means docs are never more than one plan behind | MEDIUM | Post-plan hook in `vit-executor` spawns `vit-doc-updater`. Agent reads plan SUMMARY.md + git diff for that plan's commits, then patches README and updates JSDoc on changed public APIs. |
-| CHANGELOG sourced from VIT phase summaries | Phase SUMMARY.md files are already human-readable; using them as changelog source is more accurate than parsing commit messages | MEDIUM | `vit-changelog-writer` reads `.planning/phases/*/SUMMARY.md` files. Conventional commits tooling parses commit messages — VIT's approach uses higher-level phase summaries instead. More accurate because summaries describe outcomes, not individual commits. |
-| PR body linked to sub-issues and test results | PR body shows phase issue, sub-issues, and links to CI test result comments already posted | MEDIUM | PR body template references: feature issue, milestone, PLAN.md path, link to CI result comment (if available from STATE.md). |
+| ASCII art branding | vit-cc uses ASCII stage banners throughout the CLI; the docs should feel like part of the same product — not a generic Docusaurus clone | LOW | Custom CSS + static ASCII asset. One-time effort with high visual impact. Requires testing across dark/light and fonts |
+| Mermaid architecture diagrams | The framework has layered orchestration (commands → workflows → agents → state); visualizing this is the single most effective way to explain it | MEDIUM | Requires `vitepress-plugin-mermaid` (not built-in). Dependency has known compatibility issues; use `vitepress-mermaid-renderer` as safer alternative. Diagrams needed: workflow flow, agent orchestration, state file relationships, PR lifecycle |
+| Layered depth (Diataxis structure) | vit-cc serves three audiences: discoverers, users, contributors. One depth level fails all three. The Diataxis framework (Tutorials / How-To / Reference / Explanation) maps directly to this need | MEDIUM | Content architecture decision, not tech. Requires planning content across four quadrants before writing. Most documentation debt comes from skipping this |
+| Agent deep-dive section | "How agents work internally" and "how to create a new agent" is the key differentiator vs just another CLI docs site; this is where contributors land | MEDIUM | Not just reference — needs conceptual explanation + annotated example agent file. Existing agent .md files are the source material |
+| Contributor guide for new agents | Lowers the barrier for extending the framework; without it the agent system is opaque | MEDIUM | Cover: agent file structure, spawning patterns, tool strategy, how the orchestrator calls agents, how to register a new agent |
+| GitHub effects documentation per command | vit-cc has deep GitHub integration; documenting exactly what each command does to GitHub (issues created, PRs opened, labels applied) is a unique value — most CLI docs ignore side effects | LOW | Content effort, not code. Adds a "GitHub effects" section to each command reference page |
+| State system reference (.planning/ internals) | Advanced users debugging or extending vit-cc need to understand STATE.md, ROADMAP.md, config.json schema; no docs = black box | MEDIUM | Reference section: one page per state file. Machine-generated schema docs would be ideal but manual initially |
+| "What to expect" workflow walkthroughs | Step-by-step narratives showing exactly what happens when you run `/vit:new-project` end-to-end; reduces the "did it work?" uncertainty | MEDIUM | Screenshot-equivalent for CLI: expected terminal output, state file changes, GitHub artifacts created. Complements the command reference |
+| Social/version links in header | Points to GitHub repo, CHANGELOG, current version; signals the project is alive and maintained | LOW | VitePress `socialLinks` config + `editLink` to GitHub. Near-zero cost |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
-Features that seem natural but add complexity without delivering value in this context.
+Features that seem natural for a docs site but add maintenance cost or distract from content quality.
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| Auto-merge after reviewer approves | Feels like full automation — no human needed | Bypasses the human review step that is explicitly part of the vit workflow; PRs ready-for-review signals human reviewers, not auto-merge | Let `gh pr ready` + reviewer assignment do the work; human merges |
-| Webhook-driven state sync (GitHub → VIT) | Keep VIT STATE.md in sync with GitHub PR state in real time | Requires server infrastructure; VIT is a CLI tool with no server component. Already listed as out-of-scope in PROJECT.md | Push-only: VIT writes to GitHub, never reads back PR state into STATE.md |
-| Full JSDoc regeneration on every plan | Keep docs always complete | Expensive (full AST parse), creates noise diffs, fails if one file has syntax error | Targeted JSDoc updates: only touch functions/files changed in the plan |
-| Changelog diff from commit messages | Standard approach (conventional-changelog, git-cliff) used by many tools | VIT commits don't use Conventional Commits format; parsing them would produce low-quality entries | Use phase SUMMARY.md files as source — they already describe outcomes at the right granularity |
-| PR labels / projects board management | Visibility on GitHub kanban boards | GitHub Projects is out-of-scope (PROJECT.md). Labels add configuration surface area with little value for a dev-only tool | Focus on issue + PR linking; skip label/project management |
-| Review gating on merge (required status check) | Enforce that AI review runs before merge | Requires GitHub branch protection rules configuration on the target repo — VIT can't own that | Document recommendation for teams to add the AI review step as a recommended (not required) check |
-| Global README rewrite | Keep the full README accurate | Too destructive per plan; high chance of introducing regressions in unrelated sections | Section-scoped updates based on plan task manifest |
+| Interactive playground / live CLI demo | "Let users try VIT in the browser!" — sounds impressive | vit-cc requires Claude Code + GitHub + local filesystem; there is no sandboxed version possible. This would be a fake demo or require major infrastructure | Provide copy-paste quickstart that runs in 2 minutes locally. Real experience beats fake demo |
+| Versioned documentation (v1.0 / v1.1 branches) | "What if users are on old versions?" | vit-cc is early-stage; maintaining multiple doc versions multiplies maintenance cost with near-zero user benefit. VitePress versioning adds real complexity | Single docs site tracking latest. Add "Added in v1.1" badges to individual features where relevant |
+| Internationalization / translations | "Reach non-English users" | Translations become stale immediately without dedicated translators. vit-cc is developer-targeted; English is the working language of the CLI | Focus on exceptional English docs; add i18n scaffolding only if user demand is demonstrated |
+| AI chatbot / docs assistant | Trendy in 2026; seems like natural fit for an AI framework | Adds third-party dependency (Kapa.ai, Mintlify chat, etc.) and monthly cost. For a framework used by developers, search is more reliable and auditable | Invest in excellent search (local search → Algolia when traffic justifies) instead |
+| Auto-generated API docs from source | "Docs from code comments is less work" | vit-cc commands are Markdown files with structured prose, not typed APIs. Auto-generation tools (TypeDoc, etc.) don't map to this format | Write command reference from the existing .md command files — they're already structured, just reformatting |
+| Video tutorial embeds | "Videos show things better than text" | Videos go stale when the CLI output changes; maintaining them is high-cost. vit-cc outputs text — text docs are the right medium | Use annotated terminal output blocks (code + callout containers). Easier to update, searchable |
+| Blog / release notes section in the docs site | "Announce features in docs" | Splits the changelog across CHANGELOG.md (already maintained by vit-changelog-writer agent) and a docs blog. Creates duplication and confusion about canonical source | Link to CHANGELOG.md from docs. Let the existing agent-maintained changelog be the release notes |
+| Full-text search with AI re-ranking | "Better than keyword search" | VitePress local search is sufficient for a docs site of this size. Algolia is the right upgrade path if needed | Start with local search (zero cost, zero infra). Add Algolia only when search quality becomes a real user complaint |
 
 ---
 
 ## Feature Dependencies
 
 ```
-[Draft PR creation]
-    └──required by──> [Draft → ready-for-review promotion]
-                          └──required by──> [AI PR reviewer runs]
-                                                └──required by──> [PR review comment posted]
+[Getting started guide]
+    └──requires──> [Installation instructions]
+    └──requires──> [At least one workflow walkthrough]
 
-[feature issue in STATE.md]
-    └──required by──> [PR body with issue link]
-    └──required by──> [Closes #N in PR body]
+[Command reference]
+    └──requires──> [Stable URL structure decided upfront]
+    └──enhances──> [Workflow walkthroughs (cross-links)]
 
-[Phase SUMMARY.md exists]
-    └──required by──> [CHANGELOG entry generation]
-    └──enhances──> [PR body content]
+[Architecture diagrams (Mermaid)]
+    └──requires──> [vitepress-plugin-mermaid or vitepress-mermaid-renderer installed]
+    └──enhances──> [Agent deep-dive section]
+    └──enhances──> [Workflow walkthroughs]
 
-[Plan SUMMARY.md exists]
-    └──required by──> [Per-plan doc update (vit-doc-updater)]
+[Agent deep-dive]
+    └──requires──> [Architecture overview first]
+    └──requires──> [Existing agent .md files as source material]
+    └──enhances──> [Contributor guide for new agents]
 
-[verify-work passes]
-    └──gates──> [Draft → ready-for-review promotion]
-    └──gates──> [AI PR reviewer spawned]
+[Contributor guide]
+    └──requires──> [Agent deep-dive]
+    └──requires──> [State system reference]
 
-[gh CLI available + authenticated]
-    └──required by──> [all GitHub operations]
-    └──degrades-gracefully-without──> [workflow continues without GH steps]
+[State system reference]
+    └──requires──> [.planning/ internals documented]
+
+[ASCII branding]
+    └──requires──> [Custom CSS or component slot]
+    └──conflicts-with──> [Generic Docusaurus/VitePress theme left at defaults]
+
+[Sidebar navigation]
+    └──requires──> [Information architecture designed before content written]
+    └──gates──> [All other content pages]
 ```
 
 ### Dependency Notes
 
-- **Draft PR creation requires nothing new**: only `gh pr create --draft` + idempotency guard. Can be added to `execute-phase` start.
-- **Promotion requires verify-work to pass**: the existing `verify-work` step already exists; promotion is an additional step after it completes successfully.
-- **AI reviewer requires promotion first (or can run in parallel)**: reviewer should run after verify-work passes, before or simultaneously with promotion — not before.
-- **Doc updater requires plan SUMMARY.md**: executor already creates SUMMARY.md after each plan. Doc updater is triggered as a post-plan hook.
-- **Changelog writer requires all phase SUMMARY.md files**: runs inside `complete-milestone`, where all phases are already done.
-- **All GH operations conflict with absent gh CLI**: need a single shared `isGhAvailable()` guard used consistently.
+- **Sidebar IA must be designed first:** The navigation hierarchy determines URL structure. Changing URLs after publishing breaks external links. Decide the tree before writing a single page.
+- **Mermaid plugin requires explicit install:** Not bundled with VitePress. `vitepress-plugin-mermaid` has version compatibility issues as of early 2026; `vitepress-mermaid-renderer` (last updated 7 days ago) is the safer current choice.
+- **Agent deep-dive requires architecture overview:** Users reading the agent internals need context from the architecture diagram. These sections must be sequenced, not written independently.
+- **Getting started depends on installation:** Installation must be complete and testable before the quickstart can be validated. Write and test these together.
 
 ---
 
 ## MVP Definition
 
-### Launch With (v1)
+### Launch With (v1.1)
 
-Minimum to deliver the milestone value: zero-manual-GitHub-operations for the full phase lifecycle.
+Minimum needed for the docs site to serve real users and justify the VitePress investment.
 
-- [ ] **Idempotent draft PR creation** on `execute-phase` start — without this, the feature branch never becomes a PR
-- [ ] **Draft → ready-for-review promotion** after `verify-work` passes — without this, PRs stay draft forever
-- [ ] **AI PR reviewer** posts structured review comment (severity-tiered, diff-scoped) — the core differentiator of this milestone
-- [ ] **CHANGELOG entry generation** in `complete-milestone` — required for each milestone release to be documented
-- [ ] **Graceful gh CLI degradation** — required for backwards compatibility with users who haven't set up GH integration
+- [ ] **Getting started guide** — new users need this before anything else; absence makes the site useless
+- [ ] **Complete command reference** (all 30 commands) — existing users who are the immediate audience need this
+- [ ] **Architecture overview with Mermaid diagram** — one diagram showing commands → workflows → agents → state is worth more than 1000 words of explanation
+- [ ] **Mermaid plugin configured** — prerequisite for architecture diagram; configure early to avoid blocking
+- [ ] **Sidebar navigation with correct IA** — gate on all content pages; must be correct before content is written
+- [ ] **ASCII branding** — differentiator that makes VIT feel like a real product; low cost, high signal
+- [ ] **Installation page** — prerequisite for getting started guide
 
 ### Add After Validation (v1.x)
 
-Add once the core PR lifecycle is proven working.
+Add once the core site is live and users are engaging with it.
 
-- [ ] **Per-plan doc updater** — trigger: core PR lifecycle is stable and executor post-plan hook architecture is validated
-- [ ] **PR body with full phase context** (sub-issue links, CI result links) — trigger: PR creation is solid, then enrich the body
+- [ ] **Agent deep-dive section** — trigger: users asking "how do agents work?" in issues or Discord
+- [ ] **Contributor guide for new agents** — trigger: first external contributor attempts to add a custom agent
+- [ ] **State system reference (.planning/ internals)** — trigger: users debugging unexpected state file behavior
+- [ ] **Workflow walkthroughs** — trigger: support burden from "what does this command actually do?" questions
+- [ ] **GitHub effects per command** — can be added incrementally to existing command reference pages
 
 ### Future Consideration (v2+)
 
-Defer until product-market fit on the milestone is established.
+Defer until the docs site has established usage patterns.
 
-- [ ] **JSDoc targeted updates** — requires more investment in AST-level diff parsing; add when README-level updates are proven valuable
-- [ ] **Attribution tracking for reviewer suggestions** — useful for calibrating reviewer quality, but requires persistent state across sessions
+- [ ] **Algolia DocSearch** — defer until local search is insufficient (measurable via support ticket volume)
+- [ ] **"Added in vX.Y" version badges** — worth adding after multiple doc-tracked releases exist
+- [ ] **i18n scaffolding** — defer until demonstrated non-English user demand
 
 ---
 
@@ -123,49 +142,58 @@ Defer until product-market fit on the milestone is established.
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| Idempotent draft PR creation | HIGH | LOW | P1 |
-| Draft → ready-for-review promotion | HIGH | LOW | P1 |
-| AI PR reviewer (structured review comment) | HIGH | MEDIUM | P1 |
-| CHANGELOG entry generation | HIGH | MEDIUM | P1 |
-| Graceful gh CLI degradation | HIGH | LOW | P1 |
-| PR body with phase/issue context | MEDIUM | LOW | P2 |
-| Per-plan doc updater (README) | MEDIUM | MEDIUM | P2 |
-| Severity-tiered review categories | MEDIUM | LOW | P2 (add to reviewer) |
-| Targeted JSDoc updates | LOW | HIGH | P3 |
-| Review suggestion attribution tracking | LOW | HIGH | P3 |
+| Getting started guide | HIGH | LOW | P1 |
+| Complete command reference | HIGH | MEDIUM | P1 |
+| Architecture diagram (Mermaid) | HIGH | MEDIUM | P1 |
+| Sidebar navigation / IA | HIGH | LOW | P1 |
+| Installation page | HIGH | LOW | P1 |
+| ASCII branding | MEDIUM | LOW | P1 |
+| Built-in search (local) | HIGH | LOW | P1 (config-only) |
+| Dark mode | MEDIUM | LOW | P1 (built-in) |
+| Agent deep-dive section | HIGH | MEDIUM | P2 |
+| Contributor guide | MEDIUM | MEDIUM | P2 |
+| State system reference | MEDIUM | MEDIUM | P2 |
+| Workflow walkthroughs | MEDIUM | MEDIUM | P2 |
+| GitHub effects per command | MEDIUM | LOW | P2 (content-only) |
+| Social links / version header | LOW | LOW | P2 |
+| Algolia DocSearch | LOW | LOW | P3 |
+| Version badges | LOW | LOW | P3 |
+| i18n scaffolding | LOW | HIGH | P3 |
+
+**Priority key:**
+- P1: Must have for launch — the site is not useful without these
+- P2: Should have — adds significant value, add in v1.x pass
+- P3: Nice to have — future consideration based on user feedback
 
 ---
 
 ## Competitor Feature Analysis
 
-Reference tools surveyed: CodeRabbit, Qodo, conventional-changelog, git-cliff, semantic-release.
+Reference sites surveyed: Docusaurus docs (docusaurus.io), Mintlify showcase sites, VitePress docs (vitepress.dev), oclif docs, Claude Code documentation pattern.
 
-| Feature | CodeRabbit / Qodo (external tools) | conventional-changelog / git-cliff | vit-cc approach |
-|---------|------------------------------------|------------------------------------|-----------------|
-| PR review comments | Line-by-line, severity-ranked, full diff scan | N/A | Diff-scoped (phase diff only), structured severity tiers, Claude-powered |
-| Review categories | Correctness, security, performance, style, standards | N/A | Correctness + security + style; performance as optional category |
-| CHANGELOG source | Commit messages or PR titles | Conventional commit messages | Phase SUMMARY.md files (higher-level, outcome-focused) |
-| Doc updates | AI-generated diffs, full README rewrite | N/A | Section-scoped README updates, targeted JSDoc on changed APIs |
-| PR lifecycle management | External service, requires app install | N/A | Built into vit-cc agents using `gh` CLI, zero extra installs |
-| Degradation | Hard failure if service unavailable | N/A | Silent skip with warning when `gh` not available |
-
-**Key differentiation:** vit-cc owns the full context (phase goals, PLAN.md, SUMMARY.md, issue numbers) that external tools never have. This makes the reviewer, doc updater, and changelog writer more accurate than tools that only see the git diff.
+| Feature | Generic CLI Docs (oclif, etc.) | Docusaurus-based projects | vit-cc approach |
+|---------|-------------------------------|--------------------------|-----------------|
+| Command reference | Usually a single long page | Per-command pages with generated API | Per-command pages written from existing .md files; includes GitHub effects section |
+| Architecture docs | Often absent or a single README diagram | Occasional "how it works" overview | Mermaid diagram suite: workflow, agent orchestration, state relationships, PR lifecycle |
+| Getting started | Usually covers install + one example | Quickstart + tutorial | Quickstart + "what to expect" walkthrough showing terminal output and GitHub artifacts |
+| Navigation depth | Flat or 2 levels | 2-3 levels | 3 levels: Guide / Reference / Internals; each with sub-sections |
+| Visual identity | Default theme | Customized theme | ASCII branding matching in-CLI visual language |
+| Contributor docs | Rarely | Sometimes | Core section; agent creation is the primary extension point |
+| Audience segmentation | Not explicit | Sometimes (beginner/advanced) | Explicit three-audience structure: discoverer, user, contributor (Diataxis model) |
 
 ---
 
 ## Sources
 
-- [GitHub Docs: Changing the stage of a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request) — HIGH confidence (official docs)
-- [GitHub CLI: gh pr create](https://cli.github.com/manual/gh_pr_create) — HIGH confidence (official docs). Confirmed: `--draft`, `--title`, `--body`, `--base` flags.
-- [GitHub CLI: gh pr ready](https://cli.github.com/manual/gh_pr_ready) — HIGH confidence (official docs). Confirmed: `--undo` for draft conversion.
-- [GitHub REST API: pulls](https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28) — HIGH confidence (official docs). `PATCH /repos/{owner}/{repo}/pulls/{pull_number}` updates draft state.
-- [DEV Community: Automatic Ready-for-Review GitHub Action](https://dev.to/potloc/automatic-ready-for-review-github-action-5eb6) — MEDIUM confidence. Confirmed idempotency pattern using `gh pr list --head branch --state open`.
-- [gh/cli discussion #5792: idempotent PR creation](https://github.com/cli/cli/discussions/5792) — MEDIUM confidence. Confirmed check-before-create pattern.
-- [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/) — HIGH confidence (official spec). Six standard sections: Added, Changed, Deprecated, Removed, Fixed, Security.
-- [Qodo: 5 AI Code Review Pattern Predictions in 2026](https://www.qodo.ai/blog/5-ai-code-review-pattern-predictions-in-2026/) — MEDIUM confidence. Confirmed severity tiers and specialist-agent categories.
-- [CodeRabbit AI PR Reviewer](https://github.com/coderabbitai/ai-pr-reviewer) — MEDIUM confidence (README). Confirmed GitHub API comment posting pattern.
-- [WebSearch: Best AI Code Review Tools 2026](https://dev.to/heraldofsolace/the-best-ai-code-review-tools-of-2026-2mb3) — LOW confidence (single source). Used for ecosystem survey only.
+- [VitePress Default Theme Config](https://vitepress.dev/reference/default-theme-config) — HIGH confidence (official docs). Confirmed: built-in sidebar, nav, dark mode, social links, Algolia integration, edit links.
+- [VitePress Markdown Extensions](https://vitepress.dev/guide/markdown) — HIGH confidence (official docs). Confirmed: built-in code copy, syntax highlighting (Shiki), code groups, custom containers. Mermaid NOT built in.
+- [vitepress-plugin-mermaid](https://emersonbottero.github.io/vitepress-plugin-mermaid/) — MEDIUM confidence. Plugin exists, 55k weekly downloads, but has version compatibility issues as of early 2026.
+- [vitepress-mermaid-renderer on npm](https://www.npmjs.com/package/vitepress-mermaid-renderer) — MEDIUM confidence. Alternative plugin, updated March 2026.
+- [Diátaxis Framework](https://diataxis.fr/) — HIGH confidence (official framework site). Four documentation types: Tutorials, How-to, Reference, Explanation. Widely adopted.
+- [Documentation Best Practices for Developer Tools — draft.dev](https://draft.dev/learn/documentation-best-practices-for-developer-tools) — MEDIUM confidence. Confirmed: quick-start, complete reference, interactive examples, search as key features.
+- [10 Common Developer Documentation Mistakes — document360](https://document360.com/blog/developer-documentation-mistakes/) — MEDIUM confidence. Confirmed anti-patterns: no search, outdated content, poor organization, missing error handling, no visual aids.
+- [Common Pitfalls in Developer Content — bekahhw.com](https://bekahhw.com/common-dev-content-pitfalls) — MEDIUM confidence. Confirmed "tutorial cliff" anti-pattern (no mid-level content between beginner and advanced).
 
 ---
-*Feature research for: GitHub PR lifecycle automation and auto-documentation in vit-cc*
+*Feature research for: vit-cc documentation site (VitePress)*
 *Researched: 2026-03-18*
