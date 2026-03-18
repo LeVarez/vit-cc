@@ -64,5 +64,5 @@ export default withMermaid({
       { icon: 'github', link: 'https://github.com/LeVarez/vit-cc' }
     ]
   },
-  mermaid: {}
+  mermaid: {} // plugin defaults handle dark/light theme switching
 })
