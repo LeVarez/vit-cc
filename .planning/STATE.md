@@ -10,28 +10,29 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 ## Current Position
 
 Phase: 3 of 3 (Documentation & Changelog Agents)
-Plan: 0 of 4 in current phase
-Status: Ready to plan
-Last activity: 2026-03-18 — Phase 2 complete, verification passed (4/4)
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-03-18 — Completed 03-01-PLAN.md (vit-doc-updater agent definition)
 
-Progress: [██████░░░░] 67%
+Progress: [███████░░░] 75%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 3 min
-- Total execution time: 5 min
+- Total plans completed: 3
+- Average duration: 2 min
+- Total execution time: 7 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 02-ai-pr-reviewer | 2/2 | 5 min | 3 min |
+| 03-documentation-changelog-agents | 1/4 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (3 min), 02-02 (2 min)
-- Trend: —
+- Last 5 plans: 02-01 (3 min), 02-02 (2 min), 03-01 (2 min)
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -56,6 +57,9 @@ Recent decisions affecting current work:
 - [02-02]: Reviewer spawn gated on PR_PROMOTED=true from step 8.5 — no re-evaluation of route needed
 - [02-02]: REPO fetched via gh repo view at spawn time — avoids stale STATE.md data
 - [02-02]: vit-pr-reviewer model: sonnet/sonnet/haiku — matches vit-plan-checker pattern
+- [03-01]: Edit tool for section updates to existing files; Write tool only for first-time CHANGELOG.md creation
+- [03-01]: CHANGELOG.md lives at project root ($WORK_DIR), not in .planning/
+- [03-01]: Internal-only phases skip README/docs section updates but always append to CHANGELOG
 
 ### Pending Todos
 
@@ -63,12 +67,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 3]: README section identification heuristics for doc-updater need a concrete heading-identification approach — recommend a targeted research spike during Phase 3 planning
-- [Phase 3]: Node.js version constraint for git-cliff — users on Node 18.0–18.18 will get silent failures; agent prompt must document and suggest `node --version` check
+- [Phase 3]: README section identification heuristics for doc-updater — RESOLVED in 03-01: semantic mapping heuristic documented in agent prompt; LLM reads accomplishments and maps to headings
+- [Phase 3]: Node.js version constraint for git-cliff — RESOLVED: git-cliff NOT used; Claude-native SUMMARY.md approach eliminates this concern
 - [Phase 2]: Inline diff comment volume limits — RESOLVED in 02-01: capped at 5 with fallback for empty body 422
 
 ## Session Continuity
 
-Last session: 2026-03-18T15:19:53Z
-Stopped at: Completed 02-02-PLAN.md — verify-work reviewer wiring complete; Phase 02 done
+Last session: 2026-03-18T16:13:36Z
+Stopped at: Completed 03-01-PLAN.md — vit-doc-updater agent definition complete
 Resume file: None
