@@ -32,7 +32,14 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 
 <!-- Current scope for next milestone. -->
 
-(Define with `/vit:new-milestone`)
+- [ ] VitePress documentation site with full sidebar navigation and search
+- [ ] Concepts & architecture guide — phases, milestones, agents, state management, the workflow loop
+- [ ] Getting started guide — install, first project walkthrough
+- [ ] Command reference — every slash command with usage, examples, and options
+- [ ] Agent reference — every agent with role, spawn trigger, inputs/outputs
+- [ ] Creating custom agents guide — how to extend VIT with new agents
+- [ ] Internals deep-dive — state management, worktrees, GitHub sync, hook system
+- [ ] Step-by-step tutorials — build a project, add a milestone, debug with VIT
 
 ### Out of Scope
 
@@ -41,6 +48,18 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 - GitHub webhook → VIT state sync — requires server infrastructure, out of scope for a CLI tool
 - GitHub Projects / kanban board — too much overhead for a dev-focused workflow
 - External PR review services (Copilot, etc.) — VIT uses Claude directly
+
+## Current Milestone: v1.0.1 Documentation
+
+**Goal:** Create a comprehensive VitePress documentation site that serves as the entry point for developers — covering concepts, commands, agents, internals, and tutorials.
+
+**Target features:**
+- VitePress docs site with sidebar navigation, search, and deployment-ready config
+- Concepts & architecture section explaining the VIT mental model
+- Complete command and agent reference pages
+- Guide for creating custom agents
+- Internals documentation for power users
+- Step-by-step tutorials for common workflows
 
 ## Context
 
@@ -71,4 +90,4 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 | CHANGELOG ownership split | doc-updater writes [Unreleased]; changelog-writer promotes it | ✓ Good — no conflict, clean promotion |
 
 ---
-*Last updated: 2026-03-18 after v1.0 milestone*
+*Last updated: 2026-03-18 after v1.0.1 milestone start*

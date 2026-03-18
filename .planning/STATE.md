@@ -5,16 +5,17 @@
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Every step of the VIT workflow is automatically reflected in GitHub — from execution to verification to merge — with zero manual GitHub operations.
-**Current focus:** Planning next milestone
+**Current focus:** v1.0.1 Documentation Site
 
 ## Current Position
 
-Phase: Not started
-Plan: Not started
-Status: v1.0 milestone complete — ready to plan next milestone
-Last activity: 2026-03-18 — v1.0 milestone shipped (3 phases, 8 plans)
+Milestone: v1.0.1
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-18 — Milestone v1.0.1 started
 
-Progress: [██████████] 100% (v1.0 complete)
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -43,10 +44,10 @@ None.
 
 ### Blockers/Concerns
 
-None — all blockers resolved during v1.0 milestone.
+None.
 
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: v1.0 milestone complete
+Stopped at: Milestone v1.0.1 initialization
 Resume file: None
