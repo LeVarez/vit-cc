@@ -34,6 +34,9 @@ Parse current values (default to `true` if not present):
 - `workflow.plan_check` — spawn plan checker during plan-phase
 - `workflow.verifier` — spawn verifier during execute-phase
 - `model_profile` — which model each agent uses (default: `balanced`)
+- `team.enabled` — multi-engineer collaboration mode (default: `false`)
+- `team.roster` — array of engineer handles and roles
+- `team.default_reviewer` — GitHub handle for auto-PR-reviewer assignment
 
 ## 3. Present Settings
 
@@ -77,6 +80,15 @@ AskUserQuestion([
       { label: "Yes", description: "Verify must-haves after execution" },
       { label: "No", description: "Skip post-execution verification" }
     ]
+  },
+  {
+    question: "Team mode? (multi-engineer collaboration)",
+    header: "Team",
+    multiSelect: false,
+    options: [
+      { label: "Solo (default)", description: "Single engineer + Claude, no assignment" },
+      { label: "Team", description: "Multiple engineers — plans assigned to team members" }
+    ]
   }
 ])
 ```
@@ -95,9 +107,50 @@ Merge new settings into existing config.json:
     "research": true/false,
     "plan_check": true/false,
     "verifier": true/false
+  },
+  "team": {
+    "enabled": true/false,
+    "roster": [...existing roster or []],
+    "default_reviewer": "...existing or empty"
   }
 }
 ```
+
+**If team mode is enabled:** After writing config, prompt for roster:
+
+```
+AskUserQuestion({
+  question: "Add team members? (enter GitHub handles, one per line, or skip)",
+  header: "Team Roster",
+  freeText: true
+})
+```
+
+For each handle entered, prompt for role:
+```
+AskUserQuestion({
+  question: "Role for @[handle]?",
+  header: "Role",
+  options: [
+    { label: "full-stack" },
+    { label: "backend" },
+    { label: "frontend" },
+    { label: "devops" },
+    { label: "data/ml" }
+  ]
+})
+```
+
+Also prompt for default PR reviewer:
+```
+AskUserQuestion({
+  question: "Default PR reviewer? (GitHub handle, or skip)",
+  header: "Default Reviewer",
+  freeText: true
+})
+```
+
+Write final roster to config.json `team.roster` array and `team.default_reviewer`.
 
 Write updated config to `.planning/config.json`.
 
@@ -116,6 +169,9 @@ Display:
 | Plan Researcher      | {On/Off} |
 | Plan Checker         | {On/Off} |
 | Execution Verifier   | {On/Off} |
+| Team Mode            | {Solo/Team} |
+| Team Roster          | {handles or —} |
+| Default Reviewer     | {handle or —} |
 
 These settings apply to future /vit:plan-phase and /vit:execute-phase runs.
 
@@ -130,7 +186,8 @@ Quick commands:
 
 <success_criteria>
 - [ ] Current config read
-- [ ] User presented with 4 settings (profile + 3 toggles)
-- [ ] Config updated with model_profile and workflow section
+- [ ] User presented with 5 settings (profile + 3 toggles + team mode)
+- [ ] Config updated with model_profile, workflow, and team sections
+- [ ] If team mode enabled: roster and default reviewer collected
 - [ ] Changes confirmed to user
 </success_criteria>

@@ -291,6 +291,11 @@ RESEARCH_CONTENT=$(cat "$WORK_DIR/${PHASE_DIR}"/*-RESEARCH.md 2>/dev/null)
 # Gap closure files (only if --gaps mode)
 VERIFICATION_CONTENT=$(cat "$WORK_DIR/${PHASE_DIR}"/*-VERIFICATION.md 2>/dev/null)
 UAT_CONTENT=$(cat "$WORK_DIR/${PHASE_DIR}"/*-UAT.md 2>/dev/null)
+
+# Team config (for plan assignment in team mode)
+TEAM_ENABLED=$(cat "$WORK_DIR/.planning/config.json" 2>/dev/null | grep '"enabled"' | grep -o 'true\|false' | head -1 || echo "false")
+TEAM_ROSTER=$(cat "$WORK_DIR/.planning/config.json" 2>/dev/null \
+  | python3 -c "import json,sys; d=json.load(sys.stdin); r=d.get('team',{}).get('roster',[]); print('\n'.join(f\"{m['handle']} ({m.get('role','full-stack')})\" for m in r))" 2>/dev/null || echo "")
 ```
 
 ## 8. Spawn vit-planner Agent
@@ -330,6 +335,18 @@ Fill prompt with inlined content and spawn:
 **Gap Closure (if --gaps mode):**
 {verification_content}
 {uat_content}
+
+**Team context:**
+Team mode: {team_enabled}
+{If team_enabled is true:}
+Engineers available:
+{team_roster}
+
+When team mode is true and roster is non-empty:
+- Assign `assigned_to` on each plan to one of the engineers (distribute evenly, avoid file_modified overlap between plans assigned to same engineer in same wave)
+- Set `execute_by: claude` (engineers trigger Claude runs for their assigned phases — this is still Claude-executed)
+- Use engineer role as a hint (backend → auth/API tasks, frontend → UI tasks) but don't over-constrain
+{If team_enabled is false or roster is empty: leave assigned_to empty, execute_by: claude}
 
 </planning_context>
 

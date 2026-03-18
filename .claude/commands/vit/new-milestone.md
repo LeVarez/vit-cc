@@ -816,10 +816,10 @@ Store the mapping of phase → feature issue number in STATE.md under a new sect
 ```markdown
 ## GitHub Issue Mapping
 
-| Phase | Feature Issue | Branch | PR |
-|-------|---------------|--------|----|
-| v[X.Y]/[N] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N]-[phase-slug] | — |
-| v[X.Y]/[N+1] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N+1]-[phase-slug] | — |
+| Phase | Feature Issue | Branch | PR | Assigned |
+|-------|---------------|--------|----|----------|
+| v[X.Y]/[N] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N]-[phase-slug] | — | — |
+| v[X.Y]/[N+1] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N+1]-[phase-slug] | — | — |
 ```
 
 **Print summary:**
@@ -830,10 +830,10 @@ Store the mapping of phase → feature issue number in STATE.md under a new sect
 
 Milestone: v[X.Y] — [Name] (GitHub milestone #[GH_MILESTONE])
 
-| Phase | Feature Issue | Branch | PR |
-|-------|---------------|--------|----|
-| v[X.Y]/[N]   | #[X]          | feature/v[X.Y]-[N]-[slug] | — |
-| v[X.Y]/[N+1] | #[X+1]        | feature/v[X.Y]-[N+1]-[slug] | — |
+| Phase | Feature Issue | Branch | PR | Assigned |
+|-------|---------------|--------|----|----------|
+| v[X.Y]/[N]   | #[X]          | feature/v[X.Y]-[N]-[slug] | — | — |
+| v[X.Y]/[N+1] | #[X+1]        | feature/v[X.Y]-[N+1]-[slug] | — | — |
 
 Sub-issues will be created when you run /vit:plan-phase [N].
 ```
@@ -842,6 +842,37 @@ Commit STATE.md with the mapping:
 ```bash
 cd "$MILESTONE_WORKTREE" && git add .planning/STATE.md
 cd "$MILESTONE_WORKTREE" && git commit -m "docs: link milestone v[X.Y] to GitHub milestone #[GH_MILESTONE]"
+```
+
+## Phase 10.5: Create / Update ONBOARDING.md
+
+Generate or update the team onboarding guide using the template at `.claude/vit/templates/ONBOARDING.md`.
+
+Fill in from artifacts created during this milestone initialization:
+- **Project name** and **milestone name**: from PROJECT.md
+- **What we're building**: milestone goal and core value
+- **Current position**: Phase 1 of [N], status "Ready to plan"
+- **GitHub Issue Mapping table**: from STATE.md
+- **Out of scope**: from REQUIREMENTS.md Out of Scope section
+- **Key decisions**: from PROJECT.md Key Decisions table (most recent 3-5)
+
+If `.planning/ONBOARDING.md` already exists (from a previous milestone): **update** it — don't overwrite the whole file. Update:
+- "Where we are" section with new milestone phase count
+- "Branch and PR workflow" table with new milestone branch names
+- "Active blockers" section from current STATE.md
+- "Key architectural decisions" section with latest decisions
+
+Write to: `.planning/ONBOARDING.md`
+
+Commit:
+```bash
+cd "$MILESTONE_WORKTREE" && git add .planning/ONBOARDING.md
+cd "$MILESTONE_WORKTREE" && git commit -m "docs: update team onboarding guide for v[X.Y]"
+```
+
+Display:
+```
+◆ ONBOARDING.md updated: .planning/ONBOARDING.md
 ```
 
 ## Phase 11: Done
@@ -912,6 +943,8 @@ To context-switch:
 - [ ] Roadmap files written immediately (not draft)
 - [ ] User feedback incorporated (if any)
 - [ ] ROADMAP.md created with phases numbered 01-NN within current milestone section
+- [ ] GitHub Issue Mapping table has Assigned column
+- [ ] ONBOARDING.md created or updated
 - [ ] All commits made (if planning docs committed)
 - [ ] GitHub milestone created (if gh CLI available)
 - [ ] Parent feature issue created per phase (if gh CLI available)

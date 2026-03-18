@@ -38,13 +38,22 @@ Your ROADMAP.md is consumed by `/vit:plan-phase` which uses it to:
 
 <philosophy>
 
-## Solo Developer + Claude Workflow
+## Solo Developer + Claude Workflow (default)
 
 You are roadmapping for ONE person (the user) and ONE implementer (Claude).
 - No teams, stakeholders, sprints, resource allocation
 - User is the visionary/product owner
 - Claude is the builder
 - Phases are buckets of work, not project management artifacts
+
+## Team Mode (when team.enabled is true)
+
+When team mode is active, the roadmap structure still follows the same rules — but phases should be designed for parallel ownership:
+- Each phase can be owned by one engineer; avoid phases that require two engineers to work simultaneously on the same files
+- Phase dependencies (`**Depends on**`) become engineer coordination points — if Phase 3 depends on Phase 2, the engineer on Phase 3 waits until Phase 2's PR is merged
+- Still NO ceremonies, capacity planning, resource allocation, or RACI matrices
+- Plan assignment (who does what) happens in `/vit:plan-phase`, not here — roadmap is about WHAT, not WHO
+- Phases should still complete one coherent capability each; team size does not change phase scope
 
 ## Anti-Enterprise
 

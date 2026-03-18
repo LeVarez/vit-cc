@@ -38,6 +38,12 @@ Progress: [░░░░░░░░░░] 0%
 |-------|-------|-------|----------|
 | - | - | - | - |
 
+**By Engineer:**
+
+| Engineer | Plans | Avg/Plan |
+|----------|-------|----------|
+| claude | - | - |
+
 **Recent Trend:**
 - Last 5 plans: [durations]
 - Trend: [Improving / Stable / Degrading]
@@ -62,7 +68,7 @@ None yet.
 
 ### Blockers/Concerns
 
-[Issues that affect future work]
+[Issues that affect future work — format: `- [Phase X] owner:@name status:open|resolved Description`]
 
 None yet.
 
@@ -74,9 +80,9 @@ Resume file: [Path to .continue-here*.md if exists, otherwise "None"]
 
 ## GitHub Issue Mapping
 
-| Phase | Feature Issue | Branch | PR |
-|-------|---------------|--------|----|
-| v[X.Y]/[N] | #[N] | feature/v[X.Y]-[N]-[phase-slug] | — |
+| Phase | Feature Issue | Branch | PR | Assigned |
+|-------|---------------|--------|----|----------|
+| v[X.Y]/[N] | #[N] | feature/v[X.Y]-[N]-[phase-slug] | — | — |
 ```
 
 <purpose>
@@ -158,6 +164,9 @@ Updated after each plan completion.
 
 **Blockers/Concerns:** From "Next Phase Readiness" sections
 - Issues that affect future work
+- Format: `- [Phase X] owner:@name status:open|resolved Description`
+- `owner` is the engineer responsible for resolving
+- `status:open` when first logged, `status:resolved` when closed (remove resolved ones during cleanup)
 - Prefix with originating phase
 - Cleared when addressed
 
@@ -176,8 +185,9 @@ Columns:
 - PR: Draft PR number. Values:
   - `—` (em-dash): No PR created yet
   - `pr#N`: Draft PR created (number N)
-  - `pr#N(ready)`: PR promoted to ready-for-review
+  - `pr#N(ready)`: PR promoted to ready-for-review (after verification passes)
   - `pr:skipped`: gh CLI unavailable, PR creation skipped
+- Assigned: engineer name/handle who owns this phase (e.g., `@alice`). `—` = unassigned
 
 </sections>
 

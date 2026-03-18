@@ -56,6 +56,18 @@ cat .planning/PROJECT.md
 - **Key Decisions**: Full decision log with outcomes
 - **Constraints**: Hard limits on implementation
 
+**Teammate activity since last session (team mode):**
+
+```bash
+LAST_SESSION=$(grep "Last session:" .planning/STATE.md 2>/dev/null | sed 's/Last session:[[:space:]]*//' | head -1)
+if [ -n "$LAST_SESSION" ]; then
+  TEAM_COMMITS=$(git log --oneline --since="$LAST_SESSION" --no-merges --format="%h %an: %s" 2>/dev/null \
+    | grep -v "$(git config user.name 2>/dev/null)" | head -10 || echo "")
+fi
+```
+
+Store `TEAM_COMMITS` for display in present_status step.
+
 </step>
 
 <step name="check_incomplete_work">
@@ -126,6 +138,10 @@ Present complete project status to user:
 
 [If pending todos exist:]
 📋 [N] pending todos — /vit:check-todos to review
+
+[If TEAM_COMMITS is non-empty:]
+👥 Teammate activity since your last session:
+   [Display each commit line from TEAM_COMMITS]
 
 [If blockers exist:]
 ⚠️  Carried concerns:

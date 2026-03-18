@@ -7,6 +7,11 @@ Configuration options for `.planning/` directory behavior.
 "planning": {
   "commit_docs": true,
   "search_gitignored": false
+},
+"team": {
+  "enabled": false,
+  "roster": [],
+  "default_reviewer": ""
 }
 ```
 
@@ -14,6 +19,9 @@ Configuration options for `.planning/` directory behavior.
 |--------|---------|-------------|
 | `commit_docs` | `true` | Whether to commit planning artifacts to git |
 | `search_gitignored` | `false` | Add `--no-ignore` to broad rg searches |
+| `team.enabled` | `false` | Enable team mode (multi-engineer collaboration) |
+| `team.roster` | `[]` | Array of `{"handle": "alice", "role": "backend"}` objects |
+| `team.default_reviewer` | `""` | GitHub handle to auto-assign as PR reviewer |
 </config_schema>
 
 <commit_docs_behavior>
@@ -90,5 +98,42 @@ To use uncommitted mode:
    ```
 
 </setup_uncommitted_mode>
+
+<team_config>
+
+**When `team.enabled: false` (default):**
+- Solo mode: `assigned_to` fields in plans are left empty
+- Claude executes all plans
+- No reviewer auto-assigned on PRs
+
+**When `team.enabled: true`:**
+- vit-planner distributes plans to engineers based on roster and file ownership
+- `assigned_to` is set on each plan during `/vit:plan-phase`
+- `default_reviewer` is assigned to PRs when they go ready-for-review
+- `/vit:team-status` shows all assignments and blockers
+
+**Roster format:**
+```json
+"team": {
+  "enabled": true,
+  "roster": [
+    { "handle": "alice", "role": "full-stack" },
+    { "handle": "bob", "role": "backend" },
+    { "handle": "carol", "role": "frontend" }
+  ],
+  "default_reviewer": "alice"
+}
+```
+
+**Role values:** `full-stack`, `backend`, `frontend`, `devops`, `data`, `ml` — used as hints for plan assignment, not enforced.
+
+**Reading team config in commands:**
+```bash
+TEAM_ENABLED=$(cat .planning/config.json 2>/dev/null | grep '"enabled"' | grep -o 'true\|false' | head -1 || echo "false")
+TEAM_ROSTER=$(cat .planning/config.json 2>/dev/null | python3 -c "import json,sys; d=json.load(sys.stdin); print(' '.join(m['handle'] for m in d.get('team',{}).get('roster',[])))" 2>/dev/null || echo "")
+DEFAULT_REVIEWER=$(cat .planning/config.json 2>/dev/null | grep '"default_reviewer"' | sed 's/.*"default_reviewer"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/' || echo "")
+```
+
+</team_config>
 
 </planning_config>

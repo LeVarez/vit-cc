@@ -8,5 +8,10 @@
     "research": true,
     "plan_check": true,
     "verifier": true
+  },
+  "team": {
+    "enabled": true,
+    "roster": [],
+    "default_reviewer": "LeVarez"
   }
 }

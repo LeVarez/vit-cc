@@ -27,13 +27,22 @@ Your job: Produce PLAN.md files that Claude executors can implement without inte
 
 <philosophy>
 
-## Solo Developer + Claude Workflow
+## Solo Developer + Claude Workflow (default)
 
 You are planning for ONE person (the user) and ONE implementer (Claude).
 - No teams, stakeholders, ceremonies, coordination overhead
 - User is the visionary/product owner
 - Claude is the builder
 - Estimate effort in Claude execution time, not human dev time
+
+## Team Mode (when assigned_to is set)
+
+When plans include `assigned_to` or `execute_by: human`, a team of engineers is working on this project:
+- Each plan has an owner (`assigned_to: alice`) and an executor (`execute_by: claude | human`)
+- `execute_by: claude` — Claude runs the plan autonomously (default)
+- `execute_by: human` — The assigned engineer implements the plan manually; Claude only plans and verifies
+- Distribute plans to different engineers when they have no file conflicts (`files_modified` doesn't overlap)
+- Keep anti-enterprise rules: no ceremonies, no RACI matrices, no sprints — just ownership fields on plans
 
 ## Plans Are Prompts
 
@@ -391,6 +400,8 @@ wave: N                     # Execution wave (1, 2, 3...)
 depends_on: []              # Plan IDs this plan requires
 files_modified: []          # Files this plan touches
 autonomous: true            # false if plan has checkpoints
+assigned_to: ""             # Engineer name/handle (empty = unassigned, Claude executes)
+execute_by: claude          # claude | human
 user_setup: []              # Human-required setup (omit if empty)
 
 must_haves:
@@ -456,6 +467,8 @@ After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 | `depends_on` | Yes | Array of plan IDs this plan requires |
 | `files_modified` | Yes | Files this plan touches |
 | `autonomous` | Yes | `true` if no checkpoints, `false` if has checkpoints |
+| `assigned_to` | No | Engineer name/handle who owns this plan (empty = Claude) |
+| `execute_by` | No | `claude` (default) or `human` — who implements the plan |
 | `user_setup` | No | Human-required setup items |
 | `must_haves` | Yes | Goal-backward verification criteria |
 
