@@ -3,7 +3,7 @@
   "version": "1.10.1",
   "description": "Phase-based project execution framework for Claude Code with GitHub integration",
   "bin": {
-    "vit-cc": "bin/vit-cc.js"
+    "vit-claude": "bin/vit-cc.js"
   },
   "files": [
     "bin/",
