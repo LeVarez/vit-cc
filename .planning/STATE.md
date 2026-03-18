@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 ## Current Position
 
 Phase: 1 of 3 (PR Lifecycle Foundation)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-03-18 — Completed 01-01-PLAN.md (PR column + draft PR creation)
+Last activity: 2026-03-18 — Completed 01-02-PLAN.md (PR promotion in verify-work)
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -42,6 +42,8 @@ Progress: [█░░░░░░░░░] 10%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- [01-02]: PR promotion is Route A only (all pass AND more phases remain) — Routes B, C, D leave PR as draft
+- [01-02]: Promotion non-blocking — gh unavailable, no PR entry, or API error all log one line and continue
 - [01-01]: Idempotency uses gh pr list --head (live query) — STATE.md can be stale, GitHub is authoritative
 - [01-01]: pr:skipped written for both gh-unavailable and creation-failed — consistent signal for downstream
 - [Pre-phase]: Draft PR on execute-phase start (not plan-phase) — phase may span hours; PR should exist while code is being written
@@ -61,6 +63,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18 14:19
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-03-18 14:23
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
