@@ -5,3 +5,13 @@ Welcome to the VIT guide. This section covers getting started, core concepts, an
 ::: info Coming Soon
 Content for this section is being written in Phase 02.
 :::
+
+## VIT Workflow
+
+```mermaid
+flowchart LR
+    A[New Project] --> B[Plan Phase]
+    B --> C[Execute Phase]
+    C --> D[Verify Work]
+    D --> E[Ship]
+```

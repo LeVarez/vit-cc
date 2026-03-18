@@ -1,12 +1,13 @@
-import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
-export default defineConfig({
+export default withMermaid({
   title: 'VIT',
   description: 'Phase-based AI development workflow framework for Claude Code',
   base: '/vit-cc/',
   appearance: 'dark',
   lastUpdated: true,
   themeConfig: {
+    siteTitle: 'VIT',
     search: {
       provider: 'local'
     },
@@ -62,5 +63,6 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/LeVarez/vit-cc' }
     ]
-  }
+  },
+  mermaid: {}
 })
