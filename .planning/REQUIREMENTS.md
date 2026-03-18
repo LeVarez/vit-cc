@@ -72,13 +72,13 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 01 | Pending |
-| INFRA-02 | Phase 01 | Pending |
-| INFRA-03 | Phase 01 | Pending |
-| INFRA-04 | Phase 01 | Pending |
-| INFRA-05 | Phase 01 | Pending |
-| INFRA-06 | Phase 01 | Pending |
-| INFRA-07 | Phase 01 | Pending |
+| INFRA-01 | Phase 01 | Complete |
+| INFRA-02 | Phase 01 | Complete |
+| INFRA-03 | Phase 01 | Complete |
+| INFRA-04 | Phase 01 | Complete |
+| INFRA-05 | Phase 01 | Complete |
+| INFRA-06 | Phase 01 | Complete |
+| INFRA-07 | Phase 01 | Complete |
 | START-01 | Phase 02 | Pending |
 | START-02 | Phase 02 | Pending |
 | START-03 | Phase 02 | Pending |

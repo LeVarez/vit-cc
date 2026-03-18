@@ -36,8 +36,8 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: VitePress setup, config, and deployment workflow
-- [ ] 01-02: Homepage, sidebar structure, and placeholder pages
+- [x] 01-01: VitePress setup, config, and deployment workflow
+- [x] 01-02: Homepage, sidebar structure, and placeholder pages
 
 #### Phase 02: Getting Started and Concepts
 
@@ -113,7 +113,7 @@ Plans:
 | 1. PR Lifecycle Foundation | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 2. AI PR Reviewer | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 3. Documentation & Changelog Agents | v1.0 | 4/4 | Complete ✓ | 2026-03-18 |
-| 01. Infrastructure and Information Architecture | v1.0.1 | 0/2 | Planned | - |
+| 01. Infrastructure and Information Architecture | v1.0.1 | 2/2 | Complete ✓ | 2026-03-19 |
 | 02. Getting Started and Concepts | v1.0.1 | 0/2 | Not started | - |
 | 03. Command Reference | v1.0.1 | 0/3 | Not started | - |
 | 04. Agent Reference | v1.0.1 | 0/3 | Not started | - |
