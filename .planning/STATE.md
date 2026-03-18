@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 ## Current Position
 
 Milestone: v1.0.1
-Phase: Not started (defining requirements)
+Phase: 01 of 05 (Infrastructure and Information Architecture)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-18 — Milestone v1.0.1 started
+Status: Ready to plan
+Last activity: 2026-03-18 — Roadmap created for v1.0.1
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -38,6 +38,13 @@ Progress: [░░░░░░░░░░] 0%
 
 Full decisions log in PROJECT.md Key Decisions table.
 
+Key decisions affecting v1.0.1:
+- Use `vitepress@next` (v2 alpha); pin to specific version after install to avoid unintended upgrades
+- Set `base: '/vit-cc/'` before writing any content — invisible in dev, breaks production if missed
+- Sidebar structure committed as a deliverable of Phase 01 — restructuring 62 cross-linked pages is a rewrite
+- Stub extraction for 45 reference pages (Phases 03–04) — parse frontmatter from source files, not hand-write headers
+- `cleanUrls: true` decision must be made in Phase 01 — GitHub Pages does not support clean URL routing natively
+
 ### Pending Todos
 
 None.
@@ -49,5 +56,15 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: Milestone v1.0.1 initialization
+Stopped at: Roadmap created — ready to plan Phase 01
 Resume file: None
+
+## GitHub Issue Mapping
+
+| Phase | Feature Issue | Branch | PR | Assigned |
+|-------|---------------|--------|----|----------|
+| v1.0.1/01 | — | — | — | — |
+| v1.0.1/02 | — | — | — | — |
+| v1.0.1/03 | — | — | — | — |
+| v1.0.1/04 | — | — | — | — |
+| v1.0.1/05 | — | — | — | — |
