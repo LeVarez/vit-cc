@@ -40,11 +40,11 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. A Mermaid fenced code block on any page renders as an SVG diagram (not raw text)
   4. `vitepress build` runs and passes in CI on every push, catching dead links and SSR errors
   5. Navigation sidebar shows all five sections (Guide, Commands, Agents, Architecture, Contributing) with stub pages behind each entry
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: Initialize `docs/` with VitePress 1.6.4, configure `base`, theme, search, and deploy workflow
-- [ ] 01-02: Install Mermaid plugin (pinned versions), configure ASCII branding and multi-sidebar navigation skeleton
+- [ ] 01-01-PLAN.md — Initialize VitePress project, configure site settings, create stub pages, and deploy workflow
+- [ ] 01-02-PLAN.md — Install Mermaid plugin, create ASCII branding, verify diagram rendering
 
 ---
 
