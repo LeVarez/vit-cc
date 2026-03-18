@@ -22,7 +22,7 @@ const logo = `
 }
 
 .ascii-logo {
-  font-family: var(--vp-font-family-mono);
+  font-family: 'Courier New', Courier, monospace;
   font-size: 1.1rem;
   line-height: 1.2;
   text-align: center;
