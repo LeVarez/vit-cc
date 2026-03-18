@@ -22,16 +22,17 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 - ✓ Feature issue closed when phase completes in `execute-phase` — existing
 - ✓ Developer feedback read from GitHub issues via `review-feedback` — existing
 - ✓ CI workflow posts test results to GitHub issues via `phase-ci.yml` — existing
+- ✓ Draft PR created automatically when `execute-phase` starts — v1.0
+- ✓ Draft PR promoted to ready-for-review after `verify-work` passes — v1.0
+- ✓ `vit-pr-reviewer` agent spawned automatically after `verify-work` passes — v1.0
+- ✓ `vit-doc-updater` agent spawns after each phase to update docs and CHANGELOG — v1.0
+- ✓ `vit-changelog-writer` agent generates versioned CHANGELOG entry on `/vit:complete-milestone` — v1.0
 
 ### Active
 
-<!-- Current scope. Building toward these. -->
+<!-- Current scope for next milestone. -->
 
-- [ ] Draft PR created automatically when `execute-phase` starts (feature/vX.Y-N → milestone/vX.Y)
-- [ ] Draft PR promoted to ready-for-review after `verify-work` passes
-- [ ] `vit-pr-reviewer` agent spawned automatically after `verify-work` passes — reviews code, posts PR review comment
-- [ ] `vit-changelog-writer` agent generates CHANGELOG entries when `/vit:complete-milestone` runs
-- [ ] `vit-doc-updater` agent spawned after each plan completes in `execute-phase` — updates README, API docs (JSDoc/docstrings), and CHANGELOG incrementally
+(Define with `/vit:new-milestone`)
 
 ### Out of Scope
 
@@ -61,10 +62,13 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Draft PR on execute-phase start, not plan-phase | Phase may span hours; PR should exist while code is being written | — Pending |
-| PR reviewer runs automatically after verify (not manually) | Reduces friction; reviewer should always run before human sees the PR | — Pending |
-| Doc updater runs per-plan, not per-task | Per-task is too granular and expensive; per-plan matches the commit boundary | — Pending |
-| Changelog writer on complete-milestone, not per-phase | Release notes should cover the full milestone; incremental entries per phase | — Pending |
+| Draft PR on execute-phase start, not plan-phase | Phase may span hours; PR should exist while code is being written | ✓ Good — PR exists throughout execution |
+| PR reviewer runs automatically after verify (not manually) | Reduces friction; reviewer should always run before human sees the PR | ✓ Good — zero friction, consistent quality gate |
+| Doc-updater runs per-phase (after all waves), not per-task | Per-task too granular and expensive; per-phase matches commit boundary | ✓ Good — CHANGELOG [Unreleased] grows phase by phase |
+| Changelog writer on complete-milestone, not per-phase | Release notes should cover the full milestone | ✓ Good — single versioned entry covers all phases |
+| Idempotency via live `gh pr list` query | STATE.md can be stale; GitHub is authoritative | ✓ Good — no duplicate PRs |
+| Inline diff comments capped at 5 | GitHub API 422 errors on large diffs | ✓ Good — fallback handles empty body edge case |
+| CHANGELOG ownership split | doc-updater writes [Unreleased]; changelog-writer promotes it | ✓ Good — no conflict, clean promotion |
 
 ---
-*Last updated: 2026-03-18 after initialization*
+*Last updated: 2026-03-18 after v1.0 milestone*
