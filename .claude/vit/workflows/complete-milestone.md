@@ -177,6 +177,37 @@ Key accomplishments for this milestone:
 
 </step>
 
+<step name="spawn_changelog_writer">
+
+**Spawn changelog-writer** (before archive):
+
+Spawn vit-changelog-writer to generate a versioned CHANGELOG entry and update all project documentation. Runs after accomplishments are extracted (SUMMARY.md files are available) and before archival begins.
+
+```
+Task(
+  prompt="""
+<context>
+Version: {VERSION}
+Milestone: v{VERSION}
+Working Directory: {WORK_DIR}
+Phases Directory: {WORK_DIR}/.planning/phases/
+</context>
+
+Read all phase SUMMARY.md files in the milestone.
+Update all project documentation (README.md, docs/).
+Generate a versioned CHANGELOG entry [{VERSION}] - DATE from the [Unreleased] section.
+Commit all documentation and CHANGELOG changes.
+""",
+  subagent_type="vit-changelog-writer",
+  model="sonnet",
+  description="Write versioned CHANGELOG for v{VERSION}"
+) || log "[changelog-writer failed — continuing]"
+```
+
+Non-blocking: if Task fails, log one line and continue to archive_milestone.
+
+</step>
+
 <step name="create_milestone_entry">
 
 Create or update `.planning/MILESTONES.md`.
