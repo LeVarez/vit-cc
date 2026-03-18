@@ -64,7 +64,7 @@ Resume file: None
 
 | Phase | Feature Issue | Branch | PR | Assigned | Sub-issues |
 |-------|---------------|--------|----|----------|------------|
-| v1.1/01 | #21 | feature/v1.1-01-vitepress-foundation | pr#27 | — | #25, #26 |
+| v1.1/01 | #21 | feature/v1.1-01-vitepress-foundation | pr#27(ready) | — | #25, #26 |
 | v1.1/02 | #22 | feature/v1.1-02-getting-started-and-commands | — | — | — |
 | v1.1/03 | #23 | feature/v1.1-03-agent-reference-and-architecture | — | — | — |
 | v1.1/04 | #24 | feature/v1.1-04-advanced-and-contributors | — | — | — |
