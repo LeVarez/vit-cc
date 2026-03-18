@@ -28,6 +28,7 @@ Default to "balanced" if not set.
 |-------|---------|----------|--------|
 | vit-executor | opus | sonnet | sonnet |
 | vit-verifier | sonnet | sonnet | haiku |
+| vit-doc-updater | sonnet | sonnet | haiku |
 | general-purpose | — | — | — |
 
 Store resolved models for use in Task calls below.
@@ -611,6 +612,37 @@ git add .planning/ROADMAP.md .planning/STATE.md .planning/phases/{phase_dir}/*-V
 git add .planning/REQUIREMENTS.md  # if updated
 git commit -m "docs(phase-{X}): complete phase execution"
 ```
+</step>
+
+<step name="spawn_doc_updater">
+**Spawn doc-updater** (after phase completion commit, before push):
+
+Spawn vit-doc-updater to update documentation files and CHANGELOG.
+
+```
+Task(
+  prompt="""
+<context>
+Phase Number: {PHASE_NUM}
+Phase Name: {PHASE_NAME}
+Phase Directory: {PHASE_DIR}
+Working Directory: {WORK_DIR}
+Milestone: {MILESTONE}
+</context>
+
+Read all SUMMARY.md and PLAN.md files in the phase directory.
+Determine which documentation sections need updating.
+Update only those sections in README.md and docs/ files.
+Append a new entry to the [Unreleased] section of CHANGELOG.md.
+Commit documentation changes.
+""",
+  subagent_type="vit-doc-updater",
+  model="{doc_updater_model}",
+  description="Update docs for Phase {PHASE_NUM}"
+) || log "[doc-updater failed — continuing]"
+```
+
+Non-blocking: if Task fails, log one line and continue to offer_next.
 </step>
 
 <step name="offer_next">
