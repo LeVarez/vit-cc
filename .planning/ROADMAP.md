@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: PR Lifecycle Foundation** - Feature branches become draft PRs; verification promotes them to ready-for-review
 - [x] **Phase 2: AI PR Reviewer** - A new agent reviews every promoted PR and posts a severity-tiered comment automatically
-- [ ] **Phase 3: Documentation & Changelog Agents** - Two new agents keep docs and CHANGELOG current after each phase and each milestone
+- [x] **Phase 3: Documentation & Changelog Agents** - Two new agents keep docs and CHANGELOG current after each phase and each milestone
 
 ## Phase Details
 
@@ -61,10 +61,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — vit-doc-updater agent definition (new file)
-- [ ] 03-02-PLAN.md — vit-changelog-writer agent definition (new file)
-- [ ] 03-03-PLAN.md — execute-phase modification — spawn doc-updater after all waves complete
-- [ ] 03-04-PLAN.md — complete-milestone modification — spawn changelog-writer before archive step
+- [x] 03-01-PLAN.md — vit-doc-updater agent definition (new file)
+- [x] 03-02-PLAN.md — vit-changelog-writer agent definition (new file)
+- [x] 03-03-PLAN.md — execute-phase modification — spawn doc-updater after all waves complete
+- [x] 03-04-PLAN.md — complete-milestone modification — spawn changelog-writer before archive step
 
 ## Progress
 
@@ -75,4 +75,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. PR Lifecycle Foundation | 2/2 | Complete ✓ | 2026-03-18 |
 | 2. AI PR Reviewer | 2/2 | Complete ✓ | 2026-03-18 |
-| 3. Documentation & Changelog Agents | 0/4 | Not started | - |
+| 3. Documentation & Changelog Agents | 4/4 | Complete ✓ | 2026-03-18 |

@@ -22,12 +22,12 @@
 
 ### Documentation & Changelog
 
-- [ ] **DOC-01**: `vit-doc-updater` agent spawns after all phase waves complete in `execute-phase`
-- [ ] **DOC-02**: Agent autonomously reads phase SUMMARY.md and PLAN.md to determine which docs and sections need updating — no manual configuration required
-- [ ] **DOC-03**: Agent updates only targeted sections of affected documentation files (section-scoped, preserves all other content verbatim)
-- [ ] **DOC-04**: Agent appends to `[Unreleased]` section in CHANGELOG after phase completes
-- [ ] **DOC-05**: `vit-changelog-writer` agent spawns inside `complete-milestone` before the archive step
-- [ ] **DOC-06**: Changelog writer updates ALL project documentation (README, docs/, API docs) and generates a versioned CHANGELOG entry — reads all phase SUMMARY.md files to understand the full scope of delivered work
+- [x] **DOC-01**: `vit-doc-updater` agent spawns after all phase waves complete in `execute-phase`
+- [x] **DOC-02**: Agent autonomously reads phase SUMMARY.md and PLAN.md to determine which docs and sections need updating — no manual configuration required
+- [x] **DOC-03**: Agent updates only targeted sections of affected documentation files (section-scoped, preserves all other content verbatim)
+- [x] **DOC-04**: Agent appends to `[Unreleased]` section in CHANGELOG after phase completes
+- [x] **DOC-05**: `vit-changelog-writer` agent spawns inside `complete-milestone` before the archive step
+- [x] **DOC-06**: Changelog writer updates ALL project documentation (README, docs/, API docs) and generates a versioned CHANGELOG entry — reads all phase SUMMARY.md files to understand the full scope of delivered work
 
 ## v2 Requirements
 
@@ -67,12 +67,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PRR-01 | Phase 2 | Complete |
 | PRR-02 | Phase 2 | Complete |
 | PRR-03 | Phase 2 | Complete |
-| DOC-01 | Phase 3 | Pending |
-| DOC-02 | Phase 3 | Pending |
-| DOC-03 | Phase 3 | Pending |
-| DOC-04 | Phase 3 | Pending |
-| DOC-05 | Phase 3 | Pending |
-| DOC-06 | Phase 3 | Pending |
+| DOC-01 | Phase 3 | Complete |
+| DOC-02 | Phase 3 | Complete |
+| DOC-03 | Phase 3 | Complete |
+| DOC-04 | Phase 3 | Complete |
+| DOC-05 | Phase 3 | Complete |
+| DOC-06 | Phase 3 | Complete |
 
 **Coverage:**
 - v1 requirements: 15 total
