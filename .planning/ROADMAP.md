@@ -13,7 +13,7 @@ This milestone closes the gap between vit-cc's existing phase automation and ful
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: PR Lifecycle Foundation** - Feature branches become draft PRs; verification promotes them to ready-for-review
-- [ ] **Phase 2: AI PR Reviewer** - A new agent reviews every promoted PR and posts a severity-tiered comment automatically
+- [x] **Phase 2: AI PR Reviewer** - A new agent reviews every promoted PR and posts a severity-tiered comment automatically
 - [ ] **Phase 3: Documentation & Changelog Agents** - Two new agents keep docs and CHANGELOG current after each phase and each milestone
 
 ## Phase Details
@@ -45,8 +45,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — vit-pr-reviewer agent definition (new file)
-- [ ] 02-02-PLAN.md — verify-work modification — spawn reviewer after PR promotion
+- [x] 02-01-PLAN.md — vit-pr-reviewer agent definition (new file)
+- [x] 02-02-PLAN.md — verify-work modification — spawn reviewer after PR promotion
 
 ### Phase 3: Documentation & Changelog Agents
 **Goal**: After every phase completes, an agent updates the relevant documentation sections (README, docs/) without overwriting manual content; and when a milestone closes, a second agent writes a versioned CHANGELOG entry from all phase summaries — with the two agents coordinated so they never conflict on CHANGELOG ownership.
@@ -74,5 +74,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. PR Lifecycle Foundation | 2/2 | Complete ✓ | 2026-03-18 |
-| 2. AI PR Reviewer | 0/2 | Not started | - |
+| 2. AI PR Reviewer | 2/2 | Complete ✓ | 2026-03-18 |
 | 3. Documentation & Changelog Agents | 0/4 | Not started | - |

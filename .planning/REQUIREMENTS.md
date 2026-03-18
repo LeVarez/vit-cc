@@ -16,9 +16,9 @@
 
 ### PR Reviewer
 
-- [ ] **PRR-01**: `vit-pr-reviewer` agent spawns automatically after `verify-work` promotes the PR (Route A only)
-- [ ] **PRR-02**: Agent posts severity-tiered review comment (`block-merge / should-fix / nit`) using `gh pr review --comment`
-- [ ] **PRR-03**: Agent posts inline diff comments on specific changed lines via `gh api` (REST endpoint for PR reviews)
+- [x] **PRR-01**: `vit-pr-reviewer` agent spawns automatically after `verify-work` promotes the PR (Route A only)
+- [x] **PRR-02**: Agent posts severity-tiered review comment (`block-merge / should-fix / nit`) using `gh pr review --comment`
+- [x] **PRR-03**: Agent posts inline diff comments on specific changed lines via `gh api` (REST endpoint for PR reviews)
 
 ### Documentation & Changelog
 
@@ -64,9 +64,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PRL-04 | Phase 1 | Complete |
 | PRL-05 | Phase 1 | Complete |
 | PRL-06 | Phase 1 | Complete |
-| PRR-01 | Phase 2 | Pending |
-| PRR-02 | Phase 2 | Pending |
-| PRR-03 | Phase 2 | Pending |
+| PRR-01 | Phase 2 | Complete |
+| PRR-02 | Phase 2 | Complete |
+| PRR-03 | Phase 2 | Complete |
 | DOC-01 | Phase 3 | Pending |
 | DOC-02 | Phase 3 | Pending |
 | DOC-03 | Phase 3 | Pending |
@@ -81,4 +81,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-03-18 after initial definition*
+*Last updated: 2026-03-18 after Phase 2 completion*
