@@ -33,7 +33,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. The search bar finds content across the site without any API key or external service
   4. The homepage shows the value proposition, a quick-start CTA, and feature highlights
   5. Dark mode toggles correctly and all content sections appear in the sidebar navigation
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 01-01: VitePress setup, config, and deployment workflow
@@ -113,7 +113,7 @@ Plans:
 | 1. PR Lifecycle Foundation | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 2. AI PR Reviewer | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 3. Documentation & Changelog Agents | v1.0 | 4/4 | Complete ✓ | 2026-03-18 |
-| 01. Infrastructure and Information Architecture | v1.0.1 | 0/2 | Not started | - |
+| 01. Infrastructure and Information Architecture | v1.0.1 | 0/2 | Planned | - |
 | 02. Getting Started and Concepts | v1.0.1 | 0/2 | Not started | - |
 | 03. Command Reference | v1.0.1 | 0/3 | Not started | - |
 | 04. Agent Reference | v1.0.1 | 0/3 | Not started | - |
