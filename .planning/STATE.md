@@ -63,8 +63,8 @@ Resume file: None
 
 | Phase | Feature Issue | Branch | PR | Assigned |
 |-------|---------------|--------|----|----------|
-| v1.0.1/01 | — | — | — | — |
-| v1.0.1/02 | — | — | — | — |
-| v1.0.1/03 | — | — | — | — |
-| v1.0.1/04 | — | — | — | — |
-| v1.0.1/05 | — | — | — | — |
+| v1.0.1/01 | #28 | feature/v1.0.1-01-infrastructure-and-ia | — | — |
+| v1.0.1/02 | #29 | feature/v1.0.1-02-getting-started-and-concepts | — | — |
+| v1.0.1/03 | #30 | feature/v1.0.1-03-command-reference | — | — |
+| v1.0.1/04 | #31 | feature/v1.0.1-04-agent-reference | — | — |
+| v1.0.1/05 | #32 | feature/v1.0.1-05-advanced-guides | — | — |
