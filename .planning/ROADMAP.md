@@ -42,11 +42,11 @@ Plans:
   2. The review comment visibly categorizes findings into `block-merge`, `should-fix`, and `nit` tiers — a reader can immediately see which findings block merging
   3. The agent posts inline diff comments on specific changed lines (via `gh api` REST endpoint), not just a body-only comment
   4. The agent never attempts to approve or request changes on the PR (uses `--comment` only) — no HTTP 422 errors appear in the workflow output
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: vit-pr-reviewer agent definition (new file)
-- [ ] 02-02: verify-work modification — spawn reviewer after PR promotion
+- [ ] 02-01-PLAN.md — vit-pr-reviewer agent definition (new file)
+- [ ] 02-02-PLAN.md — verify-work modification — spawn reviewer after PR promotion
 
 ### Phase 3: Documentation & Changelog Agents
 **Goal**: After every phase completes, an agent updates the relevant documentation sections (README, docs/) without overwriting manual content; and when a milestone closes, a second agent writes a versioned CHANGELOG entry from all phase summaries — with the two agents coordinated so they never conflict on CHANGELOG ownership.
