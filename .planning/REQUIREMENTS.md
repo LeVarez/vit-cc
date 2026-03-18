@@ -84,41 +84,41 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | — | Pending |
-| INFRA-02 | — | Pending |
-| INFRA-03 | — | Pending |
-| INFRA-04 | — | Pending |
-| INFRA-05 | — | Pending |
-| INFRA-06 | — | Pending |
-| INFRA-07 | — | Pending |
-| GUIDE-01 | — | Pending |
-| GUIDE-02 | — | Pending |
-| GUIDE-03 | — | Pending |
-| GUIDE-04 | — | Pending |
-| GUIDE-05 | — | Pending |
-| CMD-01 | — | Pending |
-| CMD-02 | — | Pending |
-| CMD-03 | — | Pending |
-| CMD-04 | — | Pending |
-| AGT-01 | — | Pending |
-| AGT-02 | — | Pending |
-| AGT-03 | — | Pending |
-| AGT-04 | — | Pending |
-| ARCH-01 | — | Pending |
-| ARCH-02 | — | Pending |
-| ARCH-03 | — | Pending |
-| ARCH-04 | — | Pending |
-| ADV-01 | — | Pending |
-| ADV-02 | — | Pending |
-| ADV-03 | — | Pending |
-| ADV-04 | — | Pending |
-| ADV-05 | — | Pending |
+| INFRA-01 | Phase 01 | Pending |
+| INFRA-02 | Phase 01 | Pending |
+| INFRA-03 | Phase 01 | Pending |
+| INFRA-04 | Phase 01 | Pending |
+| INFRA-05 | Phase 01 | Pending |
+| INFRA-06 | Phase 01 | Pending |
+| INFRA-07 | Phase 01 | Pending |
+| GUIDE-01 | Phase 02 | Pending |
+| GUIDE-02 | Phase 02 | Pending |
+| GUIDE-03 | Phase 02 | Pending |
+| GUIDE-04 | Phase 02 | Pending |
+| GUIDE-05 | Phase 02 | Pending |
+| CMD-01 | Phase 02 | Pending |
+| CMD-02 | Phase 02 | Pending |
+| CMD-03 | Phase 02 | Pending |
+| CMD-04 | Phase 02 | Pending |
+| AGT-01 | Phase 03 | Pending |
+| AGT-02 | Phase 03 | Pending |
+| AGT-03 | Phase 03 | Pending |
+| AGT-04 | Phase 03 | Pending |
+| ARCH-01 | Phase 03 | Pending |
+| ARCH-02 | Phase 03 | Pending |
+| ARCH-03 | Phase 03 | Pending |
+| ARCH-04 | Phase 03 | Pending |
+| ADV-01 | Phase 04 | Pending |
+| ADV-02 | Phase 04 | Pending |
+| ADV-03 | Phase 04 | Pending |
+| ADV-04 | Phase 04 | Pending |
+| ADV-05 | Phase 04 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 29 total
-- Mapped to phases: 0
-- Unmapped: 29
+- Mapped to phases: 29
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-03-18 after initial definition*
+*Last updated: 2026-03-18 after roadmap creation*
