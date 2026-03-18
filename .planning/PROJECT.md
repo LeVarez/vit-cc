@@ -1,12 +1,12 @@
-# vit-cc GitHub Sync & Agents Extension
+# vit-cc
 
 ## What This Is
 
-vit-cc is a Claude Code agentic framework that orchestrates AI-driven development through phase-based workflows. This project extends the framework with full GitHub lifecycle integration — automatically creating and managing PRs through the execution and verification cycle — and adds three new agents: a PR reviewer, a changelog writer, and an automatic documentation updater.
+vit-cc is a Claude Code agentic framework that orchestrates AI-driven development through phase-based workflows. It manages the full lifecycle from project initialization through research, planning, execution, verification, and GitHub integration — with specialized AI agents handling each step.
 
 ## Core Value
 
-Every step of the VIT workflow is automatically reflected in GitHub — from execution to verification to merge — with zero manual GitHub operations.
+Developers can go from idea to shipped code through a structured, AI-orchestrated workflow that handles planning, execution, review, and documentation automatically.
 
 ## Requirements
 
@@ -32,7 +32,13 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 
 <!-- Current scope for next milestone. -->
 
-(Define with `/vit:new-milestone`)
+- [ ] VitePress documentation site with Markdown source
+- [ ] ASCII art branding/logo
+- [ ] Architecture diagrams (Mermaid)
+- [ ] Complete command reference (every command: what it does, what to expect, GitHub effects)
+- [ ] Agent deep-dive (how agents work internally, how to create new ones)
+- [ ] Layered depth: user-facing guides → advanced internals reference
+- [ ] Getting started guide for new users
 
 ### Out of Scope
 
@@ -42,21 +48,33 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 - GitHub Projects / kanban board — too much overhead for a dev-focused workflow
 - External PR review services (Copilot, etc.) — VIT uses Claude directly
 
+## Current Milestone: v1.1 Documentation Site
+
+**Goal:** Create comprehensive documentation for the entire VIT framework — commands, agents, architecture, and contributor guides — as a VitePress site with ASCII branding and Mermaid diagrams.
+
+**Target features:**
+- VitePress documentation site (Markdown source, builds to hosted site)
+- ASCII art logo and branding throughout
+- Complete command reference with GitHub integration effects
+- Agent system deep-dive with guide for creating custom agents
+- Architecture diagrams (Mermaid) showing workflow, data flow, agent orchestration
+- Layered content: getting started → user guides → advanced internals
+
 ## Context
 
-- This extends the existing vit-cc framework — new commands, agents, and modifications to existing commands
-- The workflow already has: milestone → phase issues → sub-issues → CI results → developer feedback loop
-- The missing piece is PR lifecycle: feature branches exist but are never turned into PRs
-- Auto-doc updates run inside `vit-executor` after each plan completes (post-plan hook)
-- PR reviewer runs between `verify-work` and the PR being marked ready — quality gate before human review
-- Changelog writer runs inside `complete-milestone` — turns phase SUMMARY.md files into release notes
+- vit-cc is a mature framework with 20+ commands, 15+ agents, and a rich .planning/ state system
+- v1.0 added GitHub lifecycle integration (PRs, review, docs, changelog)
+- No documentation exists beyond the command/agent source files themselves
+- The framework uses Markdown files as both agent definitions and orchestrator instructions
+- Documentation should be extractable from the existing command and agent .md files
+- The .planning/ internals (STATE.md, config.json, ROADMAP.md) need reference docs but are secondary to user-facing guides
 
 ## Constraints
 
-- **Tech stack**: Node.js CLI, Markdown agent definitions, `gh` CLI for GitHub operations — no new dependencies
-- **Compatibility**: Must degrade gracefully when `gh` CLI is not available or unauthenticated (skip GitHub steps silently)
-- **Backwards compatibility**: Existing projects without GitHub Issue Mapping in STATE.md must continue to work unchanged
-- **Agent pattern**: New agents follow existing pattern — Markdown system prompts in `files/agents/`, spawned via Task tool
+- **Tech stack**: VitePress for the docs site — Markdown source files that also render on GitHub
+- **Content source**: Extract from existing command/agent .md files where possible, don't duplicate
+- **Branding**: ASCII art logo, consistent visual identity matching VIT's existing UI patterns (stage banners, status symbols)
+- **Diagrams**: Mermaid format (renders natively in VitePress and GitHub)
 
 ## Key Decisions
 
@@ -70,5 +88,9 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 | Inline diff comments capped at 5 | GitHub API 422 errors on large diffs | ✓ Good — fallback handles empty body edge case |
 | CHANGELOG ownership split | doc-updater writes [Unreleased]; changelog-writer promotes it | ✓ Good — no conflict, clean promotion |
 
+| VitePress for docs site | Best VitePress/Markdown ecosystem fit, native Mermaid support, Vue-based | — Pending |
+| Layered depth (user → advanced) | Serves all audiences without overwhelming newcomers | — Pending |
+| Mermaid for diagrams | Native rendering in both VitePress and GitHub | — Pending |
+
 ---
-*Last updated: 2026-03-18 after v1.0 milestone*
+*Last updated: 2026-03-18 after v1.1 milestone start*
