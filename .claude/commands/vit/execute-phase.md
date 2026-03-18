@@ -53,6 +53,7 @@ Phase: $ARGUMENTS
    |-------|---------|----------|--------|
    | vit-executor | opus | sonnet | sonnet |
    | vit-verifier | sonnet | sonnet | haiku |
+   | vit-doc-updater | sonnet | sonnet | haiku |
 
    Store resolved models for use in Task calls below.
 
