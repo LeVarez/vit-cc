@@ -27,12 +27,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. STATE.md GitHub Issue Mapping table contains a `PR` column showing the PR number (`pr#N`) for any phase that has one, enabling any subsequent command to look up the PR without a `gh` call
   3. Running `verify-work` on a passing phase (Route A) promotes the draft PR to ready-for-review — and leaves it as draft on Routes B, C, or D
   4. All PR operations complete silently (no error, no abort) when `gh` CLI is unavailable or the user is not authenticated
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 01-01: STATE.md schema update — add PR column to GitHub Issue Mapping table template
-- [ ] 01-02: execute-phase modification — idempotent draft PR creation with correct base branch and body
-- [ ] 01-03: verify-work modification — PR promotion on Route A only
+- [ ] 01-01-PLAN.md — STATE.md PR column schema + idempotent draft PR creation in execute-phase
+- [ ] 01-02-PLAN.md — PR promotion to ready-for-review in verify-work on Route A only
 
 ### Phase 2: AI PR Reviewer
 **Goal**: Every PR that clears verification is automatically reviewed by an AI agent that posts a structured, severity-tiered comment — so the human reviewer sees `block-merge / should-fix / nit` findings before they open the diff.
@@ -74,6 +73,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. PR Lifecycle Foundation | 0/3 | Not started | - |
+| 1. PR Lifecycle Foundation | 0/2 | Not started | - |
 | 2. AI PR Reviewer | 0/2 | Not started | - |
 | 3. Documentation & Changelog Agents | 0/4 | Not started | - |
