@@ -35,6 +35,7 @@ Default to "balanced" if not set.
 |-------|---------|----------|--------|
 | vit-planner | opus | opus | sonnet |
 | vit-plan-checker | sonnet | sonnet | haiku |
+| vit-pr-reviewer | sonnet | sonnet | haiku |
 
 Store resolved models for use in Task calls below.
 </step>
@@ -383,6 +384,42 @@ sed -i '' "s/pr#${PR_NUM}/pr#${PR_NUM}(ready)/" .planning/STATE.md
 ```
 
 On failure: log `[PR promotion failed — PR #$PR_NUM may already be ready or closed]`, continue (non-blocking).
+</step>
+
+<step name="spawn_reviewer">
+**Spawn AI reviewer — Route A only (after successful promotion):**
+
+Gate: Only runs when `PR_PROMOTED=true` (promote_pr step succeeded).
+If promotion was skipped, failed, or gh was unavailable — skip entirely.
+
+```bash
+REPO=$(cd "$WORK_DIR" && gh repo view --json nameWithOwner --jq '.nameWithOwner' 2>/dev/null || echo "")
+```
+
+If `REPO` is empty: log `[reviewer skipped — could not determine repo]`, continue.
+
+Spawn vit-pr-reviewer:
+
+```
+Task(
+  prompt="""
+<context>
+PR Number: {PR_NUM}
+Repo: {REPO}
+Working Directory: {WORK_DIR}
+Phase Number: {PHASE_NUM}
+Phase Name: {PHASE_NAME}
+</context>
+
+Review this PR and post severity-tiered findings (block-merge / should-fix / nit) as a GitHub review comment, plus up to 5 inline diff comments on specific changed lines.
+""",
+  subagent_type="vit-pr-reviewer",
+  model="{reviewer_model}",
+  description="AI review of PR #{PR_NUM}"
+) || log "[reviewer failed — continuing]"
+```
+
+Non-blocking: if Task fails, log one line and continue.
 </step>
 
 <step name="diagnose_issues">
