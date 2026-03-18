@@ -56,7 +56,7 @@ npx vit-claude
 This copies all framework files into your project's `.claude/` directory and optionally adds the GitHub CI workflow. You can run it again to update.
 
 **What gets installed:**
-- `.claude/agents/vit-*.md` — 13 specialist agents
+- `.claude/agents/vit-*.md` — 16 specialist agents
 - `.claude/commands/vit/*.md` — 29 slash commands
 - `.claude/hooks/vit-check-update.cjs` + `vit-statusline.js`
 - `.claude/vit/` — references, templates, workflows, VERSION
@@ -131,6 +131,9 @@ VIT spawns specialist agents automatically — you don't invoke them directly.
 | `vit-debugger` | Investigates bugs using scientific method, manages debug sessions, handles checkpoints |
 | `vit-github-reviewer` | Reads GitHub issue feedback comments for a phase and implements requested changes as fix commits |
 | `vit-test-writer` | Generates Vitest unit tests from phase plan must_haves and SUMMARY.md |
+| `vit-pr-reviewer` | AI PR reviewer posting body summary + up to 5 inline diff comments with three severity tiers (block-merge, should-fix, nit); spawned by verify-work after PR promotion on Route A |
+| `vit-doc-updater` | Reads phase SUMMARY.md to autonomously update targeted README/docs sections and append to CHANGELOG.md [Unreleased]; spawned by execute-phase after phase completion commit |
+| `vit-changelog-writer` | Promotes CHANGELOG.md [Unreleased] to a versioned entry and updates milestone-wide README/docs; spawned by complete-milestone before archive |
 
 ---
 
@@ -165,14 +168,18 @@ Run /vit:verify-work 1 to complete manual UAT.
     └── vit-plan-checker      (goal-backward verification)
 
 /vit:execute-phase
+    ├── step 0.7: gh pr create --draft              (idempotent, milestone-targeted)
     ├── Wave 1: [vit-executor] [vit-executor] ...  (parallel tasks)
     ├── Wave 2: [vit-executor] ...
     ├── vit-integration-checker                     (cross-wave check)
     ├── vit-test-writer                             (generates tests/phases/)
+    ├── step 10.6: vit-doc-updater                  (updates README/docs + CHANGELOG [Unreleased])
     └── git push → phase-ci.yml → GitHub issue comment
 
 /vit:verify-work
-    └── vit-verifier          (goal-backward analysis → VERIFICATION.md)
+    ├── vit-verifier          (goal-backward analysis → VERIFICATION.md)
+    ├── step 8.5: gh pr ready (Route A only — all pass, more phases remain)
+    └── step 8.6: vit-pr-reviewer (spawned after PR promotion, non-blocking)
 ```
 
 State is stored in `.planning/STATE.md`, `.planning/MILESTONE.md`, and per-phase `PLAN.md` files. All state survives context resets and session boundaries.
