@@ -175,6 +175,39 @@ Phase: $ARGUMENTS (optional)
    - Log: `[PR promotion failed — PR #$PR_NUM may already be ready or closed]`
    - Continue (non-blocking)
 
+8.6. **Spawn AI reviewer — Route A only** (after successful promotion)
+
+   Gate: Only runs when `PR_PROMOTED=true` (step 8.5 succeeded). If PR promotion was skipped (Routes B/C/D), or failed, or gh was unavailable — skip this step entirely.
+
+   ```bash
+   # Get repo slug for reviewer context
+   REPO=$(cd "$WORK_DIR" && gh repo view --json nameWithOwner --jq '.nameWithOwner' 2>/dev/null || echo "")
+   ```
+
+   If `REPO` is empty: log `[reviewer skipped — could not determine repo]`, continue.
+
+   Spawn vit-pr-reviewer:
+   ```
+   Task(
+     prompt="""
+   <context>
+   PR Number: {PR_NUM}
+   Repo: {REPO}
+   Working Directory: {WORK_DIR}
+   Phase Number: {PHASE_NUM}
+   Phase Name: {PHASE_NAME}
+   </context>
+
+   Review this PR and post severity-tiered findings (block-merge / should-fix / nit) as a GitHub review comment, plus up to 5 inline diff comments on specific changed lines.
+   """,
+     subagent_type="vit-pr-reviewer",
+     model="{reviewer_model}",
+     description="AI review of PR #{PR_NUM}"
+   ) || log "[reviewer failed — continuing]"
+   ```
+
+   Non-blocking: if the Task call fails or agent crashes, log `[reviewer failed — continuing]` and proceed to the next step. The reviewer must NEVER prevent verify-work from completing.
+
 9. If issues found:
    - Spawn parallel debug agents to diagnose root causes
    - Spawn vit-planner in --gaps mode to create fix plans
