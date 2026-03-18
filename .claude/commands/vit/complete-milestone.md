@@ -81,6 +81,35 @@ Output: Milestone archived (roadmap + requirements), PROJECT.md evolved, git tag
    - Extract 4-6 key accomplishments
    - Present for approval
 
+3.5. **Spawn changelog-writer** (before archive)
+
+   Spawn vit-changelog-writer to generate a versioned CHANGELOG entry and update all project documentation:
+
+   ```
+   Task(
+     prompt="""
+   <context>
+   Version: {{version}}
+   Milestone: v{{version}}
+   Working Directory: $WORK_DIR
+   Phases Directory: $WORK_DIR/.planning/phases/
+   </context>
+
+   Read all phase SUMMARY.md files in the milestone.
+   Update all project documentation (README.md, docs/).
+   Generate a versioned CHANGELOG entry [{{version}}] - DATE from the [Unreleased] section.
+   Commit all documentation and CHANGELOG changes.
+   """,
+     subagent_type="vit-changelog-writer",
+     model="sonnet",
+     description="Write versioned CHANGELOG for v{{version}}"
+   ) || log "[changelog-writer failed — continuing]"
+   ```
+
+   If the Task call fails or the agent crashes: log `[changelog-writer failed — continuing]` and proceed to step 4 (archive). The changelog-writer is non-blocking — it must NEVER prevent milestone archival from completing.
+
+   Note: The model is hardcoded to "sonnet" here because complete-milestone does not have a model lookup table like execute-phase. If a model profile is later added to complete-milestone, this should reference the lookup table instead.
+
 4. **Archive milestone:**
 
    - Create `.planning/milestones/v{{version}}-ROADMAP.md`
@@ -132,6 +161,48 @@ Output: Milestone archived (roadmap + requirements), PROJECT.md evolved, git tag
    If yes: for each feature branch in the `## GitHub Issue Mapping` table in STATE.md:
    ```bash
    git push origin --delete "feature/${MILESTONE}-{N}-{slug}" 2>/dev/null || true
+   ```
+
+7.7. **Create milestone handoff summary**
+
+   Generate a milestone-boundary handoff for the team starting the next milestone. Write `.planning/milestones/v{{version}}-HANDOFF.md`:
+
+   ```markdown
+   # Milestone v{{version}} Handoff
+
+   ## What was shipped
+
+   [4-6 accomplishments from step 3 of this workflow]
+
+   ## Key architectural decisions made
+
+   [3-5 decisions from PROJECT.md Key Decisions table that were made during this milestone]
+
+   ## Files/areas to know about
+
+   | Area | Files | Why it matters |
+   |------|-------|----------------|
+   [Top changed files from git diff with brief description]
+
+   ## Known tech debt
+
+   [Gaps from MILESTONE-AUDIT.md if any, or "None identified"]
+
+   ## Team who built it
+
+   [Engineers from STATE.md GitHub Issue Mapping Assigned column, or "Claude (solo)"]
+
+   ## How to start the next milestone
+
+   1. Run `/vit:new-milestone` to define goals and requirements
+   2. Read `.planning/ONBOARDING.md` for project context
+   3. Review `.planning/milestones/v{{version}}-ROADMAP.md` for what was built
+   ```
+
+   Commit:
+   ```bash
+   git add ".planning/milestones/v{{version}}-HANDOFF.md"
+   git commit -m "docs: add v{{version}} milestone handoff"
    ```
 
 8. **Offer next steps:**
