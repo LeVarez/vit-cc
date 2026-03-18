@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 
 Milestone: v1.0.1
 Phase: 01 of 05 (Infrastructure and Information Architecture)
-Plan: 1 of 2 — completed 01-01
-Status: In progress — Plan 01-01 complete, Plan 01-02 pending
-Last activity: 2026-03-19 — Completed 01-01-PLAN.md (VitePress setup, config, deployment workflow)
+Plan: 2 of 2 — completed 01-02
+Status: Phase 01 complete — ready for Phase 02
+Last activity: 2026-03-19 — Completed 01-02-PLAN.md (homepage, sidebar structure, placeholder pages)
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -25,9 +25,9 @@ Progress: [█░░░░░░░░░] 10%
 - Total execution time: ~18 min
 
 **v1.0.1 Velocity:**
-- Total plans completed: 1
-- Average duration: 2 min
-- Total execution time: ~2 min
+- Total plans completed: 2
+- Average duration: 2.5 min
+- Total execution time: ~5 min
 
 **By Phase:**
 
@@ -36,7 +36,7 @@ Progress: [█░░░░░░░░░] 10%
 | 01-pr-lifecycle-foundation | 2/2 | 5 min | 3 min |
 | 02-ai-pr-reviewer | 2/2 | 5 min | 3 min |
 | 03-documentation-changelog-agents | 4/4 | 8 min | 2 min |
-| v1.0.1/01-infrastructure-and-ia | 1/2 | 2 min | 2 min |
+| v1.0.1/01-infrastructure-and-ia | 2/2 | 5 min | 2.5 min |
 
 ## Accumulated Context
 
@@ -50,14 +50,15 @@ Key decisions affecting v1.0.1:
 - `cleanUrls: false` — GitHub Pages serves files, not routes; direct URL access would 404 with clean URLs
 - Sidebar structure committed as a deliverable of Phase 01 — restructuring 62 cross-linked pages is a rewrite
 - Stub extraction for 45 reference pages (Phases 03–04) — parse frontmatter from source files, not hand-write headers
-- `ignoreDeadLinks: true` is TEMPORARY — must be removed before first content PR is merged
+- `ignoreDeadLinks: true` REMOVED in plan 01-02 — all sidebar link targets now exist as real files
 - VitePress v1.x search uses synchronous md.render() NOT md.renderAsync() (which is v2 alpha API)
 - No HTML minification in CI — would break Vue hydration (explicitly warned in VitePress deploy docs)
+- Search `_render` must guard against injecting title heading when page already has H1 — MiniSearch duplicate ID crash otherwise
+- sidebars.ts uses named exports per section (not default object) — each import can be added independently
 
 ### Pending Todos
 
-- Remove `ignoreDeadLinks: true` from docs/.vitepress/config.mts in plan 01-02 once placeholder pages exist
-- Populate `sidebar: {}` placeholder in config.mts with full sidebar structure (plan 01-02 deliverable)
+None.
 
 ### Blockers/Concerns
 
@@ -66,7 +67,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Completed 01-01-PLAN.md — VitePress installed, config created, deploy workflow ready
+Stopped at: Completed 01-02-PLAN.md — homepage, sidebar structure, and 25 placeholder pages
 Resume file: None
 
 ## GitHub Issue Mapping
