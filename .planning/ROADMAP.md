@@ -58,13 +58,13 @@ Plans:
   3. Running `/vit:complete-milestone` causes `vit-changelog-writer` to spawn before the archive step and write a versioned CHANGELOG entry that covers all phases in the milestone — the `[Unreleased]` section is consumed and replaced by the versioned entry
   4. The doc-updater determines which documentation sections to update by reading the phase SUMMARY.md and PLAN.md — no manual configuration file or section mapping is required from the user
   5. The changelog-writer updates all project documentation (README, docs/, API docs) in addition to generating the versioned CHANGELOG entry, using all phase SUMMARY.md files as source material
-**Plans**: TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 03-01: vit-doc-updater agent definition (new file)
-- [ ] 03-02: vit-changelog-writer agent definition (new file)
-- [ ] 03-03: execute-phase modification — spawn doc-updater after all waves complete
-- [ ] 03-04: complete-milestone modification — spawn changelog-writer before archive step
+- [ ] 03-01-PLAN.md — vit-doc-updater agent definition (new file)
+- [ ] 03-02-PLAN.md — vit-changelog-writer agent definition (new file)
+- [ ] 03-03-PLAN.md — execute-phase modification — spawn doc-updater after all waves complete
+- [ ] 03-04-PLAN.md — complete-milestone modification — spawn changelog-writer before archive step
 
 ## Progress
 
