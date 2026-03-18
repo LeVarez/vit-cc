@@ -22,7 +22,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 **Milestone Goal:** Create comprehensive documentation for the entire VIT framework — commands, agents, architecture, and contributor guides — as a VitePress site with ASCII branding and Mermaid diagrams.
 
-- [ ] **Phase 01: VitePress Foundation** — Working site deployed to GitHub Pages with correct config, Mermaid, ASCII branding, full navigation skeleton, and CI build
+- [x] **Phase 01: VitePress Foundation** — Working site deployed to GitHub Pages with correct config, Mermaid, ASCII branding, full navigation skeleton, and CI build
 - [ ] **Phase 02: Getting Started and Command Reference** — Complete guide section establishing core vocabulary plus all 29 command reference pages
 - [ ] **Phase 03: Agent Reference and Architecture** — All 16 agent reference pages plus four architecture diagrams covering the full system
 - [ ] **Phase 04: Advanced and Contributors** — Custom agent guide, .planning/ internals reference, and contributor walkthrough
@@ -110,7 +110,7 @@ Plans:
 | 1. PR Lifecycle Foundation | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 2. AI PR Reviewer | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 3. Documentation & Changelog Agents | v1.0 | 4/4 | Complete ✓ | 2026-03-18 |
-| 01. VitePress Foundation | v1.1 | 0/2 | Not started | — |
+| 01. VitePress Foundation | v1.1 | 2/2 | Complete ✓ | 2026-03-18 |
 | 02. Getting Started and Command Reference | v1.1 | 0/3 | Not started | — |
 | 03. Agent Reference and Architecture | v1.1 | 0/2 | Not started | — |
 | 04. Advanced and Contributors | v1.1 | 0/2 | Not started | — |

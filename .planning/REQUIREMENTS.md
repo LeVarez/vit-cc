@@ -9,13 +9,13 @@ Requirements for documentation site milestone. Each maps to roadmap phases.
 
 ### Site Infrastructure
 
-- [ ] **INFRA-01**: VitePress project initialized in `docs/` with own `package.json`
-- [ ] **INFRA-02**: Theme configured with dark mode, syntax highlighting, local search
-- [ ] **INFRA-03**: Mermaid plugin installed and rendering diagrams correctly
-- [ ] **INFRA-04**: ASCII art logo displayed on landing page and site header
-- [ ] **INFRA-05**: Multi-sidebar navigation organized by audience (guides, reference, advanced)
-- [ ] **INFRA-06**: GitHub Pages deployment via GitHub Actions CI/CD
-- [ ] **INFRA-07**: `vitepress build` runs in CI to catch dead links and SSR errors
+- [x] **INFRA-01**: VitePress project initialized in `docs/` with own `package.json`
+- [x] **INFRA-02**: Theme configured with dark mode, syntax highlighting, local search
+- [x] **INFRA-03**: Mermaid plugin installed and rendering diagrams correctly
+- [x] **INFRA-04**: ASCII art logo displayed on landing page and site header
+- [x] **INFRA-05**: Multi-sidebar navigation organized by audience (guides, reference, advanced)
+- [x] **INFRA-06**: GitHub Pages deployment via GitHub Actions CI/CD
+- [x] **INFRA-07**: `vitepress build` runs in CI to catch dead links and SSR errors
 
 ### Getting Started
 
@@ -84,13 +84,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 01 | Pending |
-| INFRA-02 | Phase 01 | Pending |
-| INFRA-03 | Phase 01 | Pending |
-| INFRA-04 | Phase 01 | Pending |
-| INFRA-05 | Phase 01 | Pending |
-| INFRA-06 | Phase 01 | Pending |
-| INFRA-07 | Phase 01 | Pending |
+| INFRA-01 | Phase 01 | Complete |
+| INFRA-02 | Phase 01 | Complete |
+| INFRA-03 | Phase 01 | Complete |
+| INFRA-04 | Phase 01 | Complete |
+| INFRA-05 | Phase 01 | Complete |
+| INFRA-06 | Phase 01 | Complete |
+| INFRA-07 | Phase 01 | Complete |
 | GUIDE-01 | Phase 02 | Pending |
 | GUIDE-02 | Phase 02 | Pending |
 | GUIDE-03 | Phase 02 | Pending |
