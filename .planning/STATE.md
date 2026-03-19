@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Milestone: v1.1
-Phase: Not started (defining requirements)
+Phase: 01 of 02 (README Rewrite with ASCII Art Branding)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-19 — Milestone v1.1 started
+Status: Ready to plan
+Last activity: 2026-03-19 — Roadmap created for v1.1
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -49,5 +49,12 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Milestone v1.1 initialization
+Stopped at: Roadmap created — v1.1 Phase 01 ready to plan
 Resume file: None
+
+## GitHub Issue Mapping
+
+| Phase | Feature Issue | Branch | PR | Assigned |
+|-------|---------------|--------|----|----------|
+| v1.1/01 | — | — | — | — |
+| v1.1/02 | — | — | — | — |
