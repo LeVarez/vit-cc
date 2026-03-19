@@ -33,10 +33,12 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. A user can look up any VIT-specific term (phase, plan, wave, checkpoint, must_have) in the glossary and find a clear definition
   4. The docs/ folder separates user-facing content from developer-facing content visibly
   5. A user can read the core concepts page and explain the milestone → phase → plan → task hierarchy and how agents fit in
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
+- [ ] 01-01-PLAN.md — docs/ folder structure + README.md restructure as navigation hub
+- [ ] 01-02-PLAN.md — Getting started tutorial (install to first verified phase)
+- [ ] 01-03-PLAN.md — Core concepts explanation + glossary reference
 
 #### Phase 02: Command & Agent Reference
 
@@ -93,7 +95,7 @@ Plans:
 | 1. PR Lifecycle Foundation | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 2. AI PR Reviewer | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 3. Documentation & Changelog Agents | v1.0 | 4/4 | Complete ✓ | 2026-03-18 |
-| 01. Information Architecture | v1.1 | 0/TBD | Not started | - |
+| 01. Information Architecture | v1.1 | 0/3 | Planned | - |
 | 02. Command & Agent Reference | v1.1 | 0/TBD | Not started | - |
 | 03. Workflow Guides & Architecture | v1.1 | 0/TBD | Not started | - |
 | 04. Developer Extension Guide | v1.1 | 0/TBD | Not started | - |
