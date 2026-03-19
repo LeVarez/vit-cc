@@ -54,17 +54,17 @@ The `model_profile` field maps each VIT agent to a specific Claude model tier. T
 
 | Agent | `quality` | `balanced` | `budget` |
 |-------|-----------|------------|----------|
-| vit-planner | claude-opus | claude-opus | claude-sonnet |
-| vit-roadmapper | claude-opus | claude-sonnet | claude-sonnet |
-| vit-executor | claude-opus | claude-sonnet | claude-sonnet |
-| vit-phase-researcher | claude-opus | claude-sonnet | claude-haiku |
-| vit-project-researcher | claude-opus | claude-sonnet | claude-haiku |
-| vit-research-synthesizer | claude-sonnet | claude-sonnet | claude-haiku |
-| vit-debugger | claude-opus | claude-sonnet | claude-sonnet |
-| vit-codebase-mapper | claude-sonnet | claude-haiku | claude-haiku |
-| vit-verifier | claude-sonnet | claude-sonnet | claude-haiku |
-| vit-plan-checker | claude-sonnet | claude-sonnet | claude-haiku |
-| vit-integration-checker | claude-sonnet | claude-sonnet | claude-haiku |
+| vit-planner | opus | opus | sonnet |
+| vit-roadmapper | opus | sonnet | sonnet |
+| vit-executor | opus | sonnet | sonnet |
+| vit-phase-researcher | opus | sonnet | haiku |
+| vit-project-researcher | opus | sonnet | haiku |
+| vit-research-synthesizer | sonnet | sonnet | haiku |
+| vit-debugger | opus | sonnet | sonnet |
+| vit-codebase-mapper | sonnet | haiku | haiku |
+| vit-verifier | sonnet | sonnet | haiku |
+| vit-plan-checker | sonnet | sonnet | haiku |
+| vit-integration-checker | sonnet | sonnet | haiku |
 
 **Profile philosophy:**
 

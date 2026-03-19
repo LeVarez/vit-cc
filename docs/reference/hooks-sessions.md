@@ -8,7 +8,7 @@ VIT integrates with Claude Code's hook and statusline system to provide session-
 
 ## Hook Files
 
-Two hook files are installed into `.claude/hooks/` during `npm install vit-cc`:
+Two hook files are installed into `.claude/hooks/` during `npx vit-claude`:
 
 | File | Type | Trigger |
 |------|------|---------|

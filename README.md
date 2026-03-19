@@ -616,4 +616,4 @@ MIT License
 
 - [GitHub Issues](https://github.com/LeVarez/vit-cc/issues) — bug reports, feature requests
 - [Discord](https://discord.gg/vit-claude) — community, help, announcements
-- [Docs](https://vit-claude.dev) — full documentation site
+- [Docs](https://levarez.github.io/vit-cc/) — full documentation site
