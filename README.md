@@ -289,7 +289,81 @@ VIT spawns 16 specialist agents automatically — you don't invoke them directly
 
 VIT is configured through `.planning/config.json` in your project root. All settings are optional — defaults work out of the box.
 
-<!-- SETTINGS_PLACEHOLDER -->
+### config.json Keys
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `mode` | `"yolo"` | Execution mode: `yolo` = no confirmations, `interactive` = confirm each step |
+| `depth` | `"standard"` | Planning depth: `quick`, `standard`, or `comprehensive` |
+| `parallelization` | `true` | Enable parallel agent spawning in execute-phase |
+| `commit_docs` | `true` | Commit `.planning/` artifacts to git |
+| `model_profile` | `"balanced"` | Agent model selection profile: `quality`, `balanced`, or `budget` |
+| `workflow.research` | `true` | Enable research step in plan-phase |
+| `workflow.plan_check` | `true` | Enable plan checker before execution |
+| `workflow.verifier` | `true` | Enable verifier after execution |
+| `team.enabled` | `false` | Enable team mode for multi-engineer collaboration |
+| `team.roster` | `[]` | Array of `{"handle": "alice", "role": "backend"}` engineer objects |
+| `team.default_reviewer` | `""` | GitHub handle for auto-assigning PR reviewer |
+
+**Sample config.json with all defaults:**
+
+```json
+{
+  "mode": "yolo",
+  "depth": "standard",
+  "parallelization": true,
+  "commit_docs": true,
+  "model_profile": "balanced",
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true
+  },
+  "team": {
+    "enabled": false,
+    "roster": [],
+    "default_reviewer": ""
+  }
+}
+```
+
+### Model Profile Matrix
+
+Control which Claude model each agent uses to balance quality vs. token spend.
+
+| Agent | `quality` | `balanced` | `budget` |
+|-------|-----------|------------|----------|
+| `vit-planner` | opus | opus | sonnet |
+| `vit-roadmapper` | opus | sonnet | sonnet |
+| `vit-executor` | opus | sonnet | sonnet |
+| `vit-phase-researcher` | opus | sonnet | haiku |
+| `vit-project-researcher` | opus | sonnet | haiku |
+| `vit-research-synthesizer` | sonnet | sonnet | haiku |
+| `vit-debugger` | opus | sonnet | sonnet |
+| `vit-codebase-mapper` | sonnet | haiku | haiku |
+| `vit-verifier` | sonnet | sonnet | haiku |
+| `vit-plan-checker` | sonnet | sonnet | haiku |
+| `vit-integration-checker` | sonnet | sonnet | haiku |
+
+**Profile explanations:**
+
+- **quality** — Maximum reasoning: Opus for all decision-making agents. Use when quota is available and architecture quality is critical.
+- **balanced** (default) — Smart allocation: Opus only for planning where architecture decisions happen, Sonnet for execution and verification.
+- **budget** — Minimal Opus: Sonnet for code generation, Haiku for research and verification. Use when conserving quota or running high-volume work.
+
+**Switching profiles:**
+
+```bash
+/vit:set-profile quality    # or balanced, budget
+```
+
+Or edit `.planning/config.json` directly:
+
+```json
+{
+  "model_profile": "quality"
+}
+```
 
 ---
 
