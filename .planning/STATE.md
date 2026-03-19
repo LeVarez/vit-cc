@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Milestone: v1.1
-Phase: 02 of 02 (Documentation & Developer Portal) — In progress
-Plan: 4 of 5 (Reference pages) — complete
+Phase: 03 of 03 (Docs Gap Closure & Build Verification) — In progress
+Plan: 1 of 2 (Content inconsistencies + cross-links) — complete
 Status: In progress
-Last activity: 2026-03-19 — Completed v1.1-02-04 (GitHub Integration, Configuration Reference, Hooks/Sessions reference pages)
+Last activity: 2026-03-19 — Completed v1.1-03-01 (Fixed audit gaps 3-6: install command, docs URL, model naming, cross-links)
 
-Progress: [████████░░] 80%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
@@ -76,6 +76,10 @@ Full decisions log in PROJECT.md Key Decisions table.
 - CI comment formats shown verbatim from phase-ci.yml heredocs — accurate to source
 - Pause/resume section documented from continuation-format.md pattern and observable VIT behavior
 
+**v1.1/03 Plan 01 decisions:**
+- Cross-links placed at contextually natural locations (not forced "See also" blocks): .continue-here section in how-vit-works, orchestrator pattern in architecture, Related section in agent-anatomy
+- Model matrix short form (opus/sonnet/haiku) confirmed as source of truth from files/vit/references/model-profiles.md; configuration.md matrix updated to match
+
 ### Pending Todos
 
 None.
@@ -87,7 +91,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: v1.1/02 Plan 04 — complete. GitHub Integration, Configuration, and Hooks/Sessions reference pages written.
+Stopped at: v1.1/03 Plan 01 — complete. Content inconsistencies fixed (install command, docs URL, model naming). Cross-links added to hooks-sessions and templates-references pages.
 Resume file: None
 
 ## GitHub Issue Mapping
@@ -96,4 +100,4 @@ Resume file: None
 |-------|---------------|--------|----|----------|------------|---------------|
 | v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | pr#53(ready) | — | #49, #50, #51, #52 | feature/v1.1-01-01, feature/v1.1-01-02, feature/v1.1-01-03, feature/v1.1-01-04 |
 | v1.1/02 | #48 | feature/v1.1-02-docs-site | pr#66 | — | #61, #62, #63, #64, #65 | feature/v1.1-02-01, feature/v1.1-02-02, feature/v1.1-02-03, feature/v1.1-02-04, feature/v1.1-02-05 |
-| v1.1/03 | #67 | feature/v1.1-03-docs-gap-closure | — | — | #68, #69 | feature/v1.1-03-01, feature/v1.1-03-02 |
+| v1.1/03 | #67 | feature/v1.1-03-docs-gap-closure | pr#70 | — | #68, #69 | feature/v1.1-03-01, feature/v1.1-03-02 |
