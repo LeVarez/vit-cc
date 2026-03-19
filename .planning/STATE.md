@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 02 of 02 (Documentation & Developer Portal) — In progress
-Plan: 1 of 5 (VitePress foundation) — complete
+Plan: 3 of 5 (Contributing guides) — complete
 Status: In progress
-Last activity: 2026-03-19 — Completed v1.1-02-01 (VitePress site foundation, landing page, deployment workflow)
+Last activity: 2026-03-19 — Completed v1.1-02-03 (Command Anatomy, Agent Anatomy, Testing contributor guides)
 
-Progress: [██████░░░░] 60%
+Progress: [███████░░░] 70%
 
 ## Performance Metrics
 
@@ -71,6 +71,10 @@ Full decisions log in PROJECT.md Key Decisions table.
 - All 10 stub pages created upfront — VitePress build fails with dead-link errors if sidebar links point to non-existent files
 - docs/ uses isolated package.json — decouples vitepress from root project, enables independent CI caching
 
+**v1.1/02 Plan 03 decisions:**
+- Nested code fences inside markdown/xml fenced code blocks cause VitePress Vue template parse errors — avoid by using plain ``` fences for all examples that contain inner code blocks
+- Cross-links use VitePress absolute paths without .md extension (/contributing/agent-anatomy, /reference/github-integration)
+
 ### Pending Todos
 
 None.
@@ -81,8 +85,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-19
-Stopped at: v1.1/02 Plan 01 — complete. VitePress foundation, landing page, deploy workflow done.
+Last session: 2026-03-19T14:16:47Z
+Stopped at: v1.1/02 Plan 03 — complete. Contributing guides (Command Anatomy, Agent Anatomy, Testing) done.
 Resume file: None
 
 ## GitHub Issue Mapping
