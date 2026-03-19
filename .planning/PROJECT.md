@@ -32,7 +32,10 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 
 <!-- Current scope for next milestone. -->
 
-(Define with `/vit:new-milestone`)
+- [ ] README rewrite with ASCII art branding, complete command/agent/settings reference
+- [ ] GitHub Pages technical documentation site using VitePress
+- [ ] Architecture diagrams and contributor guides
+- [ ] GitHub Pages deployment workflow
 
 ### Out of Scope
 
@@ -70,5 +73,15 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 | Inline diff comments capped at 5 | GitHub API 422 errors on large diffs | ✓ Good — fallback handles empty body edge case |
 | CHANGELOG ownership split | doc-updater writes [Unreleased]; changelog-writer promotes it | ✓ Good — no conflict, clean promotion |
 
+## Current Milestone: v1.1 Documentation & Developer Portal
+
+**Goal:** Create comprehensive documentation — a visually striking README with full command/agent reference, plus a VitePress-powered technical docs site for contributors.
+
+**Target features:**
+- Complete README rewrite with ASCII art branding matching VIT's terminal UI identity
+- Full commands reference (31 commands), agents reference (16 agents), settings reference
+- VitePress documentation site with architecture deep dives and contributor guides
+- GitHub Pages deployment via CI workflow
+
 ---
-*Last updated: 2026-03-18 after v1.0 milestone*
+*Last updated: 2026-03-19 after v1.1 milestone start*
