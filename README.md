@@ -13,6 +13,8 @@
 
 </p>
 
+[Documentation](https://levarez.github.io/vit-cc/) | [GitHub](https://github.com/LeVarez/vit-cc)
+
 </div>
 
 Phase-based project execution framework for Claude Code — with GitHub integration.
