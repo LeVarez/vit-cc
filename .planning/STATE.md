@@ -83,5 +83,5 @@ Resume file: None
 
 | Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
 |-------|---------------|--------|----|----------|------------|---------------|
-| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | pr#53 | — | #49, #50, #51, #52 | feature/v1.1-01-01, feature/v1.1-01-02, feature/v1.1-01-03, feature/v1.1-01-04 |
+| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | pr#53(ready) | — | #49, #50, #51, #52 | feature/v1.1-01-01, feature/v1.1-01-02, feature/v1.1-01-03, feature/v1.1-01-04 |
 | v1.1/02 | #48 | feature/v1.1-02-docs-site | — | — | — | — |

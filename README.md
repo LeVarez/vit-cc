@@ -12,6 +12,13 @@
   Atomic commits · Parallel agents · GitHub CI feedback
 ```
 
+[![GitHub stars](https://img.shields.io/github/stars/LeVarez/vit-cc?style=flat-square&logo=github)](https://github.com/LeVarez/vit-cc/stargazers)
+[![GitHub watchers](https://img.shields.io/github/watchers/LeVarez/vit-cc?style=flat-square&logo=github)](https://github.com/LeVarez/vit-cc/watchers)
+[![GitHub forks](https://img.shields.io/github/forks/LeVarez/vit-cc?style=flat-square&logo=github)](https://github.com/LeVarez/vit-cc/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/LeVarez/vit-cc?style=flat-square&logo=github)](https://github.com/LeVarez/vit-cc/issues)
+[![GitHub license](https://img.shields.io/github/license/LeVarez/vit-cc?style=flat-square)](https://github.com/LeVarez/vit-cc/blob/main/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/LeVarez/vit-cc?style=flat-square&logo=github)](https://github.com/LeVarez/vit-cc/commits)
+
 Phase-based project execution framework for Claude Code — with GitHub integration.
 
 ---
