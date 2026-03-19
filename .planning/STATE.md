@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 01 of 04 (Information Architecture)
-Plan: —
-Status: Ready to plan
-Last activity: 2026-03-19 — Roadmap created for v1.1
+Plan: 01 of 03 in phase
+Status: In progress
+Last activity: 2026-03-19 — Completed 01-01-PLAN.md (docs/ skeleton + README navigation hub)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] ~8% (1/~12 plans estimated)
 
 ## Performance Metrics
 
@@ -38,6 +38,12 @@ Progress: [░░░░░░░░░░] 0%
 
 Full decisions log in PROJECT.md Key Decisions table.
 
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 01-01 | README condensed: removed "What is VIT?" H2 and "Built with GSD" section | Conceptual content belongs in docs/; README is a navigation hub |
+| 01-01 | docs/ split into user-guide/ and developer-guide/ | Clear separation of user-facing vs extension/developer content |
+| 01-01 | docs/developer-guide/README.md is placeholder only | Phase 04 owns full developer guide content |
+
 ### Pending Todos
 
 None.
@@ -48,8 +54,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-19
-Stopped at: Roadmap defined — v1.1 Phase 01 ready to plan
+Last session: 2026-03-19T08:42:29Z
+Stopped at: Completed 01-01-PLAN.md — docs/ skeleton and README nav hub done
 Resume file: None
 
 ## GitHub Issue Mapping
