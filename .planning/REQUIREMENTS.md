@@ -74,34 +74,34 @@ Requirements for the documentation milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| IA-01 | Phase 1 | Pending |
-| IA-02 | Phase 1 | Pending |
-| IA-03 | Phase 1 | Pending |
-| IA-04 | Phase 1 | Pending |
-| IA-05 | Phase 1 | Pending |
-| CMD-01 | Phase 2 | Pending |
-| CMD-02 | Phase 2 | Pending |
-| CMD-03 | Phase 2 | Pending |
-| CMD-04 | Phase 2 | Pending |
-| CMD-05 | Phase 2 | Pending |
-| AGT-01 | Phase 2 | Pending |
-| AGT-02 | Phase 2 | Pending |
-| AGT-03 | Phase 2 | Pending |
-| AGT-04 | Phase 2 | Pending |
-| ARCH-01 | Phase 3 | Pending |
-| ARCH-02 | Phase 3 | Pending |
-| ARCH-03 | Phase 3 | Pending |
-| ARCH-04 | Phase 3 | Pending |
-| DEV-01 | Phase 4 | Pending |
-| DEV-02 | Phase 4 | Pending |
-| DEV-03 | Phase 4 | Pending |
-| DEV-04 | Phase 4 | Pending |
-| DEV-05 | Phase 4 | Pending |
-| DEV-06 | Phase 4 | Pending |
-| WF-01 | Phase 3 | Pending |
-| WF-02 | Phase 3 | Pending |
-| WF-03 | Phase 3 | Pending |
-| WF-04 | Phase 3 | Pending |
+| IA-01 | v1.1/Phase 01 | Pending |
+| IA-02 | v1.1/Phase 01 | Pending |
+| IA-03 | v1.1/Phase 01 | Pending |
+| IA-04 | v1.1/Phase 01 | Pending |
+| IA-05 | v1.1/Phase 01 | Pending |
+| CMD-01 | v1.1/Phase 02 | Pending |
+| CMD-02 | v1.1/Phase 02 | Pending |
+| CMD-03 | v1.1/Phase 02 | Pending |
+| CMD-04 | v1.1/Phase 02 | Pending |
+| CMD-05 | v1.1/Phase 02 | Pending |
+| AGT-01 | v1.1/Phase 02 | Pending |
+| AGT-02 | v1.1/Phase 02 | Pending |
+| AGT-03 | v1.1/Phase 02 | Pending |
+| AGT-04 | v1.1/Phase 02 | Pending |
+| ARCH-01 | v1.1/Phase 03 | Pending |
+| ARCH-02 | v1.1/Phase 03 | Pending |
+| ARCH-03 | v1.1/Phase 03 | Pending |
+| ARCH-04 | v1.1/Phase 03 | Pending |
+| WF-01 | v1.1/Phase 03 | Pending |
+| WF-02 | v1.1/Phase 03 | Pending |
+| WF-03 | v1.1/Phase 03 | Pending |
+| WF-04 | v1.1/Phase 03 | Pending |
+| DEV-01 | v1.1/Phase 04 | Pending |
+| DEV-02 | v1.1/Phase 04 | Pending |
+| DEV-03 | v1.1/Phase 04 | Pending |
+| DEV-04 | v1.1/Phase 04 | Pending |
+| DEV-05 | v1.1/Phase 04 | Pending |
+| DEV-06 | v1.1/Phase 04 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 28 total
@@ -110,4 +110,4 @@ Requirements for the documentation milestone. Each maps to roadmap phases.
 
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-19 after initial definition*
+*Last updated: 2026-03-19 — traceability updated with v1.1 phase keys*
