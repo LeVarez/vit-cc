@@ -94,7 +94,157 @@ A verifier agent runs goal-backward analysis and produces `VERIFICATION.md`. If 
 
 31 commands organized into 11 groups. Each command is a slash command invoked as `/vit:<name>`.
 
-<!-- COMMANDS_PLACEHOLDER -->
+### Project Init
+
+```
+───────────────────────────────────────────
+ PROJECT INIT
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:new-project` | Initialize a new project with deep context gathering and PROJECT.md | `/vit:new-project` | `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `config.json` |
+| `/vit:new-milestone` | Start a new milestone cycle — update PROJECT.md and route to requirements | `/vit:new-milestone v1.1 Notifications` | `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md` |
+| `/vit:map-codebase` | Analyze codebase with parallel mapper agents to produce .planning/codebase/ documents | `/vit:map-codebase` | `.planning/codebase/` (7 documents) |
+
+### Planning
+
+```
+───────────────────────────────────────────
+ PLANNING
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:plan-phase` | Create detailed execution plan for a phase (PLAN.md) with verification loop | `/vit:plan-phase 3` | `{phase}-PLAN.md` files, `{phase}-RESEARCH.md` |
+| `/vit:discuss-phase` | Gather phase context through adaptive questioning before planning | `/vit:discuss-phase 3` | `{phase}-CONTEXT.md` |
+| `/vit:research-phase` | Research how to implement a phase (standalone — usually use /vit:plan-phase instead) | `/vit:research-phase 3` | `{phase}-RESEARCH.md` |
+| `/vit:list-phase-assumptions` | Surface Claude's assumptions about a phase approach before planning | `/vit:list-phase-assumptions 3` | None |
+
+### Execution
+
+```
+───────────────────────────────────────────
+ EXECUTION
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:execute-phase` | Execute all plans in a phase with wave-based parallelization | `/vit:execute-phase 3` | Committed code, `{plan}-SUMMARY.md` files, updated `STATE.md` |
+| `/vit:quick` | Execute a quick task with VIT guarantees (atomic commits, state tracking) but skip optional agents | `/vit:quick` | Committed code, `STATE.md` update |
+
+### Verification
+
+```
+───────────────────────────────────────────
+ VERIFICATION
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:verify-work` | Validate built features through conversational UAT | `/vit:verify-work 3` | `{phase}-UAT.md` |
+| `/vit:audit-milestone` | Audit milestone completion against original intent before archiving | `/vit:audit-milestone v1.0` | `{version}-MILESTONE-AUDIT.md` |
+
+### Progress
+
+```
+───────────────────────────────────────────
+ PROGRESS
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:progress` | Check project progress, show context, and route to next action (execute or plan) | `/vit:progress` | None |
+| `/vit:list-milestones` | Show all active milestone worktrees and their current state | `/vit:list-milestones` | None |
+
+### Roadmap
+
+```
+───────────────────────────────────────────
+ ROADMAP
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:add-phase` | Add phase to end of current milestone in roadmap | `/vit:add-phase Add authentication` | Updated `ROADMAP.md` |
+| `/vit:insert-phase` | Insert urgent work as decimal phase (e.g., 72.1) between existing phases | `/vit:insert-phase 3 Fix critical bug` | Updated `ROADMAP.md` |
+| `/vit:remove-phase` | Remove a future phase from roadmap and renumber subsequent phases | `/vit:remove-phase 5` | Updated `ROADMAP.md` |
+| `/vit:plan-milestone-gaps` | Create phases to close all gaps identified by milestone audit | `/vit:plan-milestone-gaps` | Updated `ROADMAP.md`, new `PLAN.md` files |
+
+### Session
+
+```
+───────────────────────────────────────────
+ SESSION
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:pause-work` | Create context handoff when pausing work mid-phase | `/vit:pause-work` | `.continue-here.md` |
+| `/vit:resume-work` | Resume work from previous session with full context restoration | `/vit:resume-work` | None |
+
+### Team
+
+```
+───────────────────────────────────────────
+ TEAM
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:assign-phase` | Assign a phase or individual plan to an engineer | `/vit:assign-phase 3 @alice` | Updated `PLAN.md` files, updated `STATE.md` |
+| `/vit:team-status` | Show team assignment status — who's working on what, what's blocked, what's unassigned | `/vit:team-status` | None |
+
+### Maintenance
+
+```
+───────────────────────────────────────────
+ MAINTENANCE
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:complete-milestone` | Archive completed milestone and prepare for next version | `/vit:complete-milestone v1.0` | `milestones/v1.0/` archive, git tag |
+| `/vit:review-feedback` | Read developer feedback on a GitHub feature issue and implement requested changes | `/vit:review-feedback 3` | Atomic commits per change |
+| `/vit:debug` | Systematic debugging with persistent state across context resets | `/vit:debug login fails on mobile` | `.planning/debug/{issue}.md` |
+
+### Config
+
+```
+───────────────────────────────────────────
+ CONFIG
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:settings` | Configure VIT workflow toggles and model profile | `/vit:settings` | Updated `config.json` |
+| `/vit:set-profile` | Switch model profile for VIT agents (quality/balanced/budget) | `/vit:set-profile balanced` | Updated `config.json` |
+| `/vit:update` | Update VIT to latest version with changelog display | `/vit:update` | Updated `.claude/vit/` files |
+
+### Meta
+
+```
+───────────────────────────────────────────
+ META
+───────────────────────────────────────────
+```
+
+| Command | Description | Usage | Produces |
+|---------|-------------|-------|----------|
+| `/vit:help` | Show available VIT commands and usage guide | `/vit:help` | None |
+| `/vit:join-discord` | Join the VIT Discord community | `/vit:join-discord` | None |
+| `/vit:add-todo` | Capture idea or task as todo from current conversation context | `/vit:add-todo refactor auth module` | `.planning/todos/pending/{todo}.md` |
+| `/vit:check-todos` | List pending todos and select one to work on | `/vit:check-todos` | None |
 
 ---
 
