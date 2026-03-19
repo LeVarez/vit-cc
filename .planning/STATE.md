@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 01 of 02 (README Rewrite with ASCII Art Branding)
-Plan: —
-Status: Planned (4 plans in 4 waves)
-Last activity: 2026-03-19 — Phase 01 planned
+Plan: 1 of 4 complete
+Status: In progress
+Last activity: 2026-03-19 — Completed v1.1-01-01-PLAN.md (README skeleton)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 10%
 
 ## Performance Metrics
 
@@ -38,6 +38,12 @@ Progress: [░░░░░░░░░░] 0%
 
 Full decisions log in PROJECT.md Key Decisions table.
 
+**v1.1/01 Plan 01 decisions:**
+- Use HTML comment markers (`<!-- PLACEHOLDER -->`) in README so sections render cleanly if downstream plans don't fill them
+- Hero banner: 62-char checkpoint box width (╔══╗) matching ui-brand.md checkpoint box dimension
+- Section dividers: stage banner pattern (━━━) inside fenced code blocks above each ## heading
+- Footer Discord/docs URLs: placeholder values (discord.gg/vit-claude, vit-claude.dev) — not found in repo
+
 ### Pending Todos
 
 None.
@@ -49,7 +55,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Roadmap created — v1.1 Phase 01 ready to plan
+Stopped at: Completed v1.1/01 Plan 01 — README skeleton with 3 placeholder markers
 Resume file: None
 
 ## GitHub Issue Mapping
