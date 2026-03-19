@@ -33,13 +33,14 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. All 16 agents are documented in a table with spawner command, role description, and output
   4. All config.json keys are documented with defaults, descriptions, and the model profile matrix table
   5. Visual style is consistent throughout: section headers use ━━━, dividers use ───, no unapproved emoji, matching ui-brand.md conventions
-**Plans:** 4 plans
+**Plans:** 5 plans
 
 Plans:
 - [ ] 01-01-PLAN.md — README skeleton with hero banner, intro sections, and placeholders for reference tables
 - [ ] 01-02-PLAN.md — Commands reference: all 31 commands in 11 groups with descriptions, usage, and artifacts
 - [ ] 01-03-PLAN.md — Agents reference (16 agents) and settings reference (config keys + model profile matrix)
 - [ ] 01-04-PLAN.md — Style consistency pass and human visual verification
+- [ ] 01-05-PLAN.md — Gap closure: replace plain text VIT with figlet ASCII art and diff-block color
 
 #### Phase 02: GitHub Pages Technical Documentation Site
 
@@ -63,5 +64,5 @@ Plans:
 | 1. PR Lifecycle Foundation | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 2. AI PR Reviewer | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 3. Documentation & Changelog Agents | v1.0 | 4/4 | Complete ✓ | 2026-03-18 |
-| 01. README Rewrite with ASCII Art Branding | v1.1 | 0/4 | Not started | - |
+| 01. README Rewrite with ASCII Art Branding | v1.1 | 0/5 | In progress | - |
 | 02. GitHub Pages Technical Documentation Site | v1.1 | 0/? | Not started | - |
