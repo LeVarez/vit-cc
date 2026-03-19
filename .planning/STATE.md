@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 02 of 02 (Documentation & Developer Portal) — In progress
-Plan: 3 of 5 (Contributing guides) — complete
+Plan: 4 of 5 (Reference pages) — complete
 Status: In progress
-Last activity: 2026-03-19 — Completed v1.1-02-03 (Command Anatomy, Agent Anatomy, Testing contributor guides)
+Last activity: 2026-03-19 — Completed v1.1-02-04 (GitHub Integration, Configuration Reference, Hooks/Sessions reference pages)
 
-Progress: [███████░░░] 70%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -71,9 +71,10 @@ Full decisions log in PROJECT.md Key Decisions table.
 - All 10 stub pages created upfront — VitePress build fails with dead-link errors if sidebar links point to non-existent files
 - docs/ uses isolated package.json — decouples vitepress from root project, enables independent CI caching
 
-**v1.1/02 Plan 03 decisions:**
-- Nested code fences inside markdown/xml fenced code blocks cause VitePress Vue template parse errors — avoid by using plain ``` fences for all examples that contain inner code blocks
-- Cross-links use VitePress absolute paths without .md extension (/contributing/agent-anatomy, /reference/github-integration)
+**v1.1/02 Plan 04 decisions:**
+- Model profiles matrix uses 11 agents (matching model-profiles.md exactly, not 16 as plan spec estimated)
+- CI comment formats shown verbatim from phase-ci.yml heredocs — accurate to source
+- Pause/resume section documented from continuation-format.md pattern and observable VIT behavior
 
 ### Pending Todos
 
@@ -85,8 +86,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-19T14:16:47Z
-Stopped at: v1.1/02 Plan 03 — complete. Contributing guides (Command Anatomy, Agent Anatomy, Testing) done.
+Last session: 2026-03-19
+Stopped at: v1.1/02 Plan 04 — complete. GitHub Integration, Configuration, and Hooks/Sessions reference pages written.
 Resume file: None
 
 ## GitHub Issue Mapping
