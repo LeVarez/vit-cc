@@ -25,6 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node
+        # Verified: actions/setup-node@v6 exists (v6.3.0, March 2026) — SHA: 53b83947a5a98c8d113130e565377fae1a50d02f
         uses: actions/setup-node@v6
         with:
           node-version: 20
