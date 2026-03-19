@@ -96,3 +96,4 @@ Resume file: None
 |-------|---------------|--------|----|----------|------------|---------------|
 | v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | pr#53(ready) | — | #49, #50, #51, #52 | feature/v1.1-01-01, feature/v1.1-01-02, feature/v1.1-01-03, feature/v1.1-01-04 |
 | v1.1/02 | #48 | feature/v1.1-02-docs-site | pr#66 | — | #61, #62, #63, #64, #65 | feature/v1.1-02-01, feature/v1.1-02-02, feature/v1.1-02-03, feature/v1.1-02-04, feature/v1.1-02-05 |
+| v1.1/03 | #67 | feature/v1.1-03-docs-gap-closure | — | — | #68, #69 | feature/v1.1-03-01, feature/v1.1-03-02 |
