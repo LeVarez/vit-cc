@@ -54,7 +54,7 @@ Resume file: None
 
 ## GitHub Issue Mapping
 
-| Phase | Feature Issue | Branch | PR | Assigned |
-|-------|---------------|--------|----|----------|
-| v1.1/01 | — | — | — | — |
-| v1.1/02 | — | — | — | — |
+| Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
+|-------|---------------|--------|----|----------|------------|---------------|
+| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | — | — | — | — |
+| v1.1/02 | #48 | feature/v1.1-02-docs-site | — | — | — | — |
