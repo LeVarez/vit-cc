@@ -438,4 +438,5 @@ To create a new VIT agent:
 ## Related
 
 - [Command Anatomy](/contributing/command-anatomy) — create the commands that spawn your agent
+- [Hooks and Sessions](/reference/hooks-sessions) — how VIT registers session hooks and the statusline alongside your agent files
 - [Testing](/contributing/testing) — write tests for your agent

@@ -56,7 +56,7 @@ Task(
 )
 ```
 
-Each spawned agent reads `execute-plan.md` for its execution workflow and handles everything: task implementation, per-task commits, deviation handling, and SUMMARY.md creation.
+Each spawned agent reads `execute-plan.md` for its execution workflow and handles everything: task implementation, per-task commits, deviation handling, and SUMMARY.md creation. SUMMARY.md output is structured by the templates and references in `.claude/vit/` — see [Templates and References](/guide/templates-references) for the full list.
 
 ---
 

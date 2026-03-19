@@ -139,6 +139,8 @@ This is why VIT uses the `Task()` tool to spawn subagents rather than executing 
 
 If a plan with checkpoints is interrupted mid-execution, the agent writes a `.continue-here` file to the phase directory. STATE.md records its path in the `Resume file:` field. A fresh agent can pick up from exactly where execution stopped, using the completed tasks table to know what commits already exist.
 
+The session system is powered by VIT's hook and statusline infrastructure — see [Hooks and Sessions](/reference/hooks-sessions) for how the update checker and statusline keep track of progress across restarts.
+
 ### Summary-Based History Loading
 
 Instead of re-reading all code, agents load context through summaries. When a plan needs to know what previous plans built, it reads their SUMMARY.md files — typically 50–100 lines each — rather than the full codebase. This keeps context lean while preserving the essential history.
