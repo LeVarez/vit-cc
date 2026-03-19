@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Phase 01 (readme-rewrite): Complete README.md rewrite with ANSI Shadow ASCII art hero banner (diff-block green rendering), 31-command reference in 11 groups, 16-agent table, 11-key settings reference with model profile matrix, and consistent 53-char section banners — replacing the previous 201-line minimal doc with a fully structured branded document
+
 ## [1.0] - 2026-03-18
 
 ### Added
