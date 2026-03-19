@@ -56,7 +56,7 @@ Resume file: None
 
 | Phase | Feature Issue | Branch | PR | Assigned |
 |-------|---------------|--------|----|----------|
-| v1.1/01 | — | — | — | — |
-| v1.1/02 | — | — | — | — |
-| v1.1/03 | — | — | — | — |
-| v1.1/04 | — | — | — | — |
+| v1.1/01 | #36 | feature/v1.1-01-information-architecture | — | — |
+| v1.1/02 | #37 | feature/v1.1-02-command-agent-reference | — | — |
+| v1.1/03 | #38 | feature/v1.1-03-workflow-guides-architecture | — | — |
+| v1.1/04 | #39 | feature/v1.1-04-developer-extension-guide | — | — |
