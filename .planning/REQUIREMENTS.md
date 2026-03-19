@@ -7,19 +7,19 @@
 
 ### README
 
-- [ ] **README-01**: ASCII art hero banner using box-drawing characters consistent with ui-brand.md, renders correctly on GitHub and in terminal
-- [ ] **README-02**: "What is VIT?" section with core loop diagram (new-project → plan-phase → execute-phase → verify-work)
-- [ ] **README-03**: Visual install section with `npx vit-claude` command, listing installed components (agents, commands, hooks, workflows, CI)
-- [ ] **README-04**: Quick Start numbered walkthrough from zero to first phase complete
-- [ ] **README-05**: Complete commands reference — all 31 commands organized into 11 groups with ASCII section headers, each with name, description, usage example, and produced artifacts
-- [ ] **README-06**: Complete agents reference — all 16 agents in table with spawner command, role description, and output
-- [ ] **README-07**: Settings reference — all config.json keys with defaults and descriptions, including model profile matrix table
-- [ ] **README-08**: GitHub CI Integration section explaining phase-ci.yml, branch→issue linking, issue comments, and review-feedback loop
-- [ ] **README-09**: Architecture diagram in ASCII art showing plan-phase, execute-phase, and verify-work agent pipelines with state management files
-- [ ] **README-10**: Project structure — ASCII tree of .planning/ and .claude/ directories
-- [ ] **README-11**: Common Workflows section with 6 recipes (greenfield, brownfield, resume, urgent work, team collab, debugging)
-- [ ] **README-12**: ASCII art style consistency throughout — section headers with ━━━, dividers with ───, approved status symbols only, no random emoji
-- [ ] **README-13**: Footer with license, Discord link, GitHub issues link, and docs site link
+- [x] **README-01**: ASCII art hero banner using box-drawing characters consistent with ui-brand.md, renders correctly on GitHub and in terminal
+- [x] **README-02**: "What is VIT?" section with core loop diagram (new-project → plan-phase → execute-phase → verify-work)
+- [x] **README-03**: Visual install section with `npx vit-claude` command, listing installed components (agents, commands, hooks, workflows, CI)
+- [x] **README-04**: Quick Start numbered walkthrough from zero to first phase complete
+- [x] **README-05**: Complete commands reference — all 31 commands organized into 11 groups with ASCII section headers, each with name, description, usage example, and produced artifacts
+- [x] **README-06**: Complete agents reference — all 16 agents in table with spawner command, role description, and output
+- [x] **README-07**: Settings reference — all config.json keys with defaults and descriptions, including model profile matrix table
+- [x] **README-08**: GitHub CI Integration section explaining phase-ci.yml, branch→issue linking, issue comments, and review-feedback loop
+- [x] **README-09**: Architecture diagram in ASCII art showing plan-phase, execute-phase, and verify-work agent pipelines with state management files
+- [x] **README-10**: Project structure — ASCII tree of .planning/ and .claude/ directories
+- [x] **README-11**: Common Workflows section with 6 recipes (greenfield, brownfield, resume, urgent work, team collab, debugging)
+- [x] **README-12**: ASCII art style consistency throughout — section headers with ━━━, dividers with ───, approved status symbols only, no random emoji
+- [x] **README-13**: Footer with license, Discord link, GitHub issues link, and docs site link
 
 ### Docs Site
 
