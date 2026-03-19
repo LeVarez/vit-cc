@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 02 of 02 (Documentation & Developer Portal) — In progress
-Plan: 1 of 5 (VitePress foundation) — complete
+Plan: 2 of 5 (Guide section pages) — complete
 Status: In progress
-Last activity: 2026-03-19 — Completed v1.1-02-01 (VitePress site foundation, landing page, deployment workflow)
+Last activity: 2026-03-19 — Completed v1.1-02-02 (Guide pages: How VIT Works, Architecture, Workflow Files, Templates & References)
 
-Progress: [██████░░░░] 60%
+Progress: [███████░░░] 70%
 
 ## Performance Metrics
 
@@ -71,6 +71,11 @@ Full decisions log in PROJECT.md Key Decisions table.
 - All 10 stub pages created upfront — VitePress build fails with dead-link errors if sidebar links point to non-existent files
 - docs/ uses isolated package.json — decouples vitepress from root project, enables independent CI caching
 
+**v1.1/02 Plan 02 decisions:**
+- Content derived directly from source files (execute-phase.md, execute-plan.md, verify-phase.md, model-profiles.md, ui-brand.md) — ensures accuracy
+- Cross-link pattern: /guide/... absolute paths (not relative) per VitePress convention
+- Workflow files page lists all 12 workflow files; templates page tables all templates and references
+
 ### Pending Todos
 
 None.
@@ -81,8 +86,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-19
-Stopped at: v1.1/02 Plan 01 — complete. VitePress foundation, landing page, deploy workflow done.
+Last session: 2026-03-19 14:10
+Stopped at: v1.1/02 Plan 02 — complete. Guide section pages written and verified.
 Resume file: None
 
 ## GitHub Issue Mapping
