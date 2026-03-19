@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 GitHub Sync & Agents** — Phases 1–3 (shipped 2026-03-18)
-- 🚧 **v1.1 Documentation & Developer Portal** — Phases 01–02 (in progress)
+- 🚧 **v1.1 Documentation & Developer Portal** — Phases 01–03 (in progress)
 
 ## Phases
 
@@ -61,6 +61,18 @@ Plans:
 - [ ] 02-04-PLAN.md — Reference section: GitHub Integration, Configuration, Hooks and Sessions
 - [ ] 02-05-PLAN.md — Full build verification and human visual checkpoint
 
+#### Phase 03: Docs Gap Closure & Build Verification
+
+**Goal:** Close all audit gaps: fix broken CI action, correct content inconsistencies, add missing cross-links, and run final build verification.
+**Depends on:** Phase 02 (all content pages written)
+**Requirements:** DOCS-01 (deployment unblocked)
+**Gap Closure:** Closes gaps from v1.1-MILESTONE-AUDIT.md
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Fix content inconsistencies (install command, README URL, model naming) and add cross-links
+- [ ] 03-02-PLAN.md — Investigate CI action version, run build verification, produce Phase 02 verification artifacts
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -70,3 +82,4 @@ Plans:
 | 3. Documentation & Changelog Agents | v1.0 | 4/4 | Complete ✓ | 2026-03-18 |
 | 01. README Rewrite with ASCII Art Branding | v1.1 | 5/5 | Complete ✓ | 2026-03-19 |
 | 02. GitHub Pages Technical Documentation Site | v1.1 | 0/5 | Not started | - |
+| 03. Docs Gap Closure & Build Verification | v1.1 | 0/2 | Not started | - |
