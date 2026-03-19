@@ -1,0 +1,16 @@
+{
+  "name": "vit-cc-docs",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.16"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
