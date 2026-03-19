@@ -23,20 +23,20 @@
 
 ### Docs Site
 
-- [ ] **DOCS-01**: VitePress site setup in docs/ directory with config.ts, package.json, index.md, and GitHub Pages deployment workflow
-- [ ] **DOCS-02**: Landing page with VIT branding hero and features grid (Phase Execution, GitHub Integration, Multi-Agent Architecture, Context Resilience)
-- [ ] **DOCS-03**: "How VIT Works" guide — core loop in depth, state management, context resilience, .planning/ as project memory
-- [ ] **DOCS-04**: "Architecture Deep Dive" — orchestrator pattern, wave parallelization, goal-backward verification, state flow diagram, model profile system
-- [ ] **DOCS-05**: "Command Anatomy" contributor guide — file location, frontmatter schema, process sections, orchestrator→workflow references, walkthrough example, registration
-- [ ] **DOCS-06**: "Agent Anatomy" contributor guide — file location, frontmatter, system prompt structure, Task() spawning, subagent_type mapping, walkthrough example
-- [ ] **DOCS-07**: "Workflow Files" guide — purpose, location, @-referencing, step naming, example structure
-- [ ] **DOCS-08**: "Templates & References" guide — template vs reference distinction, locations, consumption by agents, ui-brand.md reference
-- [ ] **DOCS-09**: "GitHub Integration Internals" — branch naming, PR lifecycle, issue linking (gh issue develop + GraphQL fallback), CI workflow, PR review gates, STATE.md mapping
-- [ ] **DOCS-10**: "Configuration Reference" — complete config.json schema, model profiles matrix, workflow toggles, team mode, PR review gates
-- [ ] **DOCS-11**: "Hooks & Session Management" — vit-check-update.cjs, vit-statusline.js, settings.json hooks, pause/resume via .continue-here
-- [ ] **DOCS-12**: "Testing" guide — vit-test-writer, test location, phase-ci.yml, writing tests for VIT features
-- [ ] **DOCS-13**: Sidebar navigation structure matching specified hierarchy (Guide → Contributing → Reference)
-- [ ] **DOCS-14**: Visual consistency — VitePress default theme with VIT brand colors, code highlighting, Mermaid diagrams, ASCII art in code blocks
+- [x] **DOCS-01**: VitePress site setup in docs/ directory with config.ts, package.json, index.md, and GitHub Pages deployment workflow
+- [x] **DOCS-02**: Landing page with VIT branding hero and features grid (Phase Execution, GitHub Integration, Multi-Agent Architecture, Context Resilience)
+- [x] **DOCS-03**: "How VIT Works" guide — core loop in depth, state management, context resilience, .planning/ as project memory
+- [x] **DOCS-04**: "Architecture Deep Dive" — orchestrator pattern, wave parallelization, goal-backward verification, state flow diagram, model profile system
+- [x] **DOCS-05**: "Command Anatomy" contributor guide — file location, frontmatter schema, process sections, orchestrator→workflow references, walkthrough example, registration
+- [x] **DOCS-06**: "Agent Anatomy" contributor guide — file location, frontmatter, system prompt structure, Task() spawning, subagent_type mapping, walkthrough example
+- [x] **DOCS-07**: "Workflow Files" guide — purpose, location, @-referencing, step naming, example structure
+- [x] **DOCS-08**: "Templates & References" guide — template vs reference distinction, locations, consumption by agents, ui-brand.md reference
+- [x] **DOCS-09**: "GitHub Integration Internals" — branch naming, PR lifecycle, issue linking (gh issue develop + GraphQL fallback), CI workflow, PR review gates, STATE.md mapping
+- [x] **DOCS-10**: "Configuration Reference" — complete config.json schema, model profiles matrix, workflow toggles, team mode, PR review gates
+- [x] **DOCS-11**: "Hooks & Session Management" — vit-check-update.cjs, vit-statusline.js, settings.json hooks, pause/resume via .continue-here
+- [x] **DOCS-12**: "Testing" guide — vit-test-writer, test location, phase-ci.yml, writing tests for VIT features
+- [x] **DOCS-13**: Sidebar navigation structure matching specified hierarchy (Guide → Contributing → Reference)
+- [x] **DOCS-14**: Visual consistency — VitePress default theme with VIT brand colors, code highlighting, Mermaid diagrams, ASCII art in code blocks
 
 ## v2 Requirements
 
@@ -56,33 +56,33 @@ None — documentation milestone is self-contained.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| README-01 | Phase 1 | Pending |
-| README-02 | Phase 1 | Pending |
-| README-03 | Phase 1 | Pending |
-| README-04 | Phase 1 | Pending |
-| README-05 | Phase 1 | Pending |
-| README-06 | Phase 1 | Pending |
-| README-07 | Phase 1 | Pending |
-| README-08 | Phase 1 | Pending |
-| README-09 | Phase 1 | Pending |
-| README-10 | Phase 1 | Pending |
-| README-11 | Phase 1 | Pending |
-| README-12 | Phase 1 | Pending |
-| README-13 | Phase 1 | Pending |
-| DOCS-01 | Phase 2 | Pending |
-| DOCS-02 | Phase 2 | Pending |
-| DOCS-03 | Phase 2 | Pending |
-| DOCS-04 | Phase 2 | Pending |
-| DOCS-05 | Phase 2 | Pending |
-| DOCS-06 | Phase 2 | Pending |
-| DOCS-07 | Phase 2 | Pending |
-| DOCS-08 | Phase 2 | Pending |
-| DOCS-09 | Phase 2 | Pending |
-| DOCS-10 | Phase 2 | Pending |
-| DOCS-11 | Phase 2 | Pending |
-| DOCS-12 | Phase 2 | Pending |
-| DOCS-13 | Phase 2 | Pending |
-| DOCS-14 | Phase 2 | Pending |
+| README-01 | Phase 1 | Complete |
+| README-02 | Phase 1 | Complete |
+| README-03 | Phase 1 | Complete |
+| README-04 | Phase 1 | Complete |
+| README-05 | Phase 1 | Complete |
+| README-06 | Phase 1 | Complete |
+| README-07 | Phase 1 | Complete |
+| README-08 | Phase 1 | Complete |
+| README-09 | Phase 1 | Complete |
+| README-10 | Phase 1 | Complete |
+| README-11 | Phase 1 | Complete |
+| README-12 | Phase 1 | Complete |
+| README-13 | Phase 1 | Complete |
+| DOCS-01 | Phase 2, 3 | Complete |
+| DOCS-02 | Phase 2 | Complete |
+| DOCS-03 | Phase 2 | Complete |
+| DOCS-04 | Phase 2 | Complete |
+| DOCS-05 | Phase 2 | Complete |
+| DOCS-06 | Phase 2 | Complete |
+| DOCS-07 | Phase 2 | Complete |
+| DOCS-08 | Phase 2 | Complete |
+| DOCS-09 | Phase 2 | Complete |
+| DOCS-10 | Phase 2 | Complete |
+| DOCS-11 | Phase 2 | Complete |
+| DOCS-12 | Phase 2 | Complete |
+| DOCS-13 | Phase 2 | Complete |
+| DOCS-14 | Phase 2 | Complete |
 
 **Coverage:**
 - v1 requirements: 27 total
@@ -91,4 +91,4 @@ None — documentation milestone is self-contained.
 
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-19 after initial definition*
+*Last updated: 2026-03-19 — all 27 requirements complete*

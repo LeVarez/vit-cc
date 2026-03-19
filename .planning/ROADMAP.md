@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 GitHub Sync & Agents** — Phases 1–3 (shipped 2026-03-18)
-- 🚧 **v1.1 Documentation & Developer Portal** — Phases 01–03 (in progress)
+- ✅ **v1.1 Documentation & Developer Portal** — Phases 01–03 (shipped 2026-03-19)
 
 ## Phases
 
@@ -18,7 +18,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### 🚧 v1.1 Documentation & Developer Portal (In Progress)
+### ✅ v1.1 Documentation & Developer Portal (Shipped 2026-03-19)
 
 **Milestone Goal:** Create comprehensive documentation — a visually striking README with full command/agent reference, plus a VitePress-powered technical docs site for contributors.
 
@@ -55,11 +55,11 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — VitePress setup, config, theme, landing page, sidebar, and GitHub Pages deployment workflow
-- [ ] 02-02-PLAN.md — Guide section: How VIT Works, Architecture, Workflow Files, Templates and References
-- [ ] 02-03-PLAN.md — Contributing section: Command Anatomy, Agent Anatomy, Testing
-- [ ] 02-04-PLAN.md — Reference section: GitHub Integration, Configuration, Hooks and Sessions
-- [ ] 02-05-PLAN.md — Full build verification and human visual checkpoint
+- [x] 02-01-PLAN.md — VitePress setup, config, theme, landing page, sidebar, and GitHub Pages deployment workflow
+- [x] 02-02-PLAN.md — Guide section: How VIT Works, Architecture, Workflow Files, Templates and References
+- [x] 02-03-PLAN.md — Contributing section: Command Anatomy, Agent Anatomy, Testing
+- [x] 02-04-PLAN.md — Reference section: GitHub Integration, Configuration, Hooks and Sessions
+- [x] 02-05-PLAN.md — Full build verification and human visual checkpoint
 
 #### Phase 03: Docs Gap Closure & Build Verification
 
@@ -70,8 +70,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Fix content inconsistencies (install command, README URL, model naming) and add cross-links
-- [ ] 03-02-PLAN.md — Investigate CI action version, run build verification, produce Phase 02 verification artifacts
+- [x] 03-01-PLAN.md — Fix content inconsistencies (install command, README URL, model naming) and add cross-links
+- [x] 03-02-PLAN.md — Investigate CI action version, run build verification, produce Phase 02 verification artifacts
 
 ## Progress
 
@@ -81,5 +81,5 @@ Plans:
 | 2. AI PR Reviewer | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 3. Documentation & Changelog Agents | v1.0 | 4/4 | Complete ✓ | 2026-03-18 |
 | 01. README Rewrite with ASCII Art Branding | v1.1 | 5/5 | Complete ✓ | 2026-03-19 |
-| 02. GitHub Pages Technical Documentation Site | v1.1 | 0/5 | Not started | - |
-| 03. Docs Gap Closure & Build Verification | v1.1 | 0/2 | Not started | - |
+| 02. GitHub Pages Technical Documentation Site | v1.1 | 5/5 | Complete ✓ | 2026-03-19 |
+| 03. Docs Gap Closure & Build Verification | v1.1 | 2/2 | Complete ✓ | 2026-03-19 |
