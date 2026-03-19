@@ -14,7 +14,7 @@ For implementation details, see the [Architecture Deep Dive](/guide/architecture
 
 ## The Core Loop
 
-VIT operates as a four-stage cycle:
+VIT operates as a four-stage cycle. Each stage produces artifacts and triggers GitHub actions automatically:
 
 ```mermaid
 flowchart LR
@@ -27,6 +27,60 @@ flowchart LR
     E -->|no| F[complete-milestone]
 ```
 
+The diagram below shows how the VIT workflow maps to GitHub operations at each stage:
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant VIT as VIT CLI
+    participant GH as GitHub
+
+    rect rgb(60, 60, 80)
+    Note over U,GH: Stage 1 — Initialize
+    U->>VIT: /vit:new-project
+    VIT->>VIT: Create .planning/ (PROJECT, ROADMAP, REQUIREMENTS)
+    U->>VIT: /vit:new-milestone
+    VIT->>GH: Create milestone/vX.Y branch
+    VIT->>GH: Create GitHub Milestone
+    VIT->>GH: Create feature issue per phase
+    VIT->>GH: Create sub-issues per plan
+    VIT->>GH: Create feature branches (feature/vX.Y-NN-slug)
+    end
+
+    rect rgb(60, 70, 60)
+    Note over U,GH: Stage 2 — Plan
+    U->>VIT: /vit:plan-phase N
+    VIT->>VIT: Research phase, create PLAN.md files
+    VIT->>GH: Create plan branches (feature/vX.Y-NN-PP)
+    VIT->>GH: Link branches to sub-issues
+    end
+
+    rect rgb(70, 60, 60)
+    Note over U,GH: Stage 3 — Execute
+    U->>VIT: /vit:execute-phase N
+    VIT->>GH: Create draft PR → milestone branch
+    VIT->>VIT: Spawn executor agents per plan
+    VIT->>GH: Push commits per task
+    VIT->>GH: Merge plan branches → feature branch
+    VIT->>GH: Check off sub-issue checkboxes
+    VIT->>GH: CI runs tests, reports to issue
+    end
+
+    rect rgb(60, 60, 70)
+    Note over U,GH: Stage 4 — Verify
+    U->>VIT: /vit:verify-work N
+    VIT->>VIT: Check must_haves against codebase
+    alt passed
+        VIT->>GH: Promote PR to ready-for-review
+        VIT->>GH: PR reviewer posts inline comments
+        VIT->>GH: Close feature issue
+    else gaps found
+        VIT->>GH: Comment gaps on feature issue
+        VIT-->>U: Run /vit:plan-phase N --gaps
+    end
+    end
+```
+
 ### Stage 1: new-project
 
 `/vit:new-project` initializes the project structure. It runs a discovery and requirements phase, produces a ROADMAP.md with all phases, and creates the `.planning/` directory tree.
@@ -35,6 +89,8 @@ flowchart LR
 - `.planning/PROJECT.md` — project context, constraints, core value
 - `.planning/REQUIREMENTS.md` — checkable requirements
 - `.planning/ROADMAP.md` — phase-by-phase breakdown with goals
+
+**GitHub integration:** When followed by `/vit:new-milestone`, VIT creates a `milestone/vX.Y` branch, a GitHub milestone, and a feature issue per phase with sub-issues per plan. The entire issue hierarchy is established before any code is written.
 
 **What triggers the next stage:**
 The ROADMAP.md exists with at least one phase defined.
@@ -49,6 +105,8 @@ The ROADMAP.md exists with at least one phase defined.
 - `PLAN.md` files in the phase directory, one per plan
 - Each plan has a wave number (for parallelization), task list, verification criteria, and `must_haves`
 
+**GitHub integration:** Plan branches (`feature/vX.Y-NN-PP`) are created per plan, linked to sub-issues via `gh issue develop`. STATE.md tracks the full mapping: phase → feature issue → branch → PR → sub-issues.
+
 **What triggers the next stage:**
 At least one PLAN.md without a matching SUMMARY.md exists.
 
@@ -62,6 +120,8 @@ At least one PLAN.md without a matching SUMMARY.md exists.
 - Code, config, and documentation changes committed per-task
 - `SUMMARY.md` for each plan documenting what was built
 
+**GitHub integration:** A draft PR is created against the milestone branch at the start of execution. As each plan completes, its plan branch is merged into the feature branch, sub-issue checkboxes are checked off in the feature issue, and commits are pushed to the remote. The CI workflow (`phase-ci.yml`) runs tests on each push and reports results back to the issue.
+
 **What triggers the next stage:**
 All PLAN.md files have a matching SUMMARY.md.
 
@@ -74,6 +134,8 @@ All PLAN.md files have a matching SUMMARY.md.
 **What it produces:**
 - `VERIFICATION.md` with status (`passed`, `gaps_found`, or `human_needed`)
 - If gaps_found: recommended fix plans and a call to `/vit:plan-phase --gaps`
+
+**GitHub integration:** When verification passes, the draft PR is promoted to ready-for-review, the vit-pr-reviewer agent posts inline code comments, and the feature issue is closed. If gaps are found, the issue stays open with a comment summarizing what's missing.
 
 **What triggers the next stage:**
 `VERIFICATION.md` status is `passed`. Execution continues with the next phase, or moves to `complete-milestone` if all phases are done.
