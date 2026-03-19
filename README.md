@@ -258,7 +258,24 @@ A verifier agent runs goal-backward analysis and produces `VERIFICATION.md`. If 
 
 VIT spawns 16 specialist agents automatically — you don't invoke them directly.
 
-<!-- AGENTS_PLACEHOLDER -->
+| Agent | Spawned By | Role | Output |
+|-------|------------|------|--------|
+| `vit-planner` | `/vit:plan-phase` | Creates executable phase plans with task breakdown, dependency analysis, and goal-backward verification | PLAN.md files |
+| `vit-executor` | `/vit:execute-phase` | Executes VIT plans with atomic commits, deviation handling, checkpoint protocols, and state management | Per-task commits, SUMMARY.md |
+| `vit-verifier` | `/vit:execute-phase` | Verifies phase goal achievement through goal-backward analysis — checks codebase delivers what phase promised, not just that tasks completed | VERIFICATION.md |
+| `vit-phase-researcher` | `/vit:plan-phase` | Researches how to implement a phase before planning; produces RESEARCH.md consumed by vit-planner | RESEARCH.md |
+| `vit-plan-checker` | `/vit:plan-phase` | Verifies plans will achieve phase goal before execution via goal-backward analysis of plan quality | Plan quality report |
+| `vit-project-researcher` | `/vit:new-project`, `/vit:new-milestone` | Researches domain ecosystem before roadmap creation; produces files in `.planning/research/` consumed during roadmap creation | `.planning/research/*.md` |
+| `vit-research-synthesizer` | `/vit:new-project` | Synthesizes research outputs from parallel researcher agents into a unified SUMMARY.md | `.planning/research/SUMMARY.md` |
+| `vit-roadmapper` | `/vit:new-project` | Creates project roadmaps with phase breakdown, requirement mapping, success criteria derivation, and coverage validation | ROADMAP.md |
+| `vit-codebase-mapper` | `/vit:map-codebase` | Explores codebase and writes structured analysis documents for a given focus area (tech, arch, quality, concerns) | `.planning/codebase/*.md` |
+| `vit-integration-checker` | `/vit:audit-milestone` | Verifies cross-phase integration and E2E flows — checks that phases connect properly and user workflows complete end-to-end | Integration audit report |
+| `vit-debugger` | `/vit:debug` | Investigates bugs using scientific method, manages debug sessions, handles checkpoints | Debug session file |
+| `vit-github-reviewer` | `/vit:review-feedback` | Reads GitHub issue feedback comments for a phase and implements requested changes as fix commits | Fix commits + GitHub reply |
+| `vit-test-writer` | `/vit:execute-phase` | Generates Vitest unit tests from phase plan must_haves and SUMMARY.md deliverables | Test files |
+| `vit-pr-reviewer` | `/vit:verify-work` | Reviews promoted PRs and posts severity-tiered findings as GitHub review comments | GitHub PR review comments |
+| `vit-doc-updater` | `/vit:execute-phase` | Updates targeted documentation sections after a phase completes, reading SUMMARY.md and PLAN.md to identify which docs/sections to update | Updated docs + CHANGELOG entry |
+| `vit-changelog-writer` | `/vit:complete-milestone` | Writes versioned CHANGELOG entry at milestone completion and updates all project documentation by reading all phase SUMMARY.md files | CHANGELOG.md versioned entry |
 
 ---
 
