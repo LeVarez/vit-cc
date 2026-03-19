@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 01 of 02 (README Rewrite with ASCII Art Branding)
-Plan: 3 of 4 complete
-Status: In progress
-Last activity: 2026-03-19 — Completed v1.1-01-03-PLAN.md (Agents Reference + Settings Reference)
+Plan: 4 of 4 — awaiting human verification checkpoint (Task 2)
+Status: In progress — checkpoint
+Last activity: 2026-03-19 — Completed v1.1-01-04 Task 1 (style consistency pass, no changes needed)
 
-Progress: [███░░░░░░░] 30%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
@@ -56,6 +56,10 @@ Full decisions log in PROJECT.md Key Decisions table.
 - Model profile matrix matches model-profiles.md exactly (11 agents x 3 profiles)
 - Sample config.json shows all 11 keys at documented defaults
 
+**v1.1/01 Plan 04 decisions:**
+- Emoji ✅ ❌ 🔄 inside fenced CI example code blocks are acceptable — they represent literal GitHub comment output, not decorative document emoji
+- No README changes needed — all prior plans produced a consistent, clean document
+
 ### Pending Todos
 
 None.
@@ -67,7 +71,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Completed v1.1/01 Plan 03 — Agents Reference (16 agents) and Settings Reference (11 config keys + model matrix) added to README.md
+Stopped at: v1.1/01 Plan 04 — Task 1 complete (style pass, no changes). Awaiting Task 2 human verification checkpoint.
 Resume file: None
 
 ## GitHub Issue Mapping
