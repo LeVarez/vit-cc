@@ -115,29 +115,24 @@ Anti-enterprise patterns to avoid:
 
 The execution flow is the step-by-step process using `<step>` XML elements:
 
-```xml
+```
 <execution_flow>
 
 <step name="load_project_state" priority="first">
-Read `.planning/STATE.md` and parse:
+Read .planning/STATE.md and parse:
 - Current position (which phase we're planning)
 - Accumulated decisions (constraints on this phase)
 - Pending todos (candidates for inclusion)
 
-```bash
-cat .planning/STATE.md
-```
+Run: cat .planning/STATE.md
 
 If STATE.md missing but .planning/ exists, offer to reconstruct or continue without.
 </step>
 
 <step name="identify_phase">
-Check roadmap and existing phases:
+Check roadmap and existing phases.
 
-```bash
-cat .planning/ROADMAP.md
-ls .planning/phases/
-```
+Run: cat .planning/ROADMAP.md && ls .planning/phases/
 
 Read any existing PLAN.md in the phase directory.
 </step>
@@ -339,42 +334,36 @@ Create a new agent when:
 
 ### Agent template
 
-```markdown
+Agent file skeleton:
+
+```yaml
 ---
 name: vit-my-agent
 description: Does X. Spawned by /vit:my-command.
 tools: Read, Write, Bash, Glob, Grep
 color: blue
 ---
+```
 
+Then the body (not in a code fence — this is the actual file content):
+
+```
 <role>
 You are a VIT {role}. You {primary job}.
-
-You are spawned by `/vit:my-command`.
-
+You are spawned by /vit:my-command.
 Your job: {one sentence describing your job and output}.
 </role>
 
 <philosophy>
-
 ## {Key Principle 1}
-
 {Explanation and implications}
-
-## {Key Principle 2}
-
-{Explanation and implications}
-
 </philosophy>
 
 <execution_flow>
 
 <step name="load_context" priority="first">
 {First step — always load project state}
-
-```bash
-cat .planning/STATE.md
-```
+Run: cat .planning/STATE.md
 </step>
 
 <step name="do_the_work">
@@ -392,12 +381,10 @@ Return structured result to orchestrator.
 </execution_flow>
 
 <success_criteria>
-
 - [ ] Context loaded
 - [ ] Work completed
 - [ ] Output written and committed
 - [ ] Structured return sent to orchestrator
-
 </success_criteria>
 ```
 

@@ -111,43 +111,37 @@ Phase number: $ARGUMENTS (optional - auto-detects next unplanned phase if not pr
 
 The `<process>` block is the orchestrator's step-by-step workflow. Commands use numbered headings:
 
-```markdown
+Process section structure (the actual content lives unescaped in the command file):
+
+```
 <process>
 
 ## 1. Validate Environment
 
-```bash
-ls .planning/ 2>/dev/null
-```
+  Run: ls .planning/ 2>/dev/null
 
-**If not found:** Error — user should run `/vit:new-project` first.
+  If not found: Error — user should run /vit:new-project first.
 
 ## 2. Parse Arguments
 
-Extract from $ARGUMENTS:
-- Phase number (integer or decimal like `2.1`)
-- `--research` flag to force re-research
-- `--skip-research` flag to skip research
+  Extract from $ARGUMENTS:
+  - Phase number (integer or decimal like 2.1)
+  - --research flag to force re-research
+  - --skip-research flag to skip research
 
 ## 3. Spawn Agent
 
-```
-Task(
-  prompt="First, read ./.claude/agents/vit-planner.md for your role and instructions.\n\n" + filled_prompt,
-  subagent_type="general-purpose",
-  model="{planner_model}",
-  description="Plan Phase {phase}"
-)
-```
+  Task(
+    prompt="First, read ./.claude/agents/vit-planner.md for your role...\n\n{filled_prompt}",
+    subagent_type="general-purpose",
+    model="{planner_model}",
+    description="Plan Phase {phase}"
+  )
 
 ## 4. Handle Agent Return
 
-**`## PLANNING COMPLETE`:**
-- Display: `Planner created {N} plan(s). Files on disk.`
-- Proceed to step 5
-
-**`## CHECKPOINT REACHED`:**
-- Present to user, get response, spawn continuation agent
+  ## PLANNING COMPLETE: Display result, proceed to step 5
+  ## CHECKPOINT REACHED: Present to user, spawn continuation agent
 
 </process>
 ```
@@ -285,9 +279,11 @@ Use the stage banner style (lines of `━`) from `ui-brand.md`.
 
 ### Simple Command (no agent spawning)
 
-Some commands do their work inline without spawning agents. Use this when the work fits in the orchestrator's context window:
+Some commands do their work inline without spawning agents. Use this when the work fits in the orchestrator's context window.
 
-```markdown
+Frontmatter:
+
+```yaml
 ---
 name: vit:add-todo
 description: Add a todo item to the planning state
@@ -296,7 +292,11 @@ allowed-tools:
   - Write
   - Bash
 ---
+```
 
+Then in the body, the process section (plain text, not in a code fence):
+
+```
 <objective>
 Add a todo item to STATE.md Pending Todos section.
 </objective>
@@ -305,27 +305,27 @@ Add a todo item to STATE.md Pending Todos section.
 
 ## 1. Read current STATE.md
 
-```bash
-cat .planning/STATE.md
-```
+  Run: cat .planning/STATE.md
 
 ## 2. Parse and update
 
-Locate the "Pending Todos" section and append the new item.
-Write the updated file.
+  Locate the "Pending Todos" section and append the new item.
+  Write the updated file.
 
 ## 3. Confirm
 
-Display the added todo to the user.
+  Display the added todo to the user.
 
 </process>
 ```
 
 ### Orchestrator Command (spawns agents)
 
-When work requires deep focus or burns through context quickly, delegate to agents:
+When work requires deep focus or burns through context quickly, delegate to agents.
 
-```markdown
+Frontmatter:
+
+```yaml
 ---
 name: vit:my-command
 description: Do something complex
@@ -334,37 +334,35 @@ allowed-tools:
   - Bash
   - Task
 ---
+```
 
+Process section:
+
+```
 <process>
 
 ## 1. Resolve model profile
 
-```bash
-MODEL_PROFILE=$(cat .planning/config.json 2>/dev/null | grep -o '"model_profile"...' || echo "balanced")
-```
+  Run: MODEL_PROFILE=$(cat .planning/config.json | grep model_profile || echo "balanced")
 
 ## 2. Gather context (inline — @-syntax won't cross Task boundary)
 
-```bash
-STATE_CONTENT=$(cat "$WORK_DIR/.planning/STATE.md")
-RELEVANT_FILE=$(cat "$WORK_DIR/path/to/relevant-file.md" 2>/dev/null)
-```
+  STATE_CONTENT=$(cat "$WORK_DIR/.planning/STATE.md")
+  RELEVANT_FILE=$(cat "$WORK_DIR/path/to/relevant-file.md" 2>/dev/null)
 
 ## 3. Spawn agent
 
-```
-Task(
-  prompt="First, read ./.claude/agents/my-agent.md for your role.\n\n<context>\n{state_content}\n{relevant_file}\n</context>",
-  subagent_type="general-purpose",
-  model="{resolved_model}",
-  description="Do the thing"
-)
-```
+  Task(
+    prompt="First, read ./.claude/agents/my-agent.md for your role.\n\n{state_content}\n{relevant_file}",
+    subagent_type="general-purpose",
+    model="{resolved_model}",
+    description="Do the thing"
+  )
 
 ## 4. Handle return
 
-**`## COMPLETE`:** Display results, offer next steps.
-**`## BLOCKED`:** Present blocker to user.
+  ## COMPLETE: Display results, offer next steps.
+  ## BLOCKED: Present blocker to user.
 
 </process>
 ```
