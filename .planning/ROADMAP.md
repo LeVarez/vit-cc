@@ -18,60 +18,16 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### ✅ v1.1 Documentation & Developer Portal (Shipped 2026-03-19)
+<details>
+<summary>✅ v1.1 Documentation & Developer Portal (Phases 01–03) — SHIPPED 2026-03-19</summary>
 
-**Milestone Goal:** Create comprehensive documentation — a visually striking README with full command/agent reference, plus a VitePress-powered technical docs site for contributors.
+- [x] Phase 01: README Rewrite with ASCII Art Branding (5/5 plans) — completed 2026-03-19
+- [x] Phase 02: GitHub Pages Technical Documentation Site (5/5 plans) — completed 2026-03-19
+- [x] Phase 03: Docs Gap Closure & Build Verification (2/2 plans) — completed 2026-03-19
 
-#### Phase 01: README Rewrite with ASCII Art Branding
+Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
-**Goal:** Users and contributors encounter a complete, visually consistent README that documents every command, agent, and config key in the project.
-**Depends on:** Nothing (first phase of milestone)
-**Requirements:** README-01, README-02, README-03, README-04, README-05, README-06, README-07, README-08, README-09, README-10, README-11, README-12, README-13
-**Success Criteria** (what must be TRUE):
-  1. The ASCII art hero banner renders correctly on GitHub and in a terminal without layout breaks
-  2. All 31 commands are documented with name, description, usage example, and produced artifacts, organized into 11 groups with ASCII section headers
-  3. All 16 agents are documented in a table with spawner command, role description, and output
-  4. All config.json keys are documented with defaults, descriptions, and the model profile matrix table
-  5. Visual style is consistent throughout: section headers use ━━━, dividers use ───, no unapproved emoji, matching ui-brand.md conventions
-**Plans:** 5 plans
-
-Plans:
-- [x] 01-01-PLAN.md — README skeleton with hero banner, intro sections, and placeholders for reference tables
-- [x] 01-02-PLAN.md — Commands reference: all 31 commands in 11 groups with descriptions, usage, and artifacts
-- [x] 01-03-PLAN.md — Agents reference (16 agents) and settings reference (config keys + model profile matrix)
-- [x] 01-04-PLAN.md — Style consistency pass and human visual verification
-- [x] 01-05-PLAN.md — Gap closure: replace plain text VIT with figlet ASCII art and diff-block color
-
-#### Phase 02: GitHub Pages Technical Documentation Site
-
-**Goal:** A contributor can read the VitePress docs site to understand VIT internals and create a new command or agent without asking for help.
-**Depends on:** Phase 01 (branding and reference content established)
-**Requirements:** DOCS-01, DOCS-02, DOCS-03, DOCS-04, DOCS-05, DOCS-06, DOCS-07, DOCS-08, DOCS-09, DOCS-10, DOCS-11, DOCS-12, DOCS-13, DOCS-14
-**Success Criteria** (what must be TRUE):
-  1. VitePress builds without errors and GitHub Pages deployment workflow publishes the site on push to main
-  2. All 13 documentation pages have substantive content (not stubs) covering their specified topics
-  3. A contributor can follow the "Command Anatomy" and "Agent Anatomy" guides to create a new command or agent with no additional information
-  4. The sidebar navigation matches the specified Guide → Contributing → Reference hierarchy and all internal links resolve correctly
-**Plans:** 5 plans
-
-Plans:
-- [x] 02-01-PLAN.md — VitePress setup, config, theme, landing page, sidebar, and GitHub Pages deployment workflow
-- [x] 02-02-PLAN.md — Guide section: How VIT Works, Architecture, Workflow Files, Templates and References
-- [x] 02-03-PLAN.md — Contributing section: Command Anatomy, Agent Anatomy, Testing
-- [x] 02-04-PLAN.md — Reference section: GitHub Integration, Configuration, Hooks and Sessions
-- [x] 02-05-PLAN.md — Full build verification and human visual checkpoint
-
-#### Phase 03: Docs Gap Closure & Build Verification
-
-**Goal:** Close all audit gaps: fix broken CI action, correct content inconsistencies, add missing cross-links, and run final build verification.
-**Depends on:** Phase 02 (all content pages written)
-**Requirements:** DOCS-01 (deployment unblocked)
-**Gap Closure:** Closes gaps from v1.1-MILESTONE-AUDIT.md
-**Plans:** 2 plans
-
-Plans:
-- [x] 03-01-PLAN.md — Fix content inconsistencies (install command, README URL, model naming) and add cross-links
-- [x] 03-02-PLAN.md — Investigate CI action version, run build verification, produce Phase 02 verification artifacts
+</details>
 
 ## Progress
 
