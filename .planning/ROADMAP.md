@@ -52,10 +52,14 @@ Plans:
   2. All 13 documentation pages have substantive content (not stubs) covering their specified topics
   3. A contributor can follow the "Command Anatomy" and "Agent Anatomy" guides to create a new command or agent with no additional information
   4. The sidebar navigation matches the specified Guide → Contributing → Reference hierarchy and all internal links resolve correctly
-**Plans:** TBD
+**Plans:** 5 plans
 
 Plans:
-- [ ] 02-01: TBD
+- [ ] 02-01-PLAN.md — VitePress setup, config, theme, landing page, sidebar, and GitHub Pages deployment workflow
+- [ ] 02-02-PLAN.md — Guide section: How VIT Works, Architecture, Workflow Files, Templates and References
+- [ ] 02-03-PLAN.md — Contributing section: Command Anatomy, Agent Anatomy, Testing
+- [ ] 02-04-PLAN.md — Reference section: GitHub Integration, Configuration, Hooks and Sessions
+- [ ] 02-05-PLAN.md — Full build verification and human visual checkpoint
 
 ## Progress
 
@@ -65,4 +69,4 @@ Plans:
 | 2. AI PR Reviewer | v1.0 | 2/2 | Complete ✓ | 2026-03-18 |
 | 3. Documentation & Changelog Agents | v1.0 | 4/4 | Complete ✓ | 2026-03-18 |
 | 01. README Rewrite with ASCII Art Branding | v1.1 | 5/5 | Complete ✓ | 2026-03-19 |
-| 02. GitHub Pages Technical Documentation Site | v1.1 | 0/? | Not started | - |
+| 02. GitHub Pages Technical Documentation Site | v1.1 | 0/5 | Not started | - |
