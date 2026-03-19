@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Milestone: v1.1
-Phase: 01 of 02 (README Rewrite with ASCII Art Branding)
-Plan: 4 of 4 — awaiting human verification checkpoint (Task 2)
-Status: In progress — checkpoint
-Last activity: 2026-03-19 — Completed v1.1-01-04 Task 1 (style consistency pass, no changes needed)
+Phase: 01 of 02 (README Rewrite with ASCII Art Branding) — COMPLETE
+Plan: 5 of 5 (gap closure) — complete
+Status: Phase complete — ready to merge or advance to Phase 02
+Last activity: 2026-03-19 — Completed v1.1-01-05 (ASCII art hero banner gap closure)
 
-Progress: [████░░░░░░] 40%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -60,6 +60,11 @@ Full decisions log in PROJECT.md Key Decisions table.
 - Emoji ✅ ❌ 🔄 inside fenced CI example code blocks are acceptable — they represent literal GitHub comment output, not decorative document emoji
 - No README changes needed — all prior plans produced a consistent, clean document
 
+**v1.1/01 Plan 05 decisions (gap closure):**
+- diff code block (not HTML spans/font tags) used for hero banner color — broadest GitHub compatibility
+- Subtitle lines kept without + prefix for neutral/white color, contrasting the green ASCII art
+- Old box-drawing frame (╔══╗) removed — diff block provides sufficient visual framing
+
 ### Pending Todos
 
 None.
@@ -71,12 +76,12 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: v1.1/01 Plan 04 — Task 1 complete (style pass, no changes). Awaiting Task 2 human verification checkpoint.
+Stopped at: v1.1/01 Plan 05 — complete. Phase 01 fully done.
 Resume file: None
 
 ## GitHub Issue Mapping
 
 | Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
 |-------|---------------|--------|----|----------|------------|---------------|
-| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | — | — | #49, #50, #51, #52 | feature/v1.1-01-01, feature/v1.1-01-02, feature/v1.1-01-03, feature/v1.1-01-04 |
+| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | pr#53 | — | #49, #50, #51, #52 | feature/v1.1-01-01, feature/v1.1-01-02, feature/v1.1-01-03, feature/v1.1-01-04 |
 | v1.1/02 | #48 | feature/v1.1-02-docs-site | — | — | — | — |
