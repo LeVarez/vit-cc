@@ -2,52 +2,11 @@
 
 **Phase-based project execution framework for Claude Code — with GitHub integration.**
 
-VIT gives Claude Code a structured, repeatable way to plan and execute software projects: one phase at a time, with atomic commits, parallel agents, CI feedback on GitHub issues, and persistent state that survives context resets.
-
-```bash
-npx vit-claude
-```
-
----
-
-## What is VIT?
-
-VIT is a Claude Code workflow framework. It installs as slash commands, specialist agents, and session hooks directly into your `.claude/` directory.
-
-The core loop is:
+VIT gives Claude Code a structured, repeatable way to plan and execute software projects: one phase at a time, with atomic commits, parallel agents, CI feedback on GitHub issues, and persistent state that survives context resets. The core loop is:
 
 ```
 /vit:new-project  →  /vit:plan-phase  →  /vit:execute-phase  →  /vit:verify-work
 ```
-
-Each phase produces atomic commits on a feature branch, updates a `STATE.md` tracker, and optionally posts CI results back to the linked GitHub issue. When context fills up, `/vit:pause-work` creates a handoff document so the next session resumes exactly where you left off.
-
----
-
-## Built with GSD
-
-VIT was developed using [GSD (Get Shit Done)](https://github.com/LeVarez/gsd-cc), the framework that preceded it. GSD's planning and execution methodology was used to build VIT itself — including the roadmap, phase plans, and every execution wave. VIT is GSD's successor with a stronger emphasis on GitHub integration, multi-milestone state management, and verification agents.
-
----
-
-## GitHub Integration — the key extension
-
-VIT's standout feature is its closed-loop GitHub integration. When you push a feature branch, `phase-ci.yml` automatically:
-
-1. Runs your phase test suite (`tests/phases/`)
-2. Looks up the linked GitHub issue from `STATE.md`
-3. Posts a CI result comment directly to that issue:
-   - `✅ CI Passed — N/M tests passed. Ready for human review.`
-   - `❌ CI Failed — N failing tests. Fix before verify.`
-   - `🔄 No tests yet — waiting for test generation.`
-
-The `/vit:review-feedback` command reads developer feedback comments from the issue and implements changes as fix commits — creating a full review loop without leaving the terminal.
-
-**Requires:** `GITHUB_TOKEN` in your repo secrets (automatically available in GitHub Actions).
-
----
-
-## Install
 
 ```bash
 npx vit-claude
@@ -65,14 +24,15 @@ This copies all framework files into your project's `.claude/` directory and opt
 
 ---
 
-## Getting started
+## Documentation
 
-```
-/vit:new-project        — Deep context gathering, produces PROJECT.md + roadmap
-/vit:plan-phase 1       — Research + plan Phase 1, produces PLAN.md
-/vit:execute-phase 1    — Execute the plan with parallel agents + atomic commits
-/vit:verify-work 1      — Conversational UAT against phase success criteria
-```
+| Section | Description |
+|---------|-------------|
+| [Getting Started](docs/user-guide/getting-started.md) | Install VIT and run your first phase |
+| [Core Concepts](docs/user-guide/core-concepts.md) | The milestone → phase → plan → task mental model |
+| [Glossary](docs/user-guide/glossary.md) | Definitions for all VIT-specific terms |
+| [User Guide](docs/user-guide/README.md) | All user-facing documentation |
+| [Developer Guide](docs/developer-guide/README.md) | Extending VIT with custom agents and commands |
 
 ---
 
@@ -156,6 +116,8 @@ Run /vit:verify-work 1 to complete manual UAT.
 ```
 
 **Test location:** `tests/phases/` — VIT's `vit-test-writer` agent generates these automatically after phase execution. If no tests exist yet, the workflow posts a "waiting" comment instead of failing.
+
+**Requires:** `GITHUB_TOKEN` in your repo secrets (automatically available in GitHub Actions).
 
 ---
 
