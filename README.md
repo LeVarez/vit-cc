@@ -1,12 +1,15 @@
-```
-╔══════════════════════════════════════════════════════════════╗
-║                                                              ║
-║   VIT ►  Phase-based project execution for Claude Code       ║
-║                                                              ║
-║   Plan  →  Execute  →  Verify  →  Merge                      ║
-║   Atomic commits · Parallel agents · GitHub CI feedback      ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
+```diff
++██╗   ██╗██╗████████╗
++██║   ██║██║╚══██╔══╝
++██║   ██║██║   ██║
++╚██╗ ██╔╝██║   ██║
++ ╚████╔╝ ██║   ██║
++  ╚═══╝  ╚═╝   ╚═╝
+
+  Phase-based project execution for Claude Code
+
+  Plan  >  Execute  >  Verify  >  Merge
+  Atomic commits · Parallel agents · GitHub CI feedback
 ```
 
 Phase-based project execution framework for Claude Code — with GitHub integration.
