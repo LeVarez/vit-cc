@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 01 of 04 (Information Architecture)
-Plan: —
-Status: Planned — ready to execute
-Last activity: 2026-03-19 — Phase 01 planned (3 plans, 2 waves)
+Plan: 02 of 03 completed
+Status: In progress — Wave 2 executing
+Last activity: 2026-03-19 — Completed 01-02-PLAN.md (getting-started tutorial)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] ~17% (2 of ~12 plans estimated)
 
 ## Performance Metrics
 
@@ -38,6 +38,11 @@ Progress: [░░░░░░░░░░] 0%
 
 Full decisions log in PROJECT.md Key Decisions table.
 
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 01-02 | Getting started guide follows Diátaxis tutorial pattern strictly | Doing over explaining; definitions deferred to core-concepts.md and glossary.md |
+| 01-02 | What's next section uses relative links to core-concepts.md and glossary.md | Co-located docs stay portable; root README linked by anchor |
+
 ### Pending Todos
 
 None.
@@ -48,8 +53,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-19
-Stopped at: Roadmap defined — v1.1 Phase 01 ready to plan
+Last session: 2026-03-19T08:46:42Z
+Stopped at: Completed 01-02-PLAN.md — getting-started tutorial written
 Resume file: None
 
 ## GitHub Issue Mapping
