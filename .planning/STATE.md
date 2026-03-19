@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 01 of 04 (Information Architecture)
-Plan: —
-Status: Planned — ready to execute
-Last activity: 2026-03-19 — Phase 01 planned (3 plans, 2 waves)
+Plan: 3 of 3 (01-03 complete; 01-02 executing in parallel)
+Status: In progress — Wave 2 executing
+Last activity: 2026-03-19 — Completed 01-03-PLAN.md (core concepts + glossary)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20% (2/3 Phase 01 plans complete)
 
 ## Performance Metrics
 
@@ -38,6 +38,11 @@ Progress: [░░░░░░░░░░] 0%
 
 Full decisions log in PROJECT.md Key Decisions table.
 
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 01-03 | Mermaid diagram in core-concepts.md restricted to structural hierarchy only | Agent spawn relationships deferred to Phase 02 Agent Reference to avoid scope creep |
+| 01-03 | Glossary expanded to 22 entries (vs ~20 planned) | Covered all model profile terms and key_links that users encounter in plan frontmatter |
+
 ### Pending Todos
 
 None.
@@ -48,8 +53,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-19
-Stopped at: Roadmap defined — v1.1 Phase 01 ready to plan
+Last session: 2026-03-19T08:50:23Z
+Stopped at: Completed 01-03-PLAN.md — core concepts and glossary pages written
 Resume file: None
 
 ## GitHub Issue Mapping
