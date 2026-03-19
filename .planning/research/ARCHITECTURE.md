@@ -1,454 +1,781 @@
-# Architecture Research
+# Architecture Patterns: vit-cc Internal Architecture
 
-**Domain:** vit-cc agent framework — GitHub PR lifecycle and agent extensions
-**Researched:** 2026-03-18
-**Confidence:** HIGH (derived from direct codebase reading, not external sources)
-
----
-
-## Standard Architecture
-
-### System Overview
-
-The new components slot into the existing three-layer pipeline. The diagram below shows
-where the new agents and command modifications attach:
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│  COMMAND LAYER  (slash commands — orchestrators, no direct work)         │
-│                                                                           │
-│  execute-phase.md   verify-work.md   complete-milestone.md               │
-│       │                  │                   │                            │
-│  [MODIFY: add        [MODIFY: add        [MODIFY: add                    │
-│   draft PR after      PR reviewer         changelog-writer               │
-│   last wave]          spawn + PR          spawn at step 3]               │
-│                       promotion]                                          │
-└──────────────────────────────────┬──────────────────────────────────────┘
-                                   │ spawns via Task()
-┌──────────────────────────────────▼──────────────────────────────────────┐
-│  AGENT LAYER  (specialist agents — do the actual work)                   │
-│                                                                           │
-│  EXISTING:                        NEW:                                    │
-│  vit-executor        ──────►  vit-doc-updater  (NEW FILE)                │
-│  vit-verifier                 vit-pr-reviewer  (NEW FILE)                │
-│  vit-github-reviewer          vit-changelog-writer  (NEW FILE)           │
-└──────────────────────────────────┬──────────────────────────────────────┘
-                                   │ reads / writes
-┌──────────────────────────────────▼──────────────────────────────────────┐
-│  STATE LAYER  (.planning/ directory)                                      │
-│                                                                           │
-│  STATE.md                                                                 │
-│  ├── GitHub Issue Mapping (EXISTING — phase → branch, issue#)            │
-│  └── PR Mapping (NEW FIELD — phase → PR#, PR status)                     │
-│                                                                           │
-│  phases/NN-name/                                                          │
-│  ├── NN-XX-PLAN.md         (existing)                                    │
-│  ├── NN-XX-SUMMARY.md      (existing — doc-updater reads this)           │
-│  └── NN-VERIFICATION.md    (existing — pr-reviewer reads this)           │
-└─────────────────────────────────────────────────────────────────────────┘
-```
-
-### Component Responsibilities
-
-| Component | Responsibility | File Location | Status |
-|-----------|----------------|---------------|--------|
-| `execute-phase.md` | After last wave: create draft PR on feature branch | `files/commands/vit/execute-phase.md` | MODIFY |
-| `verify-work.md` | After all tests pass: promote PR to ready-for-review; spawn vit-pr-reviewer | `files/commands/vit/verify-work.md` | MODIFY |
-| `complete-milestone.md` | Spawn vit-changelog-writer before archiving | `files/commands/vit/complete-milestone.md` | MODIFY (already has PR flow at step 9) |
-| `vit-pr-reviewer` | Read PR diffs, post structured review comments to GitHub PR | `files/agents/vit-pr-reviewer.md` | NEW |
-| `vit-doc-updater` | After each executor wave completes: read SUMMARY.md, update relevant docs | `files/agents/vit-doc-updater.md` | NEW |
-| `vit-changelog-writer` | Aggregate all phase SUMMARY.md files for a milestone, write CHANGELOG entry | `files/agents/vit-changelog-writer.md` | NEW |
-| `STATE.md` (template) | Add PR Mapping section to track PR numbers per phase | `files/vit/templates/state.md` | MODIFY |
+**Domain:** vit-cc agent framework — core architecture for developer documentation
+**Researched:** 2026-03-19
+**Confidence:** HIGH (derived from direct source file reading, not external sources)
 
 ---
 
-## Integration Points
+## System Overview
 
-### 1. execute-phase.md — Draft PR creation
+vit-cc is a Claude Code extension framework. It installs into a project's `.claude/` directory and operates entirely through Claude Code's native primitives: slash commands (`/vit:*`), sub-agents (`.claude/agents/`), and a file-based state store (`.planning/`). There is no runtime server, no daemon, and no build step — the "runtime" is Claude itself.
 
-**Where:** After step 10.5 (push to GitHub) and before step 11 (offer next steps).
+**Install artifact locations:**
+```
+.claude/
+  agents/          ← 16 specialist agent definitions (Markdown + YAML frontmatter)
+  commands/vit/    ← 29 slash command definitions (Markdown with YAML frontmatter)
+  hooks/           ← SessionStart hooks (JS/CJS — run by Claude Code host)
+  vit/
+    references/    ← Shared knowledge modules (@-imported by commands and agents)
+    templates/     ← Output templates for generated artifacts
+    workflows/     ← Reusable multi-step workflow fragments (@-imported)
 
-**What to add:** A new step 10.7 "Create draft PR".
-
-**Context available at that point:**
-- `WORK_DIR` — the correct worktree path
-- `DESIGNATED_BRANCH` — the feature branch name
-- `FEATURE_ISSUE` — the GitHub issue number (already resolved in step 8.5)
-- `MILESTONE` — milestone version string
-- `PHASE_NUM` and `PHASE_DIR` — from earlier steps
-- Phase goal from ROADMAP.md
-
-**Logic:**
-```bash
-# Only if on a feature branch (not main/milestone)
-if echo "$DESIGNATED_BRANCH" | grep -q "^feature/"; then
-  # Check if a PR already exists for this branch
-  EXISTING_PR=$(cd "$WORK_DIR" && gh pr list --head "$DESIGNATED_BRANCH" \
-    --json number --jq '.[0].number' 2>/dev/null || echo "")
-
-  if [ -z "$EXISTING_PR" ]; then
-    PR_URL=$(cd "$WORK_DIR" && gh pr create \
-      --title "feat(${PHASE_NUM}): [phase name]" \
-      --base "milestone/v${MILESTONE}" \
-      --head "$DESIGNATED_BRANCH" \
-      --draft \
-      --body "[auto-generated from phase goal + VERIFICATION.md]")
-    PR_NUMBER=$(echo "$PR_URL" | grep -o '[0-9]*$')
-    # Store PR number in STATE.md PR Mapping
-  fi
-fi
+.planning/         ← Project state store (written/read by agents at runtime)
+  PROJECT.md
+  REQUIREMENTS.md
+  ROADMAP.md
+  STATE.md
+  config.json
+  research/
+  phases/
+    <milestone>/
+      <phase_dir>/
+        *-PLAN.md
+        *-SUMMARY.md
+        *-VERIFICATION.md
 ```
 
-**Branch base:** PRs should target the `milestone/vX.Y` branch (not `main`), because feature branches diverge from the milestone branch. The milestone PR into main already exists at the complete-milestone step.
+---
 
-**STATE.md write:** After creating the PR, write the PR number into the new PR Mapping table in STATE.md (see STATE.md schema changes below).
+## The Three-Layer Architecture
 
-**Doc-updater spawn:** After PR creation (or if PR already exists), spawn `vit-doc-updater` to update docs from the completed phase SUMMARY.md files. This runs as a non-blocking parallel Task if the workflow configuration permits, but must complete before step 11.
-
-### 2. verify-work.md — PR promotion + PR reviewer spawn
-
-**Where:** After step 8 (post UAT comment on GitHub feature issue), when Route A or B (all tests pass). Insert as new step 8.5.
-
-**What to add:** Two operations:
-1. Promote the draft PR to "ready for review"
-2. Spawn `vit-pr-reviewer` to post a structured code review
-
-**Logic:**
-```bash
-# Resolve PR number from STATE.md PR Mapping
-PR_NUMBER=$(grep "| ${MILESTONE}/${PHASE_NUM} " .planning/STATE.md \
-  | grep -o 'pr#[0-9]*' | grep -o '[0-9]*$' || echo "")
-
-if [ -n "$PR_NUMBER" ]; then
-  # Promote from draft
-  gh pr ready "$PR_NUMBER" 2>/dev/null || true
-fi
+```
+┌──────────────────────────────────────────────────────────────┐
+│  LAYER 1: COMMANDS (Orchestrators)                            │
+│                                                              │
+│  .claude/commands/vit/*.md                                   │
+│  Invoked by user: /vit:new-project, /vit:plan-phase, etc.   │
+│  Role: coordinate, spawn agents, route results, update state │
+└────────────────────────────┬─────────────────────────────────┘
+                             │ Task(subagent_type=, model=)
+┌────────────────────────────▼─────────────────────────────────┐
+│  LAYER 2: AGENTS (Workers)                                    │
+│                                                              │
+│  .claude/agents/*.md                                         │
+│  Spawned by commands via Task() calls                        │
+│  Role: implement, research, plan, verify, document           │
+└────────────────────────────┬─────────────────────────────────┘
+                             │ reads / writes
+┌────────────────────────────▼─────────────────────────────────┐
+│  LAYER 3: STATE STORE (.planning/)                            │
+│                                                              │
+│  File-based persistent state across sessions                 │
+│  STATE.md, ROADMAP.md, PLAN.md, SUMMARY.md, etc.            │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-Then spawn `vit-pr-reviewer`:
+---
+
+## Layer 1: Commands (Orchestrators)
+
+**Location:** `.claude/commands/vit/*.md`
+**Invoked by:** User typing `/vit:<name>` in Claude Code chat
+
+Commands are Markdown files with YAML frontmatter. Claude Code parses the frontmatter to register allowed tools and argument hints, then feeds the Markdown body as Claude's system prompt when the command is invoked.
+
+### Anatomy of a Command File
+
+```yaml
+---
+name: vit:execute-phase
+description: Execute all plans in a phase with wave-based parallelization
+argument-hint: "<phase-number> [--gaps-only]"
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Task
+  - AskUserQuestion
+---
+```
+
+The Markdown body below the frontmatter defines Claude's behavior. Context modules are loaded via `@`-includes:
+
+```markdown
+<execution_context>
+@./.claude/vit/references/ui-brand.md
+@./.claude/vit/workflows/execute-phase.md
+</execution_context>
+```
+
+### Orchestrator Responsibilities
+
+Every command follows this sequence:
+
+1. **State check** — read `.planning/STATE.md` and `.planning/config.json`
+2. **Model resolution** — look up agent → model mapping from `model_profile`
+3. **Content inlining** — read files into bash variables before Task() calls
+4. **Agent spawning** — `Task(prompt=..., subagent_type=..., model=...)`
+5. **Result routing** — parse structured returns (`## PLAN COMPLETE`, `## CHECKPOINT REACHED`, etc.)
+6. **State update** — write back to `.planning/STATE.md`, ROADMAP.md, etc.
+7. **Git operations** — atomic commits after each meaningful artifact
+
+### Orchestrator Context Budget
+
+Commands stay lean (~10-15% of context) so each sub-agent gets a fresh 200k context window. The orchestrator discovers plans, reads their content into variables, spawns agents, and processes results — it does not implement.
+
+### Command Catalog
+
+| Command | Role |
+|---------|------|
+| `vit:new-project` | Full initialization: questioning → research → requirements → roadmap |
+| `vit:new-milestone` | Start new milestone cycle for an existing project |
+| `vit:plan-phase` | Research + plan + verify plans for a phase |
+| `vit:execute-phase` | Wave-based execution of all plans in a phase |
+| `vit:verify-work` | Manual acceptance testing workflow |
+| `vit:discuss-phase` | Gather user context before planning |
+| `vit:research-phase` | Phase-specific domain research |
+| `vit:complete-milestone` | Archive milestone, merge PRs, write changelog |
+| `vit:audit-milestone` | Cross-phase integration check |
+| `vit:progress` | Show current project state |
+| `vit:debug` | Spawn debugger on failed execution |
+| `vit:map-codebase` | Generate codebase knowledge map |
+| `vit:settings` | Update workflow preferences |
+| `vit:set-profile` | Change model profile at runtime |
+
+---
+
+## Layer 2: Agents (Workers)
+
+**Location:** `.claude/agents/*.md`
+**Invoked by:** Commands via `Task(subagent_type="<agent-name>", ...)`
+
+Agents are also Markdown files with YAML frontmatter. The `subagent_type` field in a `Task()` call matches the `name` field in the agent's frontmatter.
+
+### Anatomy of an Agent File
+
+```yaml
+---
+name: vit-executor
+description: Executes VIT plans with atomic commits, deviation handling,
+             checkpoint protocols, and state management.
+tools: Read, Write, Edit, Bash, Grep, Glob
+color: yellow
+---
+```
+
+The tool set is scoped to what the agent actually needs. Agents do NOT have `Task` or `AskUserQuestion` — they are terminal workers, not orchestrators.
+
+### Agent Invocation Pattern
+
+File contents must be inlined before `Task()` calls — the `@` syntax does not cross Task() boundaries:
+
+```bash
+PLAN_CONTENT=$(cat "$WORK_DIR/{plan_path}")
+STATE_CONTENT=$(cat "$WORK_DIR/.planning/STATE.md")
+```
+
 ```
 Task(
-  prompt="Working directory: {work_dir}
-Phase: {phase_num}
-PR number: {pr_number}
-Feature branch: {designated_branch}
-
-Read the PR diff and post a structured review comment on PR #{pr_number}.
-...",
-  subagent_type="vit-pr-reviewer",
-  model="{executor_model}"
+  prompt="Working directory: {work_dir}\n\nPlan:\n{plan_content}\n\nState:\n{state_content}",
+  subagent_type="vit-executor",
+  model="{executor_model}",
+  description="Execute plan {plan_id}"
 )
 ```
 
-**Condition:** Only run when Route A or B (all tests pass). Do not promote/review when Route C (issues found) or Route D (blocked).
+When spawned via `subagent_type="general-purpose"`, agents load their own definition:
+```
+Task(prompt="First, read ./.claude/agents/vit-phase-researcher.md for your role and instructions.\n\n[context...]")
+```
 
-### 3. complete-milestone.md — Changelog writer
+### Agent Catalog
 
-**Where:** At existing step 3 ("Extract accomplishments"), immediately before the template is filled. The changelog writer reads the same SUMMARY.md files step 3 reads and produces a structured changelog entry.
-
-**Why step 3:** Step 3 already gathers all phase SUMMARY.md files. The changelog writer needs exactly this data. Inserting here avoids a second pass over all SUMMARY files.
-
-**Logic:** Spawn `vit-changelog-writer` as a Task before the accomplishments summary is presented. The changelog writer creates `CHANGELOG.md` (or appends to it if it exists) and returns the entry text. The orchestrator can then reference or present this to the user.
-
-**Condition:** This runs regardless of PR state. Changelog is written as part of the archiving process.
-
-**Note:** `complete-milestone.md` step 9 already handles PR creation (Case A) and merge (Case C). The changelog writer does NOT replace this — it runs before step 4 (archive milestone).
-
-### 4. vit-doc-updater — Integration with executor flow
-
-**When spawned:** By `execute-phase.md` after the final wave completes (step 10.7 above), once all SUMMARY.md files exist for the phase.
-
-**What it reads:**
-- All `*-SUMMARY.md` files in the completed phase directory
-- Existing project docs (README, docs/ folder if any, API docs)
-- PROJECT.md for context
-
-**What it writes:**
-- Updates existing documentation files in-place
-- Does NOT create new docs unless the phase goal explicitly created a new component with no docs
-
-**Scope constraint:** doc-updater operates only on documentation files (`*.md`, `docs/`) not source code. It must not modify PLAN.md, SUMMARY.md, VERIFICATION.md, or any `.planning/` files.
-
-**Commit behavior:** doc-updater commits its own changes with format `docs({phase}): update documentation from phase summary`. This follows the existing pattern where executor agents commit their own work.
+| Agent | Role | Spawned By |
+|-------|------|------------|
+| `vit-executor` | Executes PLAN.md tasks, creates SUMMARY.md | execute-phase |
+| `vit-planner` | Creates PLAN.md files from phase context | plan-phase |
+| `vit-phase-researcher` | Phase-specific research (RESEARCH.md) | plan-phase |
+| `vit-project-researcher` | Domain ecosystem research (STACK/FEATURES/ARCHITECTURE/PITFALLS.md) | new-project, new-milestone |
+| `vit-research-synthesizer` | Synthesizes 4 research files into SUMMARY.md | new-project, new-milestone |
+| `vit-roadmapper` | Creates ROADMAP.md + STATE.md from requirements | new-project, new-milestone |
+| `vit-plan-checker` | Verifies plans achieve phase goal before execution | plan-phase |
+| `vit-verifier` | Goal-backward verification after phase execution | execute-phase |
+| `vit-debugger` | Diagnoses and fixes execution failures | debug |
+| `vit-codebase-mapper` | Maps existing codebase structure into .planning/codebase/ | map-codebase |
+| `vit-doc-updater` | Updates README, docs/, CHANGELOG after phase | execute-phase |
+| `vit-changelog-writer` | Aggregates SUMMARY.md files into milestone changelog | complete-milestone |
+| `vit-github-reviewer` | Reads GitHub PR and posts review comments | review-feedback |
+| `vit-integration-checker` | Cross-phase integration verification | audit-milestone |
+| `vit-pr-reviewer` | AI-assisted PR review | review-feedback |
+| `vit-test-writer` | Generates unit tests for phase plans | execute-phase |
 
 ---
 
-## Data Flow
+## Layer 3: State Store (.planning/)
 
-### PR Number Flow
+**Location:** `.planning/` directory in project root
+**Written by:** Orchestrators and agents
+**Read by:** Every command and agent as first step
 
-```
-execute-phase (creates draft PR)
-    │
-    ├── gh pr create → returns PR URL → parse PR_NUMBER
-    │
-    └── write to STATE.md PR Mapping:
-        | Milestone/Phase | Branch | Issue | PR |
-        | v1.1/3          | feature/v1.1-3-auth | #45 | pr#67 |
+### Core State Files
 
-verify-work (promotes PR)
-    │
-    └── reads PR_NUMBER from STATE.md PR Mapping
-        └── gh pr ready PR_NUMBER
-        └── spawns vit-pr-reviewer with PR_NUMBER
+**`STATE.md`** — Session memory (read first in every workflow, under 100 lines):
 
-complete-milestone (merges PR)
-    │
-    └── step 9 already reads PR via gh pr list --head CURRENT_BRANCH
-        └── this works without PR Mapping (uses branch directly)
-        └── PR Mapping is for cross-command handoff only
+```markdown
+## Current Position
+Milestone: v1.0
+Phase: 2 of 5 (authentication)
+Status: In progress
+
+## GitHub Issue Mapping
+| Phase | Feature Issue | Branch | PR | Assigned |
+|-------|---------------|--------|----|----------|
+| v1.0/01 | #12 | feature/v1.0-01-foundation | pr#7(ready) | — |
+| v1.0/02 | #13 | feature/v1.0-02-auth | pr#9 | — |
 ```
 
-### Doc Update Flow
+**`ROADMAP.md`** — Phase structure with requirements and success criteria. Written by vit-roadmapper, status updated by execute-phase.
 
-```
-execute-phase completes last wave
-    │
-    ├── SUMMARY.md files exist for all plans
-    │
-    └── spawns vit-doc-updater
-            │
-            ├── reads phases/NN-name/*-SUMMARY.md
-            ├── reads README.md, docs/*.md (if exist)
-            ├── edits documentation
-            └── commits: docs({phase}): update docs from phase summary
-```
+**`REQUIREMENTS.md`** — Requirements with REQ-IDs (e.g., AUTH-01). Traceability table links each to a phase. Status updated to "Complete" after phase execution.
 
-### Changelog Flow
+**`PROJECT.md`** — Project context, validated requirements, key decisions. Updated incrementally as milestones complete.
 
-```
-complete-milestone step 3
-    │
-    └── spawns vit-changelog-writer
-            │
-            ├── reads all phases/*-SUMMARY.md for milestone range
-            ├── reads ROADMAP.md for phase goals
-            ├── writes/appends CHANGELOG.md
-            └── returns entry text to orchestrator
+**`config.json`** — Workflow preferences. Read by every orchestrator before spawning agents:
 
-orchestrator presents entry for confirmation
-    └── continues to step 4 (archive milestone)
+```json
+{
+  "mode": "yolo|interactive",
+  "depth": "quick|standard|comprehensive",
+  "parallelization": true,
+  "commit_docs": true,
+  "model_profile": "quality|balanced|budget",
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true
+  },
+  "team": {
+    "enabled": false,
+    "roster": [],
+    "default_reviewer": ""
+  }
+}
 ```
 
----
+### Phase Artifact Structure
 
-## Recommended Project Structure for New Files
+Each phase produces artifacts under `.planning/phases/<milestone>/<phase_dir>/`:
 
 ```
-files/
-├── agents/
-│   ├── vit-pr-reviewer.md        # NEW — posts review on GitHub PR
-│   ├── vit-doc-updater.md        # NEW — updates docs from SUMMARY.md
-│   └── vit-changelog-writer.md   # NEW — writes CHANGELOG.md entries
-│
-├── commands/vit/
-│   ├── execute-phase.md          # MODIFY — add step 10.7 (draft PR + doc-updater)
-│   ├── verify-work.md            # MODIFY — add step 8.5 (promote PR + pr-reviewer)
-│   └── complete-milestone.md     # MODIFY — add changelog-writer spawn at step 3
-│
-└── vit/templates/
-    └── state.md                  # MODIFY — add PR Mapping schema
+.planning/phases/v1.0/02-authentication/
+  02-CONTEXT.md          ← User's vision notes (from discuss-phase)
+  02-RESEARCH.md         ← Phase-specific research (from plan-phase)
+  02-01-PLAN.md          ← Executable plan (tasks + must_haves)
+  02-01-SUMMARY.md       ← Execution record (what was built, commits, deviations)
+  02-02-PLAN.md
+  02-02-SUMMARY.md
+  02-VERIFICATION.md     ← Goal-backward verification report
+  02-UAT.md              ← User acceptance testing (from verify-work)
+  HANDOFF.md             ← Context brief for next phase's engineer
 ```
 
 ---
 
-## STATE.md Schema Changes
+## Core Architectural Patterns
 
-### New Section: PR Mapping
+### Pattern 1: Context Budget Management
 
-The existing "GitHub Issue Mapping" section uses this format:
+**Problem:** Orchestrators accumulate context from reading state, spawning agents, and handling results. If the orchestrator context fills up, the workflow fails mid-execution.
+
+**Solution:** Orchestrators stay lean (10-15% context), agents get fresh 200k windows.
+
+Rules enforced:
+- Orchestrators discover, group, spawn, route — they do not implement
+- File contents are read and inlined per-spawn (not accumulated in orchestrator)
+- Each agent starts fresh with only what it needs
+- No polling loops — `Task()` is blocking; orchestrator waits for completion
+
+### Pattern 2: Wave-Based Parallel Execution
+
+**Problem:** Plans within a phase may be independent or dependent. Sequential is slow; uncontrolled parallel breaks dependencies.
+
+**Solution:** Plans are pre-grouped into numbered waves during `/vit:plan-phase`. Plans in the same wave run in parallel; waves run sequentially.
+
+PLAN.md frontmatter carries pre-computed wave assignment:
+
+```yaml
+---
+wave: 1
+depends_on: []
+files_modified: [src/models/user.ts, src/api/users.ts]
+autonomous: true
+---
+```
+
+execute-phase reads `wave:` from each plan's frontmatter and issues all plans in a wave as simultaneous `Task()` calls. No runtime dependency analysis needed.
+
+When `HAS_PLAN_BRANCHES=true` (enabled by plan-phase step 13), each plan runs in a dedicated git worktree for full file isolation — true parallel execution without git conflicts.
+
+Wave grouping logic in the planner:
+- Wave 1: Plans with no dependencies and no file overlap with each other
+- Wave N: Plans whose dependencies are all in earlier waves
+- A plan with checkpoints (`autonomous: false`) is typically its own wave to avoid blocking other work
+
+### Pattern 3: Checkpoint and Continuation
+
+**Problem:** Some tasks require human interaction (visual verification, auth credentials, architecture decisions). Claude cannot pause and resume across turns.
+
+**Solution:** Agents STOP at checkpoint tasks and return a structured state block. The orchestrator presents the checkpoint to the user and spawns a *fresh* continuation agent with all prior state inlined.
+
+Checkpoint task types (defined in `references/checkpoints.md`):
+- `checkpoint:human-verify` — Claude built something, user visually confirms (90% of checkpoints)
+- `checkpoint:decision` — User selects between implementation options (9%)
+- `checkpoint:human-action` — Truly unavoidable manual step with no CLI/API (1%)
+
+Checkpoint rule: **Claude automates everything with CLI/API. Checkpoints are only for what Claude cannot do.** Never ask the user to run CLI commands, start servers, or create files — Claude does all of that, then asks the user to verify the result.
+
+Agent return at checkpoint:
+```markdown
+## CHECKPOINT REACHED
+
+**Type:** human-verify
+**Plan:** 02-03
+**Progress:** 2/3 tasks complete
+
+### Completed Tasks
+| Task | Name | Commit | Files |
+|------|------|--------|-------|
+| 1 | Create auth schema | d6fe73f | prisma/schema.prisma |
+
+### Awaiting
+Type "approved" or describe issues
+```
+
+Continuation agent receives `<completed_tasks>` section and verifies commit hashes exist before resuming from the specified task.
+
+**Why fresh agent, not resume:** Claude Code's internal serialization breaks with parallel tool calls. Explicit state-passing via structured return is more reliable.
+
+### Pattern 4: Goal-Backward Verification
+
+**Problem:** Tasks can complete (file created, function written) without the phase goal being achieved (feature doesn't work, wiring is missing).
+
+**Solution:** `must_haves` in PLAN.md frontmatter encode what must be TRUE for the goal to be achieved, not what tasks must be done. `vit-verifier` checks these against the actual codebase — NOT against SUMMARY.md claims.
+
+Three-level artifact verification:
+1. **Existence** — file is at the expected path
+2. **Substantive** — file has real implementation (not stub, placeholder, empty return)
+3. **Wired** — file is imported and used by the system
+
+Plus key link verification: component → API → database connections checked with grep patterns.
+
+Verification outcomes:
+- `passed` → all must-haves verified, phase complete
+- `gaps_found` → structured gap analysis written to VERIFICATION.md frontmatter; `/vit:plan-phase --gaps` creates fix plans
+- `human_needed` → automated checks pass, items need visual/interactive testing
+
+Gap closure loop:
+```
+execute-phase → verifier (gaps_found)
+             → plan-phase --gaps (creates gap closure plans with gap_closure: true)
+             → execute-phase --gaps-only (runs only gap closure plans)
+             → verifier (re-verification)
+             → repeat until passed
+```
+
+### Pattern 5: Structured Returns
+
+Every agent returns with a defined status prefix so the orchestrator can route without parsing free-form text:
+
+| Agent | Return Prefixes |
+|-------|-----------------|
+| `vit-executor` | `## PLAN COMPLETE`, `## CHECKPOINT REACHED` |
+| `vit-planner` | `## PLANNING COMPLETE`, `## CHECKPOINT REACHED`, `## PLANNING INCONCLUSIVE` |
+| `vit-plan-checker` | `## VERIFICATION PASSED`, `## ISSUES FOUND` |
+| `vit-verifier` | `## Verification Complete` with `status: passed/gaps_found/human_needed` |
+| `vit-roadmapper` | `## ROADMAP CREATED`, `## ROADMAP REVISED`, `## ROADMAP BLOCKED` |
+| `vit-phase-researcher` | `## RESEARCH COMPLETE`, `## RESEARCH BLOCKED` |
+
+### Pattern 6: Atomic Commits
+
+Every meaningful artifact is committed immediately after creation so that context loss mid-workflow does not lose work.
+
+Commit hierarchy (per `execute-phase` and `vit-executor`):
+- **Per-task commit:** `feat(02-01): task description` — code files only, staged individually
+- **Per-plan commit:** `docs(02-01): complete plan-name plan` — PLAN.md + SUMMARY.md only
+- **Per-phase commit:** `docs(02): complete authentication phase` — ROADMAP.md + STATE.md + VERIFICATION.md
+- **Per-milestone commits:** PROJECT.md, config.json, REQUIREMENTS.md, ROADMAP.md, STATE.md, ONBOARDING.md
+
+Commit rule enforced everywhere: **Never use `git add .` or `git add -A`**. Always stage files individually. This prevents accidentally committing sensitive files (.env, credentials).
+
+### Pattern 7: Model Profile Resolution
+
+Commands read `model_profile` from `config.json` before spawning agents and look up the per-agent model in a table (defined in `references/model-profiles.md`):
+
+| Agent | quality | balanced | budget |
+|-------|---------|----------|--------|
+| `vit-planner` | opus | opus | sonnet |
+| `vit-roadmapper` | opus | sonnet | sonnet |
+| `vit-executor` | opus | sonnet | sonnet |
+| `vit-phase-researcher` | opus | sonnet | haiku |
+| `vit-project-researcher` | opus | sonnet | haiku |
+| `vit-research-synthesizer` | sonnet | sonnet | haiku |
+| `vit-verifier` | sonnet | sonnet | haiku |
+| `vit-plan-checker` | sonnet | sonnet | haiku |
+| `vit-codebase-mapper` | sonnet | haiku | haiku |
+
+Resolution pattern (identical in every orchestrator):
+```bash
+MODEL_PROFILE=$(cat .planning/config.json 2>/dev/null \
+  | grep -o '"model_profile"[[:space:]]*:[[:space:]]*"[^"]*"' \
+  | grep -o '"[^"]*"$' | tr -d '"' || echo "balanced")
+# Then per-agent lookup stored in shell variable
+PLANNER_MODEL="opus"   # from table for current profile
+EXECUTOR_MODEL="sonnet"
+```
+
+Design rationale:
+- `vit-planner` gets opus in quality/balanced — architecture decisions happen during planning
+- `vit-executor` gets sonnet in balanced — follows explicit instructions, reasoning is in the plan
+- Verifiers get sonnet (not haiku) in balanced — goal-backward reasoning needs more than pattern matching
+
+### Pattern 8: Milestone-Scoped Branch Hierarchy
+
+Phases live in a git isolation hierarchy:
+```
+main (stable, production)
+  └── milestone/v1.0 (milestone integration branch)
+        └── feature/v1.0-01-foundation (phase branch)
+              └── feature/v1.0-01-01 (plan branch, when plan_branches enabled)
+```
+
+`execute-phase` creates a worktree for the feature branch and all git operations run there. PRs target the milestone branch, not main. complete-milestone handles the milestone → main merge.
+
+STATE.md tracks the full mapping:
 ```markdown
 ## GitHub Issue Mapping
-
-| Phase | Branch | Issues |
-|-------|--------|--------|
-| v1.0/1 | feature/v1.0-1-foundation | #12 #13 #14 |
+| Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
+|-------|---------------|--------|----|----------|------------|---------------|
+| v1.0/01 | #12 | feature/v1.0-01-foundation | pr#7(ready) | — | #33, #34 | feature/v1.0-01-01, feature/v1.0-01-02 |
 ```
 
-Add a new column `PR` to the same row (not a separate section). This avoids creating another table that orchestrators must parse separately.
+### Pattern 9: Reference and Template System
 
-**New format:**
+**References** (`/.claude/vit/references/`) are shared knowledge modules @-imported into command `<execution_context>` blocks. They define how the system behaves, not what it produces.
+
+| Reference | Purpose |
+|-----------|---------|
+| `checkpoints.md` | Checkpoint types, automation rules, anti-patterns |
+| `model-profiles.md` | Agent-to-model mapping table and rationale |
+| `planning-config.md` | Config schema, commit_docs behavior, team config |
+| `continuation-format.md` | Standard "Next Up" output format for command completion |
+| `questioning.md` | Deep requirement elicitation techniques |
+| `ui-brand.md` | VIT visual style (banner format, ASCII borders) |
+| `verification-patterns.md` | Grep patterns for stub detection |
+| `tdd.md` | TDD (Red-Green-Refactor) execution flow |
+| `git-integration.md` | GitHub integration patterns |
+
+**Templates** (`/.claude/vit/templates/`) define the output structure of generated artifacts:
+
+| Template | Generates |
+|----------|-----------|
+| `phase-prompt.md` | PLAN.md (frontmatter schema + task XML format) |
+| `summary.md` | SUMMARY.md |
+| `state.md` | STATE.md |
+| `roadmap.md` | ROADMAP.md |
+| `project.md` | PROJECT.md |
+| `requirements.md` | REQUIREMENTS.md |
+| `milestone.md` | Milestone archive entry in MILESTONES.md |
+| `verification-report.md` | VERIFICATION.md |
+| `research-project/` | STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md, SUMMARY.md |
+
+### Pattern 10: Workflow Fragments
+
+**Workflows** (`/.claude/vit/workflows/`) are multi-step process definitions @-imported into commands. They describe how a process works (steps, decision points, error handling) while commands define when to start and what arguments to accept.
+
+Example: `execute-phase.md` command imports `execute-phase.md` workflow:
 ```markdown
-## GitHub Issue Mapping
-
-| Phase | Branch | Issues | PR |
-|-------|--------|--------|----|
-| v1.1/1 | feature/v1.1-1-foundation | #12 #13 #14 | pr#45 |
-| v1.1/2 | feature/v1.1-2-auth | #15 #16 | pr#46 |
-| v1.1/3 | feature/v1.1-3-api | #17 | — |
+<execution_context>
+@./.claude/vit/workflows/execute-phase.md
+</execution_context>
 ```
 
-**Why same table:** All commands already parse the GitHub Issue Mapping table to get branch and issue. Adding the PR column to the same row means a single grep pattern captures all phase context. Splitting into two tables would require two separate greps and correlation logic.
+This separation allows workflow logic to be read and understood independently of the command invocation context.
 
-**PR column values:**
-- `pr#N` — PR has been created (N = GitHub PR number)
-- `—` — No PR yet (phase not yet executed or push not configured)
+---
 
-**Parsing pattern for PR number:**
+## Data Flows
+
+### Project Initialization Flow
+
+```
+User: /vit:new-project
+  ↓
+Command (orchestrator): question user
+  writes: .planning/PROJECT.md
+  writes: .planning/config.json
+  ↓ spawns 4 parallel researchers
+  Task(vit-project-researcher) → .planning/research/STACK.md
+  Task(vit-project-researcher) → .planning/research/FEATURES.md
+  Task(vit-project-researcher) → .planning/research/ARCHITECTURE.md
+  Task(vit-project-researcher) → .planning/research/PITFALLS.md
+  ↓ spawns synthesizer (after all 4 complete)
+  Task(vit-research-synthesizer) → .planning/research/SUMMARY.md
+  ↓ requirement gathering (inline in command, AskUserQuestion)
+  writes: .planning/REQUIREMENTS.md
+  ↓ spawns roadmapper
+  Task(vit-roadmapper) → .planning/ROADMAP.md
+                       → .planning/STATE.md
+                       → updates REQUIREMENTS.md traceability
+  ↓ GitHub sync (if gh CLI available)
+  creates: milestone/v1.0 branch
+  creates: feature/v1.0-N-slug branches (one per phase)
+  writes: .planning/STATE.md (GitHub Issue Mapping)
+  writes: .planning/ONBOARDING.md
+```
+
+### Phase Planning Flow
+
+```
+User: /vit:plan-phase 2
+  ↓
+Command reads: config.json → model_profile → resolve per-agent models
+Command reads: STATE.md → current milestone, WORK_DIR
+  ↓ (if workflow.research = true)
+Task(vit-phase-researcher) → .planning/phases/v1.0/02-auth/02-RESEARCH.md
+  ↓
+read into vars: STATE, ROADMAP, REQUIREMENTS, RESEARCH, CONTEXT
+  ↓
+Task(vit-planner) → .planning/phases/v1.0/02-auth/02-01-PLAN.md
+                  → .planning/phases/v1.0/02-auth/02-02-PLAN.md
+  returns: ## PLANNING COMPLETE
+  ↓ (if workflow.plan_check = true, max 3 iterations)
+Task(vit-plan-checker) → ## VERIFICATION PASSED | ## ISSUES FOUND
+  [if issues: send back to planner, re-check, repeat]
+  ↓
+Create GitHub sub-issues per plan (if gh CLI available)
+Create plan branches per sub-issue
+Update STATE.md with sub-issue numbers + plan branches
+```
+
+### Phase Execution Flow
+
+```
+User: /vit:execute-phase 2
+  ↓
+Command reads: config.json → model_profile
+Command reads: STATE.md → milestone, branch mapping
+Command resolves: WORK_DIR (create worktree for feature/v1.0-02-auth if needed)
+Command: git pull --rebase (freshness check)
+Command: check phase dependencies (warn if not complete)
+Command: create draft PR on GitHub
+  ↓
+discover: .planning/phases/v1.0/02-auth/*-PLAN.md
+group by: wave: field in frontmatter
+display: wave structure to user
+  ↓
+Wave 1 (all parallel):
+  PLAN_CONTENT=$(cat plan_01_path)
+  STATE_CONTENT=$(cat STATE.md)
+  Task(vit-executor, plan=01) → 02-01-SUMMARY.md (commits atomically)
+  Task(vit-executor, plan=02) → 02-02-SUMMARY.md (commits atomically)
+  [both complete]
+  push: feature branch per wave
+  ↓
+Wave 2 (checkpoint plan, sequential):
+  Task(vit-executor, plan=03)
+    → [executes tasks 1-2]
+    → [hits checkpoint:human-verify]
+    → returns: ## CHECKPOINT REACHED
+  Command presents checkpoint to user
+  User: "approved"
+  Task(vit-executor, continuation) → 02-03-SUMMARY.md
+  push: feature branch
+  ↓
+Task(vit-test-writer) → unit tests for phase (non-blocking)
+  ↓
+Task(vit-verifier) → .planning/phases/v1.0/02-auth/02-VERIFICATION.md
+  [status: passed | gaps_found | human_needed]
+  ↓
+updates: ROADMAP.md (phase → Complete)
+updates: STATE.md (position, PR status → pr#9(ready))
+updates: REQUIREMENTS.md (AUTH-01, AUTH-02 → Complete)
+  ↓
+Task(vit-doc-updater) → README.md, CHANGELOG.md (non-blocking)
+push: feature branch
+promote: draft PR → ready-for-review
+close: GitHub feature issue
+create: HANDOFF.md for next phase
+```
+
+---
+
+## Component Boundaries
+
+| Component | Responsibility | Does NOT Do |
+|-----------|---------------|-------------|
+| Commands | Orchestrate, route, update state | Implement features, write code |
+| `vit-executor` | Execute PLAN.md tasks atomically | Plan, research, verify |
+| `vit-planner` | Create PLAN.md files | Execute, verify, research |
+| `vit-verifier` | Check codebase against must_haves | Fix gaps (creates report only) |
+| `vit-plan-checker` | Check plans achieve phase goal | Plan new content |
+| `vit-doc-updater` | Update `*.md` and `docs/` files | Modify `.planning/` or source code |
+| STATE.md | Current position + GitHub mapping | Full history (that's PROJECT.md) |
+| PROJECT.md | Requirements + decisions history | Current position (that's STATE.md) |
+
+---
+
+## Extension Points
+
+### Adding a New Command
+
+1. Create `.claude/commands/vit/<name>.md`
+2. Add YAML frontmatter with `name`, `description`, `allowed-tools`
+3. Body follows orchestrator pattern: read state → resolve model → spawn agents → update state
+
+Minimal command structure:
+```markdown
+---
+name: vit:my-command
+description: What it does
+allowed-tools:
+  - Read
+  - Bash
+  - Task
+---
+
+<execution_context>
+@./.claude/vit/references/ui-brand.md
+</execution_context>
+
+<process>
+0. Read STATE.md and config.json
+1. Resolve model profile
+2. [command logic]
+3. Spawn agent(s) via Task
+4. Handle structured returns
+5. Update STATE.md if needed
+</process>
+```
+
+### Adding a New Agent
+
+1. Create `.claude/agents/vit-<name>.md`
+2. Add YAML frontmatter with `name`, `description`, `tools`, `color`
+3. Body defines role, execution flow, and structured return format
+
+Tool scope conventions:
+- Research agents: `Read, Bash, Grep, Glob, WebFetch, WebSearch, mcp__context7__*`
+- Execution agents: `Read, Write, Edit, Bash, Grep, Glob`
+- Verification agents: `Read, Bash, Grep, Glob`
+- Agents do NOT get `Task` or `AskUserQuestion`
+
+Structured return is required — the spawning orchestrator routes on the return prefix.
+
+Add the agent to the model profile table in `references/model-profiles.md`.
+
+### Adding a New Optional Workflow Stage
+
+To add a new conditional agent (like plan_check or verifier):
+
+1. Add config key to `config.json` schema (document in `references/planning-config.md`)
+2. Add model row to orchestrator's lookup table
+3. Add model row to `references/model-profiles.md`
+4. In the orchestrator, read config and spawn conditionally:
+   ```bash
+   MY_STAGE=$(cat .planning/config.json | grep '"my_stage"' | grep -o 'true\|false' || echo "true")
+   if [ "$MY_STAGE" = "true" ]; then
+     Task(subagent_type="vit-my-agent", ...)
+   fi
+   ```
+
+### Adding a New Template
+
+1. Create `.claude/vit/templates/<name>.md`
+2. Reference in agent instructions: `Use template: ./.claude/vit/templates/<name>.md`
+3. Templates define output structure — agents use them as formatting guides
+
+### Extending config.json
+
+Add new keys to `.planning/config.json`. Document in `references/planning-config.md`. Read with the standard bash pattern:
+
 ```bash
-PR_NUMBER=$(grep "| ${MILESTONE}/${PHASE_NUM} " .planning/STATE.md \
-  | grep -o 'pr#[0-9]*' | grep -o '[0-9]*' || echo "")
+MY_SETTING=$(cat .planning/config.json 2>/dev/null \
+  | grep -o '"my_key"[[:space:]]*:[[:space:]]*[^,}]*' \
+  | grep -o 'true\|false' || echo "default")
 ```
 
 ---
 
-## Architectural Patterns
+## Conventions Developers Must Follow
 
-### Pattern 1: Orchestrator Stays Lean
-
-All three existing commands (execute-phase, verify-work, complete-milestone) follow the same pattern: the command orchestrates, agents do the work. The new components must follow this.
-
-**What:** Command resolves context, calls `gh` for simple state changes (PR create/promote), spawns agents for complex work (reviewing code, writing changelog, updating docs).
-
-**When to use:** Always. Never put multi-step reasoning or file modification logic directly in command files.
-
-**Example:**
-- execute-phase calls `gh pr create` directly (simple shell command)
-- execute-phase spawns `vit-doc-updater` for doc analysis and writing
-
-### Pattern 2: Non-Blocking Parallel Tasks Where Safe
-
-execute-phase already runs executor agents in parallel within a wave. The same pattern applies to the new agents where they have no output dependency.
-
-**When safe to parallelize:**
-- vit-doc-updater can run in parallel with the push step (step 10.5) if no ordering constraint
-- vit-pr-reviewer can be fire-and-forget from verify-work's perspective (review comment doesn't block next step)
-
-**When NOT safe:**
-- vit-changelog-writer must complete before step 4 (archive) — its output feeds the archive
-- Draft PR must be created before vit-doc-updater is spawned (doc commits must land on the feature branch that the PR tracks)
-
-### Pattern 3: Graceful Degradation on Missing GitHub Context
-
-Existing commands already use `|| true` on all `gh` calls and check for empty `FEATURE_ISSUE`. New components must follow the same pattern: if `PR_NUMBER` is empty, log a warning and continue rather than failing.
-
-**What:**
+### Content Inlining Before Task Calls
 ```bash
-if [ -n "$PR_NUMBER" ]; then
-  gh pr ready "$PR_NUMBER" 2>/dev/null || true
-else
-  echo "No PR found for phase ${PHASE_NUM} — skipping PR promotion"
-fi
+# CORRECT — content inlined before Task()
+PLAN_CONTENT=$(cat "$WORK_DIR/path/to/plan.md")
+Task(prompt="...\n\nPlan:\n${PLAN_CONTENT}")
+
+# WRONG — @ syntax does not work across Task() boundaries
+Task(prompt="Read @./path/to/plan.md and execute it")
 ```
 
-**Why:** VIT is used in projects without GitHub integration. New features must not break the non-GitHub path.
+### STATE.md as First Read
+Every command and agent reads STATE.md as its first operation. This provides the milestone, phase position, branch mapping, and accumulated decisions needed to orient all subsequent work.
+
+### Commit Safety Rules
+- Never commit phase work to `main`
+- Always check `DESIGNATED_BRANCH` from STATE.md before first commit
+- Always stage files individually — never `git add .` or `git add -A`
+- The branch safety check in vit-executor halts execution if about to commit to main
+
+### WORK_DIR Propagation
+When executing in a worktree (not main working directory), `WORK_DIR` is determined at the start of execute-phase and plan-phase, and passed to all spawned agents. All bash commands in agents are prefixed with `cd "$WORK_DIR" &&`.
+
+### Non-Blocking doc/test Updates
+`vit-doc-updater` and `vit-test-writer` are spawned after phase completion and are non-blocking — if they fail, execution continues. The pattern is:
+```bash
+Task(...doc-updater...) || log "[doc-updater failed — continuing]"
+```
+Critical path agents (executor, verifier) are blocking.
+
+### Phase Namespace by Milestone
+Phase directories are namespaced by milestone: `.planning/phases/v1.0/02-auth/` not `.planning/phases/02-auth/`. This prevents collision when two milestones run in parallel worktrees.
+
+### Plan Sizing Rule
+Plans are sized for 2-3 tasks and ~50% context usage. If a phase requires more work, it gets multiple plans in the same wave (parallel if no file conflicts) rather than one large plan. Preferred structure: vertical slices (user model + API + UI in one plan) over horizontal layers (all models → all APIs → all UIs).
+
+### Graceful GitHub Degradation
+All `gh` CLI calls use `|| true` or empty-string fallback. Commands work without GitHub access — PR creation, issue tracking, and branch creation are additive, not required.
 
 ---
 
-## Anti-Patterns
+## Hooks and Session Integration
 
-### Anti-Pattern 1: Creating Draft PR From Main Worktree
+**SessionStart hook** (`hooks/vit-check-update.cjs`): Runs on Claude Code session start. Checks npm for new vit-cc version and writes result to `~/.claude/cache/vit-update-check.json`.
 
-**What people do:** Create the PR when `execute-phase` is called from the main worktree (on main or milestone branch) rather than from the feature branch worktree.
+**Status line** (`hooks/vit-statusline.js`): Reads session JSON from stdin, displays model name, current todo task (from `~/.claude/todos/`), directory, and context window usage as a progress bar. Reads the update cache file to show `⬆ /vit:update` indicator when a new version is available.
 
-**Why it's wrong:** `gh pr create` must be called from within the feature branch worktree (`WORK_DIR`). Creating it from main would target the wrong base branch and show wrong diffs.
-
-**Do this instead:** Always prefix PR creation with `cd "$WORK_DIR" && gh pr create ...`. The `WORK_DIR` variable is already set by step 0.5 of execute-phase.
-
-### Anti-Pattern 2: PR Targets Main Instead of Milestone Branch
-
-**What people do:** Set `--base main` when creating the feature PR.
-
-**Why it's wrong:** Feature branches are cut from `milestone/vX.Y`, not from `main`. The complete-milestone command handles the milestone-to-main PR separately. Targeting main from a feature branch creates a PR with wrong diff scope and a broken merge order.
-
-**Do this instead:** Use `--base "milestone/v${MILESTONE}"` for feature PRs. The milestone PR into main is managed by complete-milestone step 9 (already implemented).
-
-### Anti-Pattern 3: Doc-Updater Runs After Every Wave
-
-**What people do:** Spawn doc-updater after each wave completes.
-
-**Why it's wrong:** Mid-phase SUMMARY.md files are partial — they describe one plan's work, not the full phase outcome. Documentation updated from partial context will be inaccurate and require overwriting.
-
-**Do this instead:** Spawn doc-updater once, after all waves complete and all SUMMARY.md files exist for the phase. The `PLAN_LIST` variable already collects all plan paths at step 6.5.
-
-### Anti-Pattern 4: vit-pr-reviewer Blocks PR Promotion
-
-**What people do:** Wait for pr-reviewer to post its comment before promoting the PR to ready-for-review.
-
-**Why it's wrong:** The review comment is informational. The human reviewer needs to see the PR regardless of whether the automated review comment is posted. Blocking promotion on the review post delays the human reviewer unnecessarily.
-
-**Do this instead:** Call `gh pr ready` first, then spawn vit-pr-reviewer as a non-blocking Task. The Task tool blocks the orchestrator until completion, but this is acceptable because the PR promotion and agent spawn happen in the same step before control returns to the user.
+Both hooks are registered in `.claude/settings.json` via the install script's `mergeSettings()` function — existing settings are merged, not overwritten.
 
 ---
 
-## Build Order
+## Install Mechanism
 
-The dependencies between new components determine which must be built first:
+vit-cc is an npm package. `src/install.js` copies four directory trees into the target project:
 
 ```
-Phase 1 (Foundation):
-  STATE.md schema change (add PR column)
-    └── required by: execute-phase PR creation step,
-                     verify-work PR promotion step
-
-Phase 2 (Core Agents — parallel, no dependency between them):
-  vit-pr-reviewer agent
-    └── required by: verify-work modification
-  vit-doc-updater agent
-    └── required by: execute-phase modification
-  vit-changelog-writer agent
-    └── required by: complete-milestone modification
-
-Phase 3 (Command Modifications — depends on Phase 1 + 2):
-  execute-phase.md modification
-    └── adds: draft PR creation (step 10.7) + doc-updater spawn
-    └── requires: STATE.md schema (to write PR number),
-                  vit-doc-updater agent
-  verify-work.md modification
-    └── adds: PR promotion + pr-reviewer spawn (step 8.5)
-    └── requires: STATE.md schema (to read PR number),
-                  vit-pr-reviewer agent
-  complete-milestone.md modification
-    └── adds: changelog-writer spawn (before step 4)
-    └── requires: vit-changelog-writer agent
+files/agents/        → .claude/agents/
+files/commands/vit/  → .claude/commands/vit/
+files/hooks/         → .claude/hooks/
+files/vit/           → .claude/vit/
 ```
 
-**Recommended phase structure for roadmap:**
-1. STATE.md schema + vit-doc-updater + vit-pr-reviewer + vit-changelog-writer (can all be in one phase, parallel plans)
-2. execute-phase modification
-3. verify-work modification
-4. complete-milestone modification
-
-Phases 2, 3, 4 can be collapsed into one phase if the planner assigns them to different waves with the agent files as wave 1 and command modifications as wave 2.
+After copying, it merges the hooks registration into `.claude/settings.json` and optionally installs a GitHub CI workflow. The `bin/vit-cc.js` entry point exposes `npx vit-cc` for installation.
 
 ---
 
-## Integration Points Summary
+## Confidence Assessment
 
-### External Services
-
-| Service | Integration Pattern | Notes |
-|---------|---------------------|-------|
-| GitHub API (via gh CLI) | `gh pr create`, `gh pr ready`, `gh pr view` | All calls use `|| true` for graceful degradation |
-| GitHub PR review API | `gh pr review --comment` (in vit-pr-reviewer) | PR number comes from STATE.md PR Mapping |
-
-### Internal Boundaries
-
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| execute-phase → vit-doc-updater | Task() spawn with WORK_DIR + phase plans list | After all waves complete |
-| execute-phase → STATE.md | Direct write of PR number to PR Mapping column | After `gh pr create` succeeds |
-| verify-work → STATE.md | Direct read of PR number from PR Mapping column | To call `gh pr ready` |
-| verify-work → vit-pr-reviewer | Task() spawn with PR_NUMBER + WORK_DIR | After PR promoted to ready |
-| complete-milestone → vit-changelog-writer | Task() spawn with milestone range + WORK_DIR | Before step 4 archive |
-| vit-pr-reviewer → GitHub | `gh pr review` or `gh api` for review comment | Reads PR diff via `gh pr diff` |
-| vit-doc-updater → filesystem | Edit/Write calls only on `*.md` and `docs/` | Must not touch `.planning/` |
-| vit-changelog-writer → CHANGELOG.md | Write or append | Creates file if missing |
-
----
-
-## Sources
-
-- Direct reading of `files/commands/vit/execute-phase.md` (HIGH confidence — authoritative)
-- Direct reading of `files/commands/vit/verify-work.md` (HIGH confidence — authoritative)
-- Direct reading of `files/commands/vit/complete-milestone.md` (HIGH confidence — authoritative)
-- Direct reading of `files/commands/vit/review-feedback.md` (HIGH confidence — authoritative)
-- Direct reading of `files/agents/vit-github-reviewer.md` (HIGH confidence — authoritative)
-- Direct reading of `.planning/codebase/ARCHITECTURE.md` (HIGH confidence — authoritative)
-- Direct reading of `.planning/codebase/STRUCTURE.md` (HIGH confidence — authoritative)
-- Direct reading of `.planning/codebase/INTEGRATIONS.md` (HIGH confidence — authoritative)
-- Direct reading of `files/vit/templates/state.md` (HIGH confidence — authoritative)
-
----
-*Architecture research for: vit-cc GitHub PR lifecycle and agent extensions*
-*Researched: 2026-03-18*
+| Area | Confidence | Source |
+|------|------------|--------|
+| Command structure | HIGH | Read all 29 command files, especially new-project, execute-phase, plan-phase, new-milestone |
+| Agent definitions | HIGH | Read all 16 agent files |
+| State file schemas | HIGH | Read templates and actual .planning/ files |
+| Execution flow | HIGH | Read execute-phase workflow + command in full |
+| Model profile system | HIGH | Read references/model-profiles.md |
+| Wave/checkpoint mechanics | HIGH | Read checkpoints.md + execute-phase.md workflow |
+| Extension points | HIGH | Derived from actual file structure and conventions |
+| Install mechanism | HIGH | Read src/install.js |
+| GitHub integration | HIGH | Read execute-phase, new-project, new-milestone commands |

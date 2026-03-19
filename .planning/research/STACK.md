@@ -1,260 +1,218 @@
-# Stack Research
+# Technology Stack: Documentation Tooling
 
-**Domain:** GitHub PR lifecycle automation + Claude Code agentic tooling (Markdown system prompts)
-**Researched:** 2026-03-18
-**Confidence:** HIGH for gh CLI commands; MEDIUM for JSDoc update approach; HIGH for CHANGELOG tooling
+**Project:** vit-cc Documentation & Developer Guide
+**Researched:** 2026-03-19
+**Confidence:** HIGH for VitePress; HIGH for Mermaid; HIGH for plain-docs baseline
 
 ---
 
 ## Scope
 
-This research covers three new capability domains being added to vit-cc:
+This research covers tooling for documenting vit-cc as an agentic framework — a collection of
+markdown files, not a traditional code library. The question is: what format, structure, and tooling
+produces documentation that is readable on GitHub, maintainable by agents, and usable by developers?
 
-1. Programmatic GitHub PR management (create draft, promote to ready, post reviews)
-2. JSDoc/docstring extraction and targeted updates
-3. CHANGELOG generation from git history or structured phase summaries
-
-The existing stack (Node.js CLI, `gh` CLI, GitHub Actions, Markdown agent definitions) is already
-validated and is NOT re-evaluated here.
+The existing stack (Node.js CLI, `gh` CLI, markdown agent definitions) is validated and not
+re-evaluated here. This is purely documentation-layer tooling.
 
 ---
 
 ## Recommended Stack
 
-### 1. GitHub PR Management
+### Primary: Plain `docs/` Folder with VitePress as Optional Layer
 
-All PR operations are already handled by the `gh` CLI (v2.88.1 as of March 2026). No additional
-library is needed. The full command set for the new features:
+**Verdict:** Start with a structured `docs/` folder of plain markdown. Add VitePress on top for a
+site if the project needs web presence. Both are complementary, not competing.
 
-| Operation | Command | Notes |
-|-----------|---------|-------|
-| Create draft PR | `gh pr create --draft --title "..." --body "..."` | Returns PR URL on success |
-| Create PR with reviewer | `gh pr create --reviewer <login>` | Can combine with `--draft` |
-| Promote draft to ready | `gh pr ready [<number>]` | Omit number to use current branch |
-| Convert ready back to draft | `gh pr ready --undo [<number>]` | Requires GitHub plan that supports drafts |
-| Post review (approve) | `gh pr review <number> --approve --body "..."` | |
-| Post review (request changes) | `gh pr review <number> --request-changes --body "..."` | |
-| Post review (comment only) | `gh pr review <number> --comment --body "..."` | |
-| Read body from file | `gh pr review <number> --comment --body-file <file>` | Use for multi-line reviews |
-| Edit title/body/labels | `gh pr edit <number> --title "..." --body "..."` | Does NOT change draft status |
-| View PR as JSON | `gh pr view <number> --json title,body,state,isDraft` | For status checks |
+The insight driving this recommendation: vit-cc's documentation audience reaches content through
+two channels — GitHub (README, linked markdown files in `docs/`) and potentially a hosted site.
+Plain markdown that renders well on GitHub is the non-negotiable baseline. VitePress is the upgrade
+path once that baseline is solid.
 
-**Inline review comments (per-line):** `gh pr review` does not support inline diff comments
-natively. For posting inline comments, use `gh api` against the REST endpoint directly:
+---
+
+### Tier 1: Documentation Structure
+
+| Decision | Recommendation | Rationale |
+|----------|---------------|-----------|
+| Format | Plain `.md` files in `docs/` | GitHub renders natively; agents can write/update without tooling |
+| Structure | Multi-file with clear hierarchy | One file per command, one file per agent, plus guides |
+| Diagrams | Mermaid in fenced code blocks | GitHub renders natively since 2022; no export step needed |
+| Entry point | `docs/README.md` or top-level `README.md` with links | GitHub surfaces `README.md` automatically |
+| Naming | Kebab-case `.md` files | GitHub renders file names as page titles; `command-reference.md` > `CommandReference.md` |
+
+**Why plain markdown over a static site generator as the starting point:**
+
+vit-cc's content is markdown files authored and updated by agents (`vit-doc-updater`,
+`vit-changelog-writer`). Adding a build step means agents must understand build output, not just
+file content. Plain markdown is agent-native. A static site can be layered on top without changing
+the underlying files.
+
+---
+
+### Tier 2: Static Site (When Needed)
+
+**Recommendation: VitePress 1.x**
+
+If vit-cc needs a hosted documentation site (vitejs.dev-style), VitePress is the correct choice.
+
+| Technology | Version | Purpose | Why |
+|------------|---------|---------|-----|
+| VitePress | 1.x (stable) | Static site from markdown | Purpose-built for markdown docs; minimal config; GitHub Pages deploy in <5 min; built-in local search |
+| vitepress-sidebar | 1.x | Auto-generate sidebar from folder structure | Eliminates manual sidebar maintenance as files are added |
+
+**Why VitePress over alternatives:**
+
+- **vs. Docusaurus:** Docusaurus is React-heavy and designed for large-scale docs with versioning
+  (e.g., React, Jest docs). vit-cc does not need versioned docs or React components. VitePress has
+  significantly lower configuration overhead for the same markdown-first result. Setup is 2-5 minutes
+  vs. Docusaurus's 5-10 minutes, and VitePress produces smaller bundle sizes.
+
+- **vs. MkDocs:** MkDocs requires Python. VitePress requires Node.js, which is already a vit-cc
+  dependency. Keeping the toolchain in one runtime is simpler for contributors and CI.
+
+- **vs. Mintlify/GitBook (hosted):** These are SaaS products. Mintlify Pro is $300/month.
+  GitBook's collaborative editing is irrelevant for agent-authored docs. VitePress is self-hosted,
+  zero cost, and source-controlled.
+
+- **vs. GitHub Wiki:** GitHub Wikis are not part of the main repo tree, cannot be updated by
+  automated agents via PR, and are not included in releases. Avoid.
+
+**VitePress key features for this project:**
+
+- Built-in fuzzy full-text search via minisearch (no Algolia account needed for an open source CLI)
+- File-based routing: `docs/commands/execute-phase.md` → `/commands/execute-phase`
+- Custom containers (tip, warning, danger) for callouts
+- Mermaid via `vitepress-plugin-mermaid` (plugin adds ~5 lines of config)
+- GitHub Pages deployment via one GitHub Actions workflow
+
+**VitePress minimal setup:**
 
 ```bash
-gh api repos/{owner}/{repo}/pulls/{pull_number}/reviews \
-  --method POST \
-  --field body="Review summary" \
-  --field event="REQUEST_CHANGES" \
-  --field "comments[][path]=src/foo.js" \
-  --field "comments[][line]=12" \
-  --field "comments[][body]=This needs attention"
+npm add -D vitepress
+npx vitepress init
 ```
 
-REST endpoint: `POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews`
+Then add to `package.json`:
 
-Body parameters:
-- `body` (string) — overall review body
-- `event` (string) — `APPROVE` | `REQUEST_CHANGES` | `COMMENT`
-- `commit_id` (string, optional) — defaults to latest commit
-- `comments` (array) — inline comments, each with `path`, `line`, `body`
-
-**Confidence:** HIGH — verified from official gh CLI manual pages and GitHub REST API docs.
-
-**Source:** https://cli.github.com/manual/gh_pr_create, https://cli.github.com/manual/gh_pr_ready,
-https://cli.github.com/manual/gh_pr_review, https://docs.github.com/en/rest/pulls/reviews
+```json
+{
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  }
+}
+```
 
 ---
 
-### 2. CHANGELOG Generation
+### Tier 3: Diagrams
 
-**Recommendation: git-cliff v2.12.0 (npm package)**
+**Recommendation: Mermaid in fenced code blocks**
 
-git-cliff is a Rust-based binary distributed as an npm package. It generates changelogs from git
-history following the Conventional Commits specification, with optional Keep a Changelog output
-format.
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| git-cliff | 2.12.0 | CHANGELOG generation from git log | Fastest in class; native Conventional Commits support; Keep a Changelog output; programmatic Node.js API; active maintenance (last release: Feb 2026) |
-| Conventional Commits | 1.0.0 (spec) | Commit message format convention | Industry standard; drives git-cliff parsing; already used by similar tools in this ecosystem |
-
-**Installation:**
-
-```bash
-npm install git-cliff --save-dev
+```markdown
+```mermaid
+flowchart TD
+  A[/vit:plan-phase] --> B[vit-phase-researcher]
+  B --> C[vit-planner]
+  C --> D[vit-plan-checker]
+```
 ```
 
-Node.js requirements: >=18.19 | >=20.6 | >=21 (matches vit-cc's `engines.node: ">=18"` with a minor caveat — see Version Compatibility section).
+| Property | Status |
+|----------|--------|
+| GitHub native rendering | YES — since Feb 2022, confirmed stable through 2025 |
+| VitePress support | Via `vitepress-plugin-mermaid` (one npm install) |
+| Export to PNG/SVG | Via `@mermaid-js/mermaid-cli` if static images needed |
+| Version control friendly | YES — text-based, diffable |
 
-**Programmatic API (for use inside agent scripts):**
+**Why Mermaid over alternatives:**
 
-```javascript
-import { runGitCliff } from "git-cliff";
+- **vs. draw.io / Lucidchart:** Binary or XML formats; not agent-writable; not version-controllable
+  as readable diffs.
+- **vs. PlantUML:** Requires Java runtime or external service. Mermaid is JavaScript-native.
+- **vs. D2:** Newer, less GitHub support, smaller ecosystem. Mermaid has 80,000+ weekly npm
+  downloads (2025).
+- **vs. SVG exports embedded in docs:** SVGs can't be authored by agents writing markdown;
+  Mermaid syntax can.
 
-await runGitCliff({
-  // typed Options object — same flags as CLI
-  unreleased: true,
-  tag: "1.2.0",
-});
-```
+**What Mermaid covers for vit-cc docs:**
 
-**CLI usage (for use in bash steps inside Markdown agents):**
-
-```bash
-# Generate full changelog
-npx git-cliff -o CHANGELOG.md
-
-# Generate only unreleased entries (for PR description injection)
-npx git-cliff --unreleased --strip all
-
-# Generate changelog for a specific tag range
-npx git-cliff v1.0.0..HEAD
-```
-
-**Keep a Changelog output:** git-cliff supports Keep a Changelog 1.1.0 format sections (Added,
-Changed, Deprecated, Removed, Fixed, Security) via `cliff.toml` template configuration.
-
-**Why NOT conventional-changelog npm package:** The `conventional-changelog` npm ecosystem is
-fragmented — it is split across many sub-packages (`conventional-changelog-core`,
-`conventional-changelog-angular`, etc.), has a more complex programmatic API, and is slower than
-git-cliff. git-cliff has cleaner configuration, better documentation, and is more actively
-developed as of 2025-2026.
-
-**Confidence:** HIGH — version verified from git-cliff.org docs (v2.12.0) and npm page; Node.js
-requirements verified; programmatic API confirmed in docs.
-
-**Source:** https://git-cliff.org/docs/installation/npm/, https://git-cliff.org/docs/
+- `flowchart` — command orchestration flows (plan → execute → verify)
+- `sequenceDiagram` — agent spawning sequences
+- `graph` — component dependency maps
 
 ---
 
-### 3. JSDoc/Docstring Extraction and Targeted Updates
+### Tier 4: Command Reference Generation
 
-This domain requires two distinct operations:
+**Recommendation: No generation tooling. Author directly.**
 
-**A. Extraction (reading existing docs):** `jsdoc-api` v9.3.5
+vit-cc commands are markdown files, not code with parseable signatures. There is no equivalent of
+JSDoc or OpenAPI for Claude Code slash commands. Attempts to auto-generate command references from
+markdown sources produce output of the same quality as hand-authoring, with added complexity.
 
-**B. Targeted updates (writing back to source):** `recast` + Babel parser
+The correct pattern is: one `.md` file per command in `docs/commands/`, one `.md` per agent in
+`docs/agents/`, each authored by the `vit-doc-updater` agent which already has the source content.
 
-The operations are intentionally separate because no single library handles both well.
+**If structured frontmatter is desired for future tooling:**
 
-#### 3A. Extraction: jsdoc-api
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| jsdoc-api | 9.3.5 | Programmatic JSDoc extraction into structured JSON doclets | Wraps jsdoc's `explain()` API; returns structured array of doclets with name, description, params, returns, tags; caching support; actively maintained |
-
-```javascript
-import jsdocApi from "jsdoc-api";
-
-const doclets = await jsdocApi.explain({
-  files: ["src/**/*.js"],
-  cache: true,
-});
-// Returns array of doclet objects: { name, description, params, returns, ... }
-```
-
-Use `jsdoc-api` when the agent needs to read existing JSDoc to produce summaries, detect missing
-documentation, or feed structured info into a changelog or README updater.
-
-**Confidence:** MEDIUM — version 9.3.5 confirmed from npm search results. API shape confirmed
-from multiple sources but not directly verified via Context7.
-
-#### 3B. Targeted Updates: recast + @babel/parser
-
-When an agent needs to **write JSDoc comments back** into source files (add missing docs, update
-@param descriptions, etc.), use `recast` with `@babel/parser`.
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| recast | latest (^0.23.x) | AST-based code transform with format preservation | Reprints only modified nodes; preserves indentation, quotes, whitespace — critical for doc-only patches that must not cause diff noise |
-| @babel/parser | latest (^7.x) | Parse JS/TS source to AST including leadingComments | Well-maintained; handles JSX, TypeScript, modern JS syntax |
-| @babel/types | latest (^7.x) | Construct new AST comment nodes | Required when building new JSDoc blocks programmatically |
-
-**Pattern:**
-
-```javascript
-import recast from "recast";
-import * as babelParser from "@babel/parser";
-
-const source = fs.readFileSync("src/foo.js", "utf8");
-const ast = recast.parse(source, {
-  parser: {
-    parse: (src) =>
-      babelParser.parse(src, {
-        sourceType: "module",
-        plugins: ["typescript"],
-        attachComment: true,
-      }),
-  },
-});
-
-// Mutate leadingComments on target node
-// ...
-
-const { code } = recast.print(ast);
-fs.writeFileSync("src/foo.js", code);
-```
-
-**Why NOT regex-based doc updates:** Regex-based JSDoc patching breaks on multi-line comments,
-nested tags, and format variations. It creates high false-positive rates on any non-trivial
-codebase. recast guarantees source fidelity for unchanged nodes.
-
-**Why NOT TypeScript Compiler API for write-back:** The TS compiler API is excellent for
-extraction and type inference but does not provide a format-preserving printer. Using
-`ts.createPrinter()` reformats all code, not just the changed nodes, producing large diffs on
-doc-only updates.
-
-**Confidence:** MEDIUM — recast recommendation is well-established in the Node.js AST tooling
-community (multiple sources converge); TS Compiler API limitation on printing is confirmed in
-official TS discussions.
-
----
-
-## Supporting Libraries Summary
-
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| git-cliff | 2.12.0 | CHANGELOG generation | Any milestone completion or PR description generation |
-| jsdoc-api | 9.3.5 | JSDoc extraction to JSON | When agent reads existing docs (changelog writer, doc auditor) |
-| recast | ^0.23.x | Format-preserving AST write-back | When agent patches JSDoc comments into source files |
-| @babel/parser | ^7.x | Parse JS/TS source | Required by recast for full syntax coverage |
-| @babel/types | ^7.x | Construct AST nodes | Required when building new doc comment nodes |
-
-**Note on installation:** These are dev dependencies or agent-invoked tools. They do NOT go into
-the vit-cc package itself. They go into the `devDependencies` of the **target project** where the
-agents run. Agent Markdown prompts should check for presence and instruct installation if missing.
-
----
-
-## Development Tools (GitHub Actions)
-
-No new Actions dependencies needed. The existing `phase-ci.yml` workflow pattern already uses
-`gh` CLI within Action runners. New workflows for PR automation should follow the same pattern:
-use `gh` CLI commands directly, invoking `gh pr create`, `gh pr review`, and `gh api` as needed.
-
-For git-cliff in CI:
+Add YAML frontmatter to command docs:
 
 ```yaml
-- name: Generate changelog
-  run: npx git-cliff --unreleased --strip all
+---
+command: /vit:execute-phase
+category: execution
+inputs:
+  - phase_number
+spawns:
+  - vit-executor
+  - vit-integration-checker
+  - vit-test-writer
+---
 ```
+
+This makes docs machine-readable without requiring a separate tool chain today. A future script
+could generate an index from frontmatter if needed.
 
 ---
 
-## Alternatives Considered
+## Folder Structure Recommendation
 
-| Category | Recommended | Alternative | Why Not |
-|----------|-------------|-------------|---------|
-| CHANGELOG generation | git-cliff | conventional-changelog | Fragmented npm ecosystem; more complex API; git-cliff is faster and better maintained as of 2026 |
-| CHANGELOG generation | git-cliff | auto-changelog | Less customizable; no programmatic API; smaller community |
-| CHANGELOG generation | git-cliff | semantic-release | Full release automation (opinionated about versioning/publishing); overkill for agents that only need CHANGELOG text |
-| JSDoc extraction | jsdoc-api | TypeDoc | TypeDoc requires TypeScript; vit-cc targets JS-first projects; jsdoc-api works on plain JS |
-| JSDoc write-back | recast + babel | Regex patching | Brittle; breaks on complex comments; not maintainable |
-| JSDoc write-back | recast + babel | TS Compiler API | No format-preserving printer; rewrites entire file on print |
-| Inline PR comments | gh api (REST) | gh-pr-review extension | Extension adds external dependency; `gh api` is built-in and sufficient for agent-posted reviews |
-| PR draft management | gh pr ready | GitHub GraphQL API | `gh pr ready` is simpler and already available via the installed gh CLI |
+```
+docs/
+├── index.md                    # Landing page (getting started)
+├── user-guide/
+│   ├── getting-started.md      # Install + first project walkthrough
+│   ├── core-loop.md            # new-project → plan → execute → verify
+│   └── github-integration.md  # CI, PR automation, feedback loop
+├── commands/
+│   ├── index.md                # Commands overview table
+│   ├── execute-phase.md        # One file per command
+│   ├── plan-phase.md
+│   ├── verify-work.md
+│   └── ...                     # 29 commands total
+├── agents/
+│   ├── index.md                # Agents overview + spawning map
+│   ├── vit-executor.md         # One file per agent
+│   ├── vit-planner.md
+│   └── ...                     # 16 agents total
+├── developer-guide/
+│   ├── architecture.md         # System structure + data flow diagrams
+│   ├── design-patterns.md      # Patterns used across agents/commands
+│   ├── custom-agents.md        # How to create custom agents
+│   ├── custom-commands.md      # How to create custom slash commands
+│   └── state-management.md    # STATE.md, PLAN.md lifecycle
+└── reference/
+    ├── configuration.md        # config.json options
+    └── templates.md            # Template file reference
+```
+
+This maps directly to the three documentation goals from PROJECT.md:
+1. User guide — `docs/user-guide/` + `docs/commands/` + `docs/agents/`
+2. Developer guide — `docs/developer-guide/`
+3. Architecture — `docs/developer-guide/architecture.md` with Mermaid diagrams
 
 ---
 
@@ -262,94 +220,63 @@ For git-cliff in CI:
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| `regex` for JSDoc write-back | Brittle on multi-line comments, nested tags, whitespace variants | recast + @babel/parser |
-| `ts.createPrinter()` for doc updates | Reformats entire file, not just changed nodes | recast (format-preserving) |
-| `conventional-changelog` npm package | Fragmented sub-package ecosystem, complex setup | git-cliff |
-| `semantic-release` | Opinionated full release pipeline; assumes ownership of version bumping and npm publishing | git-cliff (CHANGELOG only) |
-| `gh pr edit` for draft toggling | `gh pr edit` does NOT support changing draft status | `gh pr ready` / `gh pr ready --undo` |
+| GitHub Wiki | Not in repo tree; agents can't PR-update it; not versioned with code | `docs/` folder in main repo |
+| Mintlify / GitBook (SaaS) | Paid tiers; external dependency; docs updates can't be atomic commits | VitePress self-hosted |
+| Docusaurus | React overhead; built for versioned API docs; overkill for a CLI framework | VitePress |
+| Auto-generating command reference from source | No parseable structure in `.md` agent files; adds toolchain for zero gain | Hand-authored per-command docs updated by vit-doc-updater |
+| Single mega-README | Already 200 lines and growing; non-linkable sections; poor discoverability | Multi-file `docs/` hierarchy |
+| Binary diagram formats (draw.io, Visio) | Not version-controllable; not agent-writable | Mermaid in markdown |
+| Sphinx | Python ecosystem; RST-first; no advantage over VitePress for a Node.js project | VitePress |
 
 ---
 
-## Stack Patterns by Variant
+## Integration with Existing Agent Workflow
 
-**If generating CHANGELOG for a PR description (not a file):**
-- Use `npx git-cliff --unreleased --strip all`
-- Capture stdout and pass as `--body` to `gh pr create`
-- Because: `--strip all` removes header/footer, leaving only the entry list
+Two existing agents write documentation today:
 
-**If generating full CHANGELOG.md for a release:**
-- Use `npx git-cliff -o CHANGELOG.md`
-- Commit the result on the release branch
-- Because: writes directly to file with full format including version header
+**`vit-doc-updater`** — spawned after each phase, reads `SUMMARY.md`, updates README/docs sections
+and appends to `CHANGELOG.md [Unreleased]`.
 
-**If posting a structured AI-generated code review:**
-- Use `gh pr review <number> --comment --body-file <tempfile>`
-- Because: `--body-file` handles multi-line markdown bodies reliably without shell escaping issues
+**`vit-changelog-writer`** — spawned at milestone completion, promotes `[Unreleased]` to versioned
+entry and updates project docs.
 
-**If posting inline diff comments from an agent:**
-- Use `gh api repos/{owner}/{repo}/pulls/{number}/reviews --method POST` with `--field` flags
-- Because: `gh pr review` doesn't support inline comments; `gh api` gives direct REST access
+Both agents write plain markdown. The recommended `docs/` structure keeps them functional: agents
+find and update the relevant `.md` file by path without needing to understand a build pipeline.
 
-**If the project uses JavaScript (not TypeScript):**
-- Use jsdoc-api for extraction + recast + @babel/parser for updates
-- TypeDoc is not needed
-
-**If the project uses TypeScript:**
-- Use jsdoc-api (works on TS files via jsdoc babel plugin) OR TypeDoc for extraction
-- Still use recast for write-back (not TS compiler printer)
+The only constraint: if VitePress is added, agent-written files must not include VitePress-specific
+syntax (custom containers, Vue components) unless the agents are explicitly taught to use them.
+Start conservative — plain GFM markdown that works on both GitHub and VitePress.
 
 ---
 
-## Version Compatibility
+## Alternatives Considered
 
-| Package | Compatible With | Notes |
-|---------|-----------------|-------|
-| git-cliff@2.12.0 | Node.js >=18.19 | vit-cc requires Node >=18; note that 18.0–18.18 will fail — document this constraint clearly |
-| jsdoc-api@9.3.5 | Node.js >=12 (via fast-glob v3) | No compatibility concerns for Node 18+ |
-| recast@^0.23.x | @babel/parser@^7.x | Must use babel parser plugin, not default parser, for JSX/TS support |
-
----
-
-## Installation
-
-These go into the **target project** (not vit-cc itself). Agents should document this requirement.
-
-```bash
-# CHANGELOG generation (dev dependency in target project)
-npm install -D git-cliff
-
-# JSDoc extraction
-npm install -D jsdoc-api
-
-# JSDoc write-back (AST-based)
-npm install -D recast @babel/parser @babel/types
-```
-
-For one-off use in agent bash steps without installing:
-
-```bash
-# CHANGELOG (no install needed)
-npx git-cliff@latest --unreleased --strip all
-```
+| Category | Recommended | Alternative | Why Not |
+|----------|-------------|-------------|---------|
+| Static site | VitePress | Docusaurus | React overhead; versioning features not needed; longer setup |
+| Static site | VitePress | MkDocs | Python runtime adds dependency; no advantage for Node.js project |
+| Static site | VitePress | Mintlify | $300/month Pro; SaaS dependency for open source tool |
+| Static site | VitePress | Nextra (Next.js) | Next.js is web app framework; documentation use is secondary; heavier than VitePress |
+| Diagrams | Mermaid | PlantUML | Requires Java; no GitHub native render |
+| Diagrams | Mermaid | D2 | Less GitHub support; smaller ecosystem |
+| Structure | Multi-file `docs/` | Single README | Doesn't scale past 200 lines; no deep linking |
+| Structure | Multi-file `docs/` | GitHub Wiki | Outside repo tree; not PR-updateable by agents |
 
 ---
 
 ## Sources
 
-- https://cli.github.com/manual/gh_pr_create — `gh pr create` all flags (HIGH confidence)
-- https://cli.github.com/manual/gh_pr_ready — `gh pr ready` flags including `--undo` (HIGH)
-- https://cli.github.com/manual/gh_pr_review — `gh pr review` flags and review types (HIGH)
-- https://cli.github.com/manual/gh_pr — complete `gh pr` subcommand list (HIGH)
-- https://cli.github.com/manual/gh_pr_edit — `gh pr edit` flags, draft status absence confirmed (HIGH)
-- https://docs.github.com/en/rest/pulls/reviews — REST API endpoint schema for PR reviews (HIGH)
-- https://github.com/cli/cli/releases — gh CLI v2.88.1 confirmed as latest (March 2026) (HIGH)
-- https://git-cliff.org/docs/installation/npm/ — git-cliff v2.12.0, npm install method, Node.js requirements, programmatic API (HIGH)
-- https://www.npmjs.com/package/jsdoc-api — version 9.3.5, programmatic explain() API (MEDIUM — 403 on direct npm fetch, confirmed via search)
-- https://www.npmjs.com/package/recast — format-preserving AST printer (MEDIUM — confirmed via multiple community sources)
-- https://keepachangelog.com/en/1.1.0/ — Keep a Changelog 1.1.0 section format (HIGH)
-- https://github.com/cli/cli/issues/12396 — confirms gh pr review does NOT support inline comments natively (MEDIUM)
+- https://vitepress.dev/guide/getting-started — VitePress setup and features (HIGH)
+- https://vitepress.dev/reference/default-theme-search — built-in minisearch confirmed (HIGH)
+- https://vitepress.dev/guide/markdown — Markdown extensions list, no native Mermaid (HIGH)
+- https://okidoki.dev/documentation-generator-comparison — VitePress vs Docusaurus vs MkDocs setup comparison (MEDIUM)
+- https://github.com/jooy2/vitepress-sidebar — vitepress-sidebar auto-generation plugin (MEDIUM)
+- https://github.blog/developer-skills/github/include-diagrams-markdown-files-mermaid/ — GitHub native Mermaid rendering (HIGH)
+- https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams — GitHub Mermaid docs (HIGH)
+- https://mermaid.js.org/ — Mermaid diagram types and syntax (HIGH)
+- https://dev.to/infrasity-learning/best-developer-documentation-tools-in-2025-mintlify-gitbook-readme-docusaurus-10fc — tool comparison (MEDIUM)
 
 ---
 
-*Stack research for: vit-cc GitHub PR lifecycle automation milestone*
-*Researched: 2026-03-18*
+*Stack research for: vit-cc Documentation & Developer Guide milestone*
+*Researched: 2026-03-19*
