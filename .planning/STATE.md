@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 01 of 02 (README Rewrite with ASCII Art Branding)
-Plan: 1 of 4 complete
+Plan: 2 of 4 complete
 Status: In progress
-Last activity: 2026-03-19 — Completed v1.1-01-01-PLAN.md (README skeleton)
+Last activity: 2026-03-19 — Completed v1.1-01-02-PLAN.md (Commands Reference)
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -44,6 +44,12 @@ Full decisions log in PROJECT.md Key Decisions table.
 - Section dividers: stage banner pattern (━━━) inside fenced code blocks above each ## heading
 - Footer Discord/docs URLs: placeholder values (discord.gg/vit-claude, vit-claude.dev) — not found in repo
 
+**v1.1/01 Plan 02 decisions:**
+- Compact table format (not per-command headings) for 31-command reference — fits density requirement
+- ASCII dividers use ─── style inside fenced code blocks per group, consistent with Plan 01 section header pattern
+- Descriptions taken verbatim from description: frontmatter field of each command file
+- /vit:set-profile included as /vit:set-profile even though frontmatter omits vit: prefix
+
 ### Pending Todos
 
 None.
@@ -55,7 +61,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Completed v1.1/01 Plan 01 — README skeleton with 3 placeholder markers
+Stopped at: Completed v1.1/01 Plan 02 — Commands Reference (31 commands, 11 groups) added to README.md
 Resume file: None
 
 ## GitHub Issue Mapping
