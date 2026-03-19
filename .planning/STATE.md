@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Milestone: v1.1
-Phase: 01 of 02 (README Rewrite with ASCII Art Branding) — COMPLETE
-Plan: 5 of 5 (gap closure) — complete
-Status: Phase complete — ready to merge or advance to Phase 02
-Last activity: 2026-03-19 — Completed v1.1-01-05 (ASCII art hero banner gap closure)
+Phase: 02 of 02 (Documentation & Developer Portal) — In progress
+Plan: 1 of 5 (VitePress foundation) — complete
+Status: In progress
+Last activity: 2026-03-19 — Completed v1.1-02-01 (VitePress site foundation, landing page, deployment workflow)
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -65,6 +65,12 @@ Full decisions log in PROJECT.md Key Decisions table.
 - Subtitle lines kept without + prefix for neutral/white color, contrasting the green ASCII art
 - Old box-drawing frame (╔══╗) removed — diff block provides sufficient visual framing
 
+**v1.1/02 Plan 01 decisions:**
+- vitepress-plugin-mermaid included from the start — required by architecture diagram pages (02-03)
+- base: '/vit-cc/' set in config.ts — mandatory for GitHub Pages subdirectory hosting (without it, all assets 404)
+- All 10 stub pages created upfront — VitePress build fails with dead-link errors if sidebar links point to non-existent files
+- docs/ uses isolated package.json — decouples vitepress from root project, enables independent CI caching
+
 ### Pending Todos
 
 None.
@@ -76,7 +82,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: v1.1/01 Plan 05 — complete. Phase 01 fully done.
+Stopped at: v1.1/02 Plan 01 — complete. VitePress foundation, landing page, deploy workflow done.
 Resume file: None
 
 ## GitHub Issue Mapping
