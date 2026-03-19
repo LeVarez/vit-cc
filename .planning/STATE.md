@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 Milestone: v1.1
 Phase: 01 of 02 (README Rewrite with ASCII Art Branding)
-Plan: 2 of 4 complete
+Plan: 3 of 4 complete
 Status: In progress
-Last activity: 2026-03-19 — Completed v1.1-01-02-PLAN.md (Commands Reference)
+Last activity: 2026-03-19 — Completed v1.1-01-03-PLAN.md (Agents Reference + Settings Reference)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 30%
 
 ## Performance Metrics
 
@@ -50,6 +50,12 @@ Full decisions log in PROJECT.md Key Decisions table.
 - Descriptions taken verbatim from description: frontmatter field of each command file
 - /vit:set-profile included as /vit:set-profile even though frontmatter omits vit: prefix
 
+**v1.1/01 Plan 03 decisions:**
+- Agent descriptions sourced directly from frontmatter of each agent file, not from memory
+- vit-verifier and vit-integration-checker spawn source identified via command files (execute-phase, audit-milestone) since their own descriptions omit "Spawned by"
+- Model profile matrix matches model-profiles.md exactly (11 agents x 3 profiles)
+- Sample config.json shows all 11 keys at documented defaults
+
 ### Pending Todos
 
 None.
@@ -61,7 +67,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Completed v1.1/01 Plan 02 — Commands Reference (31 commands, 11 groups) added to README.md
+Stopped at: Completed v1.1/01 Plan 03 — Agents Reference (16 agents) and Settings Reference (11 config keys + model matrix) added to README.md
 Resume file: None
 
 ## GitHub Issue Mapping
