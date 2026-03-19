@@ -27,12 +27,16 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 - ✓ `vit-pr-reviewer` agent spawned automatically after `verify-work` passes — v1.0
 - ✓ `vit-doc-updater` agent spawns after each phase to update docs and CHANGELOG — v1.0
 - ✓ `vit-changelog-writer` agent generates versioned CHANGELOG entry on `/vit:complete-milestone` — v1.0
+- ✓ README rewrite with ASCII art branding, complete command/agent/settings reference — v1.1
+- ✓ GitHub Pages technical documentation site using VitePress (10 pages, 4 guides, 3 contributing, 3 reference) — v1.1
+- ✓ Architecture diagrams and contributor guides (Command Anatomy, Agent Anatomy) — v1.1
+- ✓ GitHub Pages deployment workflow (`deploy-docs.yml`, verified `actions/setup-node@v6`) — v1.1
 
 ### Active
 
 <!-- Current scope for next milestone. -->
 
-(Define with `/vit:new-milestone`)
+(None — define with `/vit:new-milestone`)
 
 ### Out of Scope
 
@@ -70,5 +74,27 @@ Every step of the VIT workflow is automatically reflected in GitHub — from exe
 | Inline diff comments capped at 5 | GitHub API 422 errors on large diffs | ✓ Good — fallback handles empty body edge case |
 | CHANGELOG ownership split | doc-updater writes [Unreleased]; changelog-writer promotes it | ✓ Good — no conflict, clean promotion |
 
+## Context
+
+Shipped v1.0 (GitHub Sync & Agents) and v1.1 (Documentation & Developer Portal).
+Tech stack: Node.js CLI, Markdown agent definitions, `gh` CLI for GitHub operations, VitePress for docs.
+Current codebase: 58+ files modified in v1.1, 12,669 lines added. VitePress docs site with 10 substantive pages.
+
+## Key Decisions
+
+| Decision | Rationale | Outcome |
+|----------|-----------|---------|
+| Draft PR on execute-phase start, not plan-phase | Phase may span hours; PR should exist while code is being written | ✓ Good — PR exists throughout execution |
+| PR reviewer runs automatically after verify (not manually) | Reduces friction; reviewer should always run before human sees the PR | ✓ Good — zero friction, consistent quality gate |
+| Doc-updater runs per-phase (after all waves), not per-task | Per-task too granular and expensive; per-phase matches commit boundary | ✓ Good — CHANGELOG [Unreleased] grows phase by phase |
+| Changelog writer on complete-milestone, not per-phase | Release notes should cover the full milestone | ✓ Good — single versioned entry covers all phases |
+| Idempotency via live `gh pr list` query | STATE.md can be stale; GitHub is authoritative | ✓ Good — no duplicate PRs |
+| Inline diff comments capped at 5 | GitHub API 422 errors on large diffs | ✓ Good — fallback handles empty body edge case |
+| CHANGELOG ownership split | doc-updater writes [Unreleased]; changelog-writer promotes it | ✓ Good — no conflict, clean promotion |
+| diff code block for README hero banner | Broadest GitHub compatibility for colored ASCII art | ✓ Good — renders green on GitHub |
+| VitePress in isolated docs/ package.json | Decouples vitepress from root project, enables independent CI caching | ✓ Good — clean separation |
+| base: '/vit-cc/' for GitHub Pages | Mandatory for subdirectory hosting (without it, all assets 404) | ✓ Good — correct from start |
+| Model matrix short form (opus/sonnet/haiku) | Matches source of truth in model-profiles.md | ✓ Good — consistent everywhere |
+
 ---
-*Last updated: 2026-03-18 after v1.0 milestone*
+*Last updated: 2026-03-19 after v1.1 milestone completion*
