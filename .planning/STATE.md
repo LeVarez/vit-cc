@@ -12,8 +12,8 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 Milestone: v1.1
 Phase: 01 of 02 (README Rewrite with ASCII Art Branding)
 Plan: —
-Status: Ready to plan
-Last activity: 2026-03-19 — Roadmap created for v1.1
+Status: Planned (4 plans in 4 waves)
+Last activity: 2026-03-19 — Phase 01 planned
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -56,5 +56,5 @@ Resume file: None
 
 | Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
 |-------|---------------|--------|----|----------|------------|---------------|
-| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | — | — | — | — |
+| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | — | — | #49, #50, #51, #52 | feature/v1.1-01-01, feature/v1.1-01-02, feature/v1.1-01-03, feature/v1.1-01-04 |
 | v1.1/02 | #48 | feature/v1.1-02-docs-site | — | — | — | — |
