@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Milestone: v1.1
-Phase: 01 of 02 (README Rewrite with ASCII Art Branding)
-Plan: —
-Status: Ready to plan
-Last activity: 2026-03-19 — Roadmap created for v1.1
+Phase: 01 of 02 (README Rewrite with ASCII Art Branding) — COMPLETE
+Plan: 5 of 5 (gap closure) — complete
+Status: Phase complete — ready to merge or advance to Phase 02
+Last activity: 2026-03-19 — Completed v1.1-01-05 (ASCII art hero banner gap closure)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -38,6 +38,33 @@ Progress: [░░░░░░░░░░] 0%
 
 Full decisions log in PROJECT.md Key Decisions table.
 
+**v1.1/01 Plan 01 decisions:**
+- Use HTML comment markers (`<!-- PLACEHOLDER -->`) in README so sections render cleanly if downstream plans don't fill them
+- Hero banner: 62-char checkpoint box width (╔══╗) matching ui-brand.md checkpoint box dimension
+- Section dividers: stage banner pattern (━━━) inside fenced code blocks above each ## heading
+- Footer Discord/docs URLs: placeholder values (discord.gg/vit-claude, vit-claude.dev) — not found in repo
+
+**v1.1/01 Plan 02 decisions:**
+- Compact table format (not per-command headings) for 31-command reference — fits density requirement
+- ASCII dividers use ─── style inside fenced code blocks per group, consistent with Plan 01 section header pattern
+- Descriptions taken verbatim from description: frontmatter field of each command file
+- /vit:set-profile included as /vit:set-profile even though frontmatter omits vit: prefix
+
+**v1.1/01 Plan 03 decisions:**
+- Agent descriptions sourced directly from frontmatter of each agent file, not from memory
+- vit-verifier and vit-integration-checker spawn source identified via command files (execute-phase, audit-milestone) since their own descriptions omit "Spawned by"
+- Model profile matrix matches model-profiles.md exactly (11 agents x 3 profiles)
+- Sample config.json shows all 11 keys at documented defaults
+
+**v1.1/01 Plan 04 decisions:**
+- Emoji ✅ ❌ 🔄 inside fenced CI example code blocks are acceptable — they represent literal GitHub comment output, not decorative document emoji
+- No README changes needed — all prior plans produced a consistent, clean document
+
+**v1.1/01 Plan 05 decisions (gap closure):**
+- diff code block (not HTML spans/font tags) used for hero banner color — broadest GitHub compatibility
+- Subtitle lines kept without + prefix for neutral/white color, contrasting the green ASCII art
+- Old box-drawing frame (╔══╗) removed — diff block provides sufficient visual framing
+
 ### Pending Todos
 
 None.
@@ -49,12 +76,12 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Roadmap created — v1.1 Phase 01 ready to plan
+Stopped at: v1.1/01 Plan 05 — complete. Phase 01 fully done.
 Resume file: None
 
 ## GitHub Issue Mapping
 
 | Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
 |-------|---------------|--------|----|----------|------------|---------------|
-| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | — | — | — | — |
-| v1.1/02 | #48 | feature/v1.1-02-docs-site | — | — | — | — |
+| v1.1/01 | #47 | feature/v1.1-01-readme-rewrite | pr#53(ready) | — | #49, #50, #51, #52 | feature/v1.1-01-01, feature/v1.1-01-02, feature/v1.1-01-03, feature/v1.1-01-04 |
+| v1.1/02 | #48 | feature/v1.1-02-docs-site | — | — | #61, #62, #63, #64, #65 | feature/v1.1-02-01, feature/v1.1-02-02, feature/v1.1-02-03, feature/v1.1-02-04, feature/v1.1-02-05 |
