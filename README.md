@@ -19,9 +19,9 @@ Phase-based project execution framework for Claude Code — with GitHub integrat
 
 ---
 
-## What is VIT?
+## What is ViT-claude?
 
-VIT is a Claude Code workflow framework. It installs as slash commands, specialist agents, and session hooks directly into your `.claude/` directory.
+ViT-claude is a Claude Code workflow framework. It installs as slash commands, specialist agents, and session hooks directly into your `.claude/` directory.
 
 The core loop:
 
@@ -92,7 +92,7 @@ A verifier agent runs goal-backward analysis and produces `VERIFICATION.md`. If 
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- VIT ► COMMANDS REFERENCE
+ViT-claude ► COMMANDS REFERENCE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -140,7 +140,7 @@ A verifier agent runs goal-backward analysis and produces `VERIFICATION.md`. If 
 | Command | Description | Usage | Produces |
 |---------|-------------|-------|----------|
 | `/vit:execute-phase` | Execute all plans in a phase with wave-based parallelization | `/vit:execute-phase 3` | Committed code, `{plan}-SUMMARY.md` files, updated `STATE.md` |
-| `/vit:quick` | Execute a quick task with VIT guarantees (atomic commits, state tracking) but skip optional agents | `/vit:quick` | Committed code, `STATE.md` update |
+| `/vit:quick` | Execute a quick task with ViT-claude guarantees (atomic commits, state tracking) but skip optional agents | `/vit:quick` | Committed code, `STATE.md` update |
 
 ### Verification
 
@@ -247,8 +247,8 @@ A verifier agent runs goal-backward analysis and produces `VERIFICATION.md`. If 
 
 | Command | Description | Usage | Produces |
 |---------|-------------|-------|----------|
-| `/vit:help` | Show available VIT commands and usage guide | `/vit:help` | None |
-| `/vit:join-discord` | Join the VIT Discord community | `/vit:join-discord` | None |
+| `/vit:help` | Show available ViT-claude commands and usage guide | `/vit:help` | None |
+| `/vit:join-discord` | Join the ViT-claude Discord community | `/vit:join-discord` | None |
 | `/vit:add-todo` | Capture idea or task as todo from current conversation context | `/vit:add-todo refactor auth module` | `.planning/todos/pending/{todo}.md` |
 | `/vit:check-todos` | List pending todos and select one to work on | `/vit:check-todos` | None |
 
@@ -256,18 +256,18 @@ A verifier agent runs goal-backward analysis and produces `VERIFICATION.md`. If 
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- VIT ► AGENTS REFERENCE
+ViT-claude ► AGENTS REFERENCE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ## Agents Reference
 
-VIT spawns 16 specialist agents automatically — you don't invoke them directly.
+ViT-claude spawns 16 specialist agents automatically — you don't invoke them directly.
 
 | Agent | Spawned By | Role | Output |
 |-------|------------|------|--------|
 | `vit-planner` | `/vit:plan-phase` | Creates executable phase plans with task breakdown, dependency analysis, and goal-backward verification | PLAN.md files |
-| `vit-executor` | `/vit:execute-phase` | Executes VIT plans with atomic commits, deviation handling, checkpoint protocols, and state management | Per-task commits, SUMMARY.md |
+| `vit-executor` | `/vit:execute-phase` | Executes ViT-claude plans with atomic commits, deviation handling, checkpoint protocols, and state management | Per-task commits, SUMMARY.md |
 | `vit-verifier` | `/vit:execute-phase` | Verifies phase goal achievement through goal-backward analysis — checks codebase delivers what phase promised, not just that tasks completed | VERIFICATION.md |
 | `vit-phase-researcher` | `/vit:plan-phase` | Researches how to implement a phase before planning; produces RESEARCH.md consumed by vit-planner | RESEARCH.md |
 | `vit-plan-checker` | `/vit:plan-phase` | Verifies plans will achieve phase goal before execution via goal-backward analysis of plan quality | Plan quality report |
@@ -287,13 +287,13 @@ VIT spawns 16 specialist agents automatically — you don't invoke them directly
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- VIT ► SETTINGS REFERENCE
+ViT-claude ► SETTINGS REFERENCE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ## Settings Reference
 
-VIT is configured through `.planning/config.json` in your project root. All settings are optional — defaults work out of the box.
+ViT-claude is configured through `.planning/config.json` in your project root. All settings are optional — defaults work out of the box.
 
 ### config.json Keys
 
@@ -423,7 +423,7 @@ Tests are created by vit-test-writer after phase execution completes.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- VIT ► ARCHITECTURE
+ViT-claude ► ARCHITECTURE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -456,7 +456,7 @@ All state is stored in `.planning/STATE.md`, `.planning/MILESTONE.md`, and per-p
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- VIT ► PROJECT STRUCTURE
+ViT-claude ► PROJECT STRUCTURE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -529,7 +529,7 @@ Repeat plan/execute/verify for each phase. When a milestone is complete: `/vit:a
 
 ---
 
-### 2. Brownfield — adopt VIT on an existing codebase
+### 2. Brownfield — adopt ViT-claude on an existing codebase
 
 Start with a codebase analysis so the planner understands what already exists before building the roadmap.
 
@@ -595,7 +595,7 @@ Spawns `vit-debugger`, which applies a scientific method approach: hypothesis, r
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- VIT ► UPDATE
+ViT-claude ► UPDATE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -606,7 +606,7 @@ npx vit-claude      # Re-run to update (overwrites framework files, preserves yo
 /vit:update         # Or use the in-session command
 ```
 
-VIT checks for updates automatically at session start via the `vit-check-update` hook.
+ViT-claude checks for updates automatically at session start via the `vit-check-update` hook.
 
 ---
 
