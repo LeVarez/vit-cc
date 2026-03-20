@@ -762,6 +762,12 @@ GH_MILESTONE=$(gh api repos/:owner/:repo/milestones \
 
 If creation fails (repo not on GitHub, no auth, etc.), skip silently and proceed to Phase 11.
 
+**Initialize arrays to track issues for later branch creation:**
+```bash
+PHASE_ISSUES=()
+PHASE_SLUGS=()
+```
+
 **For each phase in the roadmap, create a parent feature issue:**
 
 Read ROADMAP.md to get each phase's number, name, goal, and requirements covered.
@@ -798,17 +804,10 @@ base-branch: feature/v[X.Y]-[N]-[phase-slug]" \
   --jq '.number' 2>/dev/null || echo "")
 ```
 
-Then create the feature branch for this phase, linked to the issue via Development panel:
+Store the issue number for later branch creation (after all commits are pushed):
 ```bash
-gh issue develop $FEATURE_ISSUE \
-  --base "milestone/v${NEW_VERSION}" \
-  --name "feature/v${NEW_VERSION}-[N]-[phase-slug]" \
-  2>/dev/null || {
-    # Fallback if gh issue develop fails (e.g. older gh version)
-    git checkout -b "feature/v${NEW_VERSION}-[N]-[phase-slug]" "milestone/v${NEW_VERSION}" 2>/dev/null
-    git push -u origin "feature/v${NEW_VERSION}-[N]-[phase-slug]" 2>/dev/null || true
-    git checkout "milestone/v${NEW_VERSION}" 2>/dev/null
-  }
+PHASE_ISSUES+=("$FEATURE_ISSUE")
+PHASE_SLUGS+=("[N]-[phase-slug]")
 ```
 
 Store the mapping of phase → feature issue number in STATE.md under a new section:
@@ -816,10 +815,10 @@ Store the mapping of phase → feature issue number in STATE.md under a new sect
 ```markdown
 ## GitHub Issue Mapping
 
-| Phase | Feature Issue | Branch | PR | Assigned |
-|-------|---------------|--------|----|----------|
-| v[X.Y]/[N] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N]-[phase-slug] | — | — |
-| v[X.Y]/[N+1] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N+1]-[phase-slug] | — | — |
+| Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
+|-------|---------------|--------|----|----------|------------|---------------|
+| v[X.Y]/[N] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N]-[phase-slug] | — | — | — | — |
+| v[X.Y]/[N+1] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N+1]-[phase-slug] | — | — | — | — |
 ```
 
 **Print summary:**
@@ -830,10 +829,10 @@ Store the mapping of phase → feature issue number in STATE.md under a new sect
 
 Milestone: v[X.Y] — [Name] (GitHub milestone #[GH_MILESTONE])
 
-| Phase | Feature Issue | Branch | PR | Assigned |
-|-------|---------------|--------|----|----------|
-| v[X.Y]/[N]   | #[X]          | feature/v[X.Y]-[N]-[slug] | — | — |
-| v[X.Y]/[N+1] | #[X+1]        | feature/v[X.Y]-[N+1]-[slug] | — | — |
+| Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
+|-------|---------------|--------|----|----------|------------|---------------|
+| v[X.Y]/[N]   | #[X]          | feature/v[X.Y]-[N]-[slug] | — | — | — | — |
+| v[X.Y]/[N+1] | #[X+1]        | feature/v[X.Y]-[N+1]-[slug] | — | — | — | — |
 
 Sub-issues will be created when you run /vit:plan-phase [N].
 ```
@@ -873,6 +872,36 @@ cd "$MILESTONE_WORKTREE" && git commit -m "docs: update team onboarding guide fo
 Display:
 ```
 ◆ ONBOARDING.md updated: .planning/ONBOARDING.md
+```
+
+## Phase 10.7: Push Milestone Branch & Create Feature Branches
+
+All commits (STATE.md mapping, ONBOARDING.md) must land before creating feature branches so they fork from the final milestone commit.
+
+**Push the milestone branch first:**
+```bash
+cd "$MILESTONE_WORKTREE" && git push -u origin "milestone/v${NEW_VERSION}"
+```
+
+**Then create feature branches for each phase:**
+
+Loop through the stored issue numbers and create branches now that the milestone branch is pushed with all commits:
+
+```bash
+for i in "${!PHASE_ISSUES[@]}"; do
+  FEATURE_ISSUE="${PHASE_ISSUES[$i]}"
+  PHASE_SLUG="${PHASE_SLUGS[$i]}"
+
+  gh issue develop $FEATURE_ISSUE \
+    --base "milestone/v${NEW_VERSION}" \
+    --name "feature/v${NEW_VERSION}-${PHASE_SLUG}" \
+    2>/dev/null || {
+      # Fallback if gh issue develop fails (e.g. older gh version)
+      git checkout -b "feature/v${NEW_VERSION}-${PHASE_SLUG}" "milestone/v${NEW_VERSION}" 2>/dev/null
+      git push -u origin "feature/v${NEW_VERSION}-${PHASE_SLUG}" 2>/dev/null || true
+      git checkout "milestone/v${NEW_VERSION}" 2>/dev/null
+    }
+done
 ```
 
 ## Phase 11: Done

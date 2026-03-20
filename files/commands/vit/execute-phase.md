@@ -114,7 +114,29 @@ Phase: $ARGUMENTS
         - If that also fails: STOP and ask user to create the branch
         - If it succeeds: `WORK_DIR=$(pwd)` — continue
 
-   **After this step:** `WORK_DIR` holds the absolute path to the correct worktree. All subsequent bash commands must be prefixed with `cd "$WORK_DIR" &&`. All file paths are relative to `$WORK_DIR`.
+   **After this step:** `WORK_DIR` holds the absolute path to the correct worktree for the **phase branch**. All subsequent bash commands must be prefixed with `cd "$WORK_DIR" &&`. All file paths are relative to `$WORK_DIR`.
+
+   **Resolve per-plan branches:**
+
+   Check if plan branches exist in STATE.md (created by `/vit:plan-phase` step 13):
+   ```bash
+   HAS_PLAN_BRANCHES=false
+   # Check if header row has a "Plan Branches" column
+   HEADER_ROW=$(grep "| Phase " "$WORK_DIR/.planning/STATE.md" 2>/dev/null | head -1)
+   if echo "$HEADER_ROW" | grep -q "Plan Branches"; then
+     # Find which column index "Plan Branches" is (pipe-delimited)
+     PB_COL=$(echo "$HEADER_ROW" | awk -F'|' '{for(i=1;i<=NF;i++) if($i ~ /Plan Branches/) print i}')
+     # Extract that column's value from the phase data row
+     PHASE_ROW=$(grep "| ${MILESTONE}/${PHASE_NUM} " "$WORK_DIR/.planning/STATE.md" 2>/dev/null | head -1)
+     PB_VALUE=$(echo "$PHASE_ROW" | awk -F'|' -v col="$PB_COL" '{gsub(/^ +| +$/,"",$col); print $col}')
+     if [ -n "$PB_VALUE" ] && [ "$PB_VALUE" != "—" ] && [ "$PB_VALUE" != "-" ]; then
+       HAS_PLAN_BRANCHES=true
+       PLAN_BRANCH_LIST=$(echo "$PB_VALUE" | tr ',' '\n' | tr -d ' ' | grep -v '^$')
+     fi
+   fi
+   ```
+
+   If `HAS_PLAN_BRANCHES=true`, each plan will be executed on its own branch and merged into the phase branch per wave.
 
 0.6. **State freshness check**
 
@@ -349,15 +371,89 @@ Phase: $ARGUMENTS
    - Skip this plan in wave execution — treat as complete for wave sequencing purposes
 
    **If `EXECUTE_BY` is `claude` or empty (default):**
-   - Spawn `vit-executor` for each plan in wave (parallel Task calls)
+
+   **Per-plan branch mode** (`HAS_PLAN_BRANCHES=true`):
+   - For each plan in the wave, resolve its plan branch:
+     ```bash
+     PLAN_SLUG=$(basename "$PLAN_PATH" .md | sed 's/-PLAN$//' | tr '[:upper:]' '[:lower:]')
+     PLAN_BRANCH="feature/v${MILESTONE}-${PLAN_SLUG}"
+     ```
+   - Check out the plan branch in the work dir before spawning:
+     ```bash
+     cd "$WORK_DIR" && git checkout "$PLAN_BRANCH" 2>/dev/null || \
+       cd "$WORK_DIR" && git checkout -b "$PLAN_BRANCH" "$DESIGNATED_BRANCH" 2>/dev/null
+     ```
+   - Spawn `vit-executor` with the plan branch as working branch
+   - After each executor completes, switch back to phase branch before spawning next
+
+   **Legacy mode** (`HAS_PLAN_BRANCHES=false`):
+   - Spawn `vit-executor` for each plan in wave directly on the phase branch (parallel Task calls)
 
    - Wait for completion (Task blocks)
    - Verify SUMMARYs created
-   - **Per-wave push:** Push commits to remote after each wave:
-     ```bash
-     cd "$WORK_DIR" && git push origin HEAD 2>/dev/null || true
-     ```
-   - **Update sub-issue checkboxes (Gap 4):** For each plan completed in this wave, mark its sub-issue checkbox in the feature issue body:
+
+   **Per-plan PR creation and merge** (only when `HAS_PLAN_BRANCHES=true` and `GH_AVAILABLE=true`):
+
+   After all executors in the wave complete:
+   ```bash
+   for each completed plan in wave:
+     PLAN_SLUG=$(basename "$PLAN_PATH" .md | sed 's/-PLAN$//' | tr '[:upper:]' '[:lower:]')
+     PLAN_BRANCH="feature/v${MILESTONE}-${PLAN_SLUG}"
+     PLAN_TITLE=$(grep -A1 '<objective>' "$WORK_DIR/$PLAN_PATH" | tail -1 | sed 's/^ *//')
+
+     # Push plan branch
+     cd "$WORK_DIR" && git checkout "$PLAN_BRANCH" 2>/dev/null
+     cd "$WORK_DIR" && git push origin "$PLAN_BRANCH" 2>/dev/null || true
+
+     # Get sub-issue number for this plan
+     PLAN_IDX=<plan index, 1-based>
+     SUB_ISSUE_NUM=$(grep "| ${MILESTONE}/${PHASE_NUM} " "$WORK_DIR/.planning/STATE.md" 2>/dev/null \
+       | grep -o '#[0-9][0-9]*' | sed -n "${PLAN_IDX}p" | tr -d '#' || echo "")
+
+     # Create PR: plan branch → phase branch
+     PLAN_PR=$(cd "$WORK_DIR" && gh pr create --draft \
+       --base "$DESIGNATED_BRANCH" \
+       --head "$PLAN_BRANCH" \
+       --title "feat(${PHASE_NUM}-${PLAN_SLUG}): ${PLAN_TITLE}" \
+       --body "$(cat <<EOF
+   Closes #${SUB_ISSUE_NUM}
+   Part of #${FEATURE_ISSUE}
+
+   ## What this plan builds
+   ${PLAN_TITLE}
+   EOF
+   )" 2>/dev/null || echo "")
+
+     # Merge plan branch into phase branch
+     cd "$WORK_DIR" && git checkout "$DESIGNATED_BRANCH" 2>/dev/null
+     cd "$WORK_DIR" && git merge "$PLAN_BRANCH" --no-ff \
+       -m "merge: plan ${PLAN_SLUG} into phase ${PHASE_NUM}" 2>/dev/null || {
+         echo "⚠ Merge conflict merging $PLAN_BRANCH into $DESIGNATED_BRANCH"
+         echo "  Resolve manually: cd $WORK_DIR && git merge $PLAN_BRANCH"
+       }
+
+     # Close sub-issue
+     if [ -n "$SUB_ISSUE_NUM" ]; then
+       cd "$WORK_DIR" && gh issue close "$SUB_ISSUE_NUM" 2>/dev/null || true
+     fi
+
+     # Mark plan PR as merged (it auto-closes on merge)
+     if [ -n "$PLAN_PR" ]; then
+       PLAN_PR_NUM=$(echo "$PLAN_PR" | grep -o '[0-9]*$')
+       echo "◆ Plan PR #${PLAN_PR_NUM}: ${PLAN_BRANCH} → ${DESIGNATED_BRANCH} (merged)"
+     fi
+   done
+
+   # Push updated phase branch with all merged plans
+   cd "$WORK_DIR" && git push origin "$DESIGNATED_BRANCH" 2>/dev/null || true
+   ```
+
+   **Legacy per-wave push** (when `HAS_PLAN_BRANCHES=false`):
+   ```bash
+   cd "$WORK_DIR" && git push origin HEAD 2>/dev/null || true
+   ```
+
+   - **Update sub-issue checkboxes:** For each plan completed in this wave, mark its sub-issue checkbox in the feature issue body:
      ```bash
      # For each completed plan in this wave:
      PLAN_IDX=<plan index, 1-based>
@@ -437,6 +533,18 @@ Phase: $ARGUMENTS
    If a feature issue is found:
 
    **If phase status is `passed`:**
+
+   **Promote per-plan PRs** (if `HAS_PLAN_BRANCHES=true`):
+   ```bash
+   # Find all plan PRs targeting the phase branch and promote them
+   PLAN_PRS=$(cd "$WORK_DIR" && gh pr list --base "$DESIGNATED_BRANCH" --json number,state --jq '.[].number' 2>/dev/null || echo "")
+   for PR in $PLAN_PRS; do
+     cd "$WORK_DIR" && gh pr ready "$PR" 2>/dev/null && \
+       echo "◆ Plan PR #${PR} promoted to ready-for-review" || true
+   done
+   ```
+
+   **Close feature issue and comment:**
    ```bash
    cd "$WORK_DIR" && \
    GOAL=$(grep -A2 "### Phase {N}:" .planning/ROADMAP.md | grep "Goal:" | sed 's/.*Goal: //') && \
@@ -733,6 +841,39 @@ PLAN_03_CONTENT=$(cat "$WORK_DIR/{plan_03_path}")
 STATE_CONTENT=$(cat "$WORK_DIR/.planning/STATE.md")
 ```
 
+**Per-plan branch mode** (`HAS_PLAN_BRANCHES=true`):
+
+Before spawning each executor, check out the plan's branch in the work dir. Since parallel plans on different branches need isolation, use worktrees:
+
+```bash
+for each plan in wave:
+  PLAN_SLUG=$(basename "$PLAN_PATH" .md | sed 's/-PLAN$//' | tr '[:upper:]' '[:lower:]')
+  PLAN_BRANCH="feature/v${MILESTONE}-${PLAN_SLUG}"
+  PLAN_WORKTREE="${WORK_DIR%/*}/${PLAN_BRANCH//\//-}"
+
+  # Create a worktree for this plan branch (parallel-safe)
+  cd "$WORK_DIR" && git worktree add "$PLAN_WORKTREE" "$PLAN_BRANCH" 2>/dev/null || {
+    # Worktree may already exist
+    PLAN_WORKTREE=$(git worktree list --porcelain | grep -B2 "branch refs/heads/$PLAN_BRANCH" | head -1 | sed 's/worktree //')
+  }
+done
+```
+
+Spawn with plan-specific worktree paths:
+```
+Task(prompt="Working directory: {plan_01_worktree}\nPlan branch: {plan_01_branch}\n\nAll git commands and file operations must be run as: cd {plan_01_worktree} && ...\n\nExecute plan at {plan_01_worktree}/{plan_01_path}\n\nPlan:\n{plan_01_content}\n\nProject state:\n{state_content}", subagent_type="vit-executor", model="{executor_model}")
+Task(prompt="Working directory: {plan_02_worktree}\nPlan branch: {plan_02_branch}\n\nAll git commands and file operations must be run as: cd {plan_02_worktree} && ...\n\nExecute plan at {plan_02_worktree}/{plan_02_path}\n\nPlan:\n{plan_02_content}\n\nProject state:\n{state_content}", subagent_type="vit-executor", model="{executor_model}")
+```
+
+After wave completes, clean up plan worktrees:
+```bash
+for each plan worktree:
+  cd "$WORK_DIR" && git worktree remove "$PLAN_WORKTREE" 2>/dev/null || true
+done
+```
+
+**Legacy mode** (`HAS_PLAN_BRANCHES=false`):
+
 Spawn all plans in a wave with a single message containing multiple Task calls, with inlined content.
 Pass `WORK_DIR` in each prompt so the executor runs git commands in the right directory:
 
@@ -742,7 +883,7 @@ Task(prompt="Working directory: {work_dir}\n\nAll git commands and file operatio
 Task(prompt="Working directory: {work_dir}\n\nAll git commands and file operations must be run as: cd {work_dir} && ...\n\nExecute plan at {work_dir}/{plan_03_path}\n\nPlan:\n{plan_03_content}\n\nProject state:\n{state_content}", subagent_type="vit-executor", model="{executor_model}")
 ```
 
-All three run in parallel. Task tool blocks until all complete.
+All plans in a wave run in parallel. Task tool blocks until all complete.
 
 **No polling.** No background agents. No TaskOutput loops.
 </wave_execution>
