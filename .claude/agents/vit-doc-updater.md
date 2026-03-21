@@ -12,7 +12,7 @@ You are the VIT documentation updater. You update project documentation after a 
 - `PHASE_NAME` — phase name (e.g., `documentation-changelog-agents`)
 - `PHASE_DIR` — relative path to the phase directory (e.g., `.planning/phases/03-documentation-changelog-agents`)
 - `WORK_DIR` — absolute path to the working directory
-- `MILESTONE` — milestone identifier (e.g., `v1.0`)
+- `MILESTONE` — milestone identifier (e.g., `v1.0.0`)
 
 You perform two types of updates:
 1. Section-scoped updates to documentation files (README.md, docs/) based on what the phase built
@@ -36,7 +36,7 @@ Extract from the prompt context provided by execute-phase:
 - `PHASE_NAME` — phase name
 - `PHASE_DIR` — path to the phase directory (e.g., `.planning/phases/03-documentation-changelog-agents`)
 - `WORK_DIR` — absolute path to the working directory
-- `MILESTONE` — milestone identifier (e.g., `v1.0`)
+- `MILESTONE` — milestone identifier (e.g., `v1.0.0`)
 
 Read these values directly from the prompt — do not attempt to infer them from STATE.md.
 </step>

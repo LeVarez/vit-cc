@@ -18,7 +18,7 @@ score: 8/8 must-haves verified
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | Running execute-phase creates a draft PR targeting milestone/vX.Y with phase goal, plans checklist, success criteria, and Closes #N in the body | ✓ VERIFIED | Step 0.7 in execute-phase.md (line 118): assembles PHASE_GOAL, PLAN_LIST, SUCCESS_CRITERIA, FEATURE_ISSUE; `gh pr create --draft --base "$MILESTONE_BRANCH"` at line 195; `Closes #${FEATURE_ISSUE}` at line 193 |
+| 1 | Running execute-phase creates a draft PR targeting milestone/vX.Y.Z with phase goal, plans checklist, success criteria, and Closes #N in the body | ✓ VERIFIED | Step 0.7 in execute-phase.md (line 118): assembles PHASE_GOAL, PLAN_LIST, SUCCESS_CRITERIA, FEATURE_ISSUE; `gh pr create --draft --base "$MILESTONE_BRANCH"` at line 195; `Closes #${FEATURE_ISSUE}` at line 193 |
 | 2 | Re-running execute-phase on the same phase does NOT create a second PR | ✓ VERIFIED | Idempotency check at line 137: `EXISTING_PR=$(gh pr list --head "$DESIGNATED_BRANCH" ...)` — if non-empty, logs existing PR and skips to step 1 without calling `gh pr create` |
 | 3 | STATE.md GitHub Issue Mapping table has a PR column showing pr#N after PR creation | ✓ VERIFIED | template/state.md line 77 shows `| PR |` column; sed updates at execute-phase.md lines 144 and 215 write `pr#${PR_NUM}` and `pr#${EXISTING_PR}` into that column |
 | 4 | When gh CLI is unavailable, execute-phase prints one-line notice and STATE.md shows pr:skipped | ✓ VERIFIED | execute-phase.md lines 125–129: GH_AVAILABLE=false path logs `[PR skipped — gh not available]` and writes `pr:skipped` via sed; creation-failed path at lines 204–206 also writes `pr:skipped` |
@@ -47,7 +47,7 @@ All artifacts exist, are substantive (well above minimum line thresholds), and a
 | From | To | Via | Status | Details |
 |------|-----|-----|--------|---------|
 | `execute-phase.md` (command) | `workflows/execute-phase.md` | `@./.claude/vit/workflows/execute-phase.md` in execution_context | ✓ WIRED | Step 0.7 in command is fully aligned with `create_draft_pr` step in workflow |
-| `execute-phase.md` step 0.7 | `milestone/vX.Y` base branch | `--base "$MILESTONE_BRANCH"` where `MILESTONE_BRANCH="milestone/${MILESTONE}"` | ✓ WIRED | Line 154 sets MILESTONE_BRANCH; line 196 passes it to `gh pr create` |
+| `execute-phase.md` step 0.7 | `milestone/vX.Y.Z` base branch | `--base "$MILESTONE_BRANCH"` where `MILESTONE_BRANCH="milestone/${MILESTONE}"` | ✓ WIRED | Line 154 sets MILESTONE_BRANCH; line 196 passes it to `gh pr create` |
 | `execute-phase.md` step 0.7 | idempotency guard | `gh pr list --head "$DESIGNATED_BRANCH"` live query | ✓ WIRED | Line 137 queries live GitHub before any creation attempt |
 | `execute-phase.md` step 0.7 | STATE.md PR column | `sed -i ''` updates on lines 129, 144, 206, 215 | ✓ WIRED | All four outcomes (skipped, existing, failed, created) update STATE.md PR column |
 | `verify-work.md` (command) | `workflows/verify-work.md` | `@./.claude/vit/workflows/verify-work.md` in execution_context | ✓ WIRED | `promote_pr` step in workflow mirrors step 8.5 in command |

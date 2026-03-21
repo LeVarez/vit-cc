@@ -29,14 +29,14 @@ If a phase is in progress, also read:
 | Branch | Purpose |
 |--------|---------|
 | `main` | Stable, reviewed code only |
-| `milestone/v1.0` | All milestone work lands here |
-| `feature/v1.0-NN-name` | Per-phase feature branches |
+| `milestone/v1.0.0` | All milestone work lands here |
+| `feature/v1.0.0-NN-name` | Per-phase feature branches |
 
 To start working on a phase:
 ```bash
-git checkout feature/v1.0-[N]-[phase-slug]
+git checkout feature/v1.0.0-[N]-[phase-slug]
 # or if using worktrees:
-cd ../[project]-feature-v1.0-[N]-[phase-slug]
+cd ../[project]-feature-v1.0.0-[N]-[phase-slug]
 ```
 
 ## How to contribute

@@ -57,7 +57,7 @@ If missing both ROADMAP.md and PROJECT.md: suggest `/vit:new-project`.
 ```bash
 MILESTONE=$(grep "^Milestone:" .planning/STATE.md 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 ```
   </step>
@@ -337,7 +337,7 @@ Read MILESTONES.md to find the last completed milestone version.
 ```
 ---
 
-## ✓ Milestone v{X.Y} Complete
+## ✓ Milestone v{X.Y.Z} Complete
 
 Ready to plan the next milestone.
 

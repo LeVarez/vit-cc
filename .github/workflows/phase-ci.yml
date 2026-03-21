@@ -28,13 +28,13 @@ jobs:
         run: npm ci
 
       - name: Type check
-        run: npm run check
+        run: npm run type-check
         continue-on-error: true
 
       - name: Run phase tests
         id: run-tests
         run: |
-          # Support both milestone-scoped (tests/phases/v1.6/) and legacy (tests/phases/) layouts
+          # Support both milestone-scoped (tests/phases/v1.6.0/) and legacy (tests/phases/) layouts
           if [ -d "tests/phases" ] && find tests/phases -name "*.test.ts" -quit 2>/dev/null; then
             npx vitest run tests/phases/ --reporter=json --outputFile=tests/phases/results.json 2>&1 || true
             npx vitest run tests/phases/ --reporter=verbose 2>&1 | tee tests/phases/results.txt || true
@@ -62,14 +62,15 @@ jobs:
         run: |
           BRANCH="${{ github.ref_name }}"
           # Extract milestone and phase from branch name
-          # New format: feature/v1.6-01-api-foundation → milestone=v1.6, phase=01
-          # Legacy format: feature/43-api-foundation → phase=43
-          MILESTONE=$(echo "$BRANCH" | sed 's|feature/||' | grep -o '^v[0-9]*\.[0-9]*')
+          # feature/v1.6.0-01-api-foundation → milestone=v1.6.0, phase=01
+          # feature/43-api-foundation → phase=43
+          # milestone/v1.1.0, quick/* → no phase, gracefully skipped
+          MILESTONE=$(echo "$BRANCH" | sed 's|feature/||' | grep -o '^v[0-9]*\.[0-9]*\.[0-9]*' || true)
           if [ -n "$MILESTONE" ]; then
-            PHASE=$(echo "$BRANCH" | sed "s|feature/${MILESTONE}-||" | grep -o '^[0-9]*')
+            PHASE=$(echo "$BRANCH" | sed "s|feature/${MILESTONE}-||" | grep -o '^[0-9]*' || true)
             STATE_KEY="${MILESTONE}/${PHASE}"
           else
-            PHASE=$(echo "$BRANCH" | sed 's|feature/||' | grep -o '^[0-9]*')
+            PHASE=$(echo "$BRANCH" | sed 's|feature/||' | grep -o '^[0-9]*' || true)
             STATE_KEY="$PHASE"
           fi
           if [ -z "$PHASE" ]; then

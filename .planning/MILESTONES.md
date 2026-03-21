@@ -1,6 +1,33 @@
 # Project Milestones: vit-cc
 
-## v1.0 GitHub Sync & Agents Extension (Shipped: 2026-03-18)
+## v1.1.0 Documentation & Developer Portal (Shipped: 2026-03-19)
+
+**Delivered:** Comprehensive documentation — branded README with full command/agent/settings reference, plus a VitePress-powered technical docs site with architecture deep dives and contributor guides.
+
+**Phases completed:** 01–03 (12 plans total)
+
+**Key accomplishments:**
+
+- ASCII art hero README with 31-command reference, 16-agent table, and model profile matrix
+- VitePress docs site with 10 substantive pages: 4 guides, 3 contributing, 3 reference
+- Contributor guides (Command Anatomy, Agent Anatomy) that enable self-service onboarding
+- GitHub Pages deployment workflow with CI verification
+- All 27 requirements shipped, 6 audit gaps closed
+
+**Stats:**
+
+- 3 phases, 12 plans
+- 58 files changed, 12,669 insertions
+- VitePress site: 12 HTML pages, blue-violet brand theme, Mermaid diagrams
+- 2 days (2026-03-18 → 2026-03-19)
+
+**Git range:** `feat(01-01)` → `docs(phase-03)`
+
+**What's next:** Next milestone to be defined via `/vit:new-milestone`
+
+---
+
+## v1.0.0 GitHub Sync & Agents Extension (Shipped: 2026-03-18)
 
 **Delivered:** Full GitHub lifecycle integration — automatic draft PRs, AI code review, and automated documentation/changelog updates, all triggered by the existing VIT workflow with zero manual GitHub operations.
 

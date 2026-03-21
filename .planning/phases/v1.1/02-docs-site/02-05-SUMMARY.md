@@ -1,0 +1,85 @@
+# Milestone v1.1.0: Documentation & Developer Portal
+
+**Status:** ✅ SHIPPED 2026-03-19
+**Phases:** 01-03
+**Total Plans:** 12
+
+## Overview
+
+Create comprehensive documentation — a visually striking README with full command/agent reference, plus a VitePress-powered technical docs site for contributors.
+
+## Phases
+
+### Phase 01: README Rewrite with ASCII Art Branding
+
+**Goal:** Users and contributors encounter a complete, visually consistent README that documents every command, agent, and config key in the project.
+**Depends on:** Nothing (first phase of milestone)
+**Plans:** 5 plans
+
+Plans:
+
+- [x] 01-01: README skeleton with hero banner, intro sections, and placeholders for reference tables
+- [x] 01-02: Commands reference — all 31 commands in 11 groups with descriptions, usage, and artifacts
+- [x] 01-03: Agents reference (16 agents) and settings reference (config keys + model profile matrix)
+- [x] 01-04: Style consistency pass and human visual verification
+- [x] 01-05: Gap closure — replace plain text VIT with figlet ASCII art and diff-block color
+
+### Phase 02: GitHub Pages Technical Documentation Site
+
+**Goal:** A contributor can read the VitePress docs site to understand VIT internals and create a new command or agent without asking for help.
+**Depends on:** Phase 01 (branding and reference content established)
+**Plans:** 5 plans
+
+Plans:
+
+- [x] 02-01: VitePress setup, config, theme, landing page, sidebar, and GitHub Pages deployment workflow
+- [x] 02-02: Guide section — How VIT Works, Architecture, Workflow Files, Templates and References
+- [x] 02-03: Contributing section — Command Anatomy, Agent Anatomy, Testing
+- [x] 02-04: Reference section — GitHub Integration, Configuration, Hooks and Sessions
+- [x] 02-05: Full build verification and human visual checkpoint
+
+### Phase 03: Docs Gap Closure & Build Verification
+
+**Goal:** Close all audit gaps: fix broken CI action, correct content inconsistencies, add missing cross-links, and run final build verification.
+**Depends on:** Phase 02 (all content pages written)
+**Gap Closure:** Closes gaps from v1.1.0-MILESTONE-AUDIT.md
+**Plans:** 2 plans
+
+Plans:
+
+- [x] 03-01: Fix content inconsistencies (install command, README URL, model naming) and add cross-links
+- [x] 03-02: Investigate CI action version, run build verification, produce Phase 02 verification artifacts
+
+---
+
+## Milestone Summary
+
+**Key Decisions:**
+
+- Use HTML comment markers for README placeholders so sections render cleanly
+- diff code block for hero banner color (broadest GitHub compatibility)
+- Compact table format for 31-command reference (not per-command headings)
+- VitePress in isolated docs/ package.json (decouples from root project)
+- base: '/vit-cc/' for GitHub Pages subdirectory hosting
+- vitepress-plugin-mermaid included from start for architecture diagrams
+- Model matrix short form (opus/sonnet/haiku) as source of truth
+- Cross-links placed at contextually natural locations, not forced "See also" blocks
+
+**Issues Resolved:**
+
+- README rewritten from 201-line minimal doc to 620+ line branded reference
+- VitePress docs site with 10 substantive content pages
+- All 6 audit gaps closed (2 critical CI issues, 4 non-critical content issues)
+- actions/setup-node@v6 confirmed valid (audit incorrectly flagged it)
+
+**Issues Deferred:**
+
+- GitHub Pages enablement on repository (requires manual repo settings change)
+
+**Technical Debt Incurred:**
+
+- None identified
+
+---
+
+_For current project status, see .planning/ROADMAP.md_

@@ -822,8 +822,8 @@ Create roadmap:
 3. Derive 2-5 success criteria per phase (observable user behaviors)
 4. Validate 100% coverage
 5. Write files immediately (ROADMAP.md, STATE.md, update REQUIREMENTS.md traceability)
-   - STATE.md must include `Milestone: v1.0` field under ## Current Position
-   - STATE.md GitHub Issue Mapping uses `v1.0/NN` keys (e.g., `v1.0/01`) — leave Branch/PR columns empty (—), they will be populated in Phase 9
+   - STATE.md must include `Milestone: v1.0.0` field under ## Current Position
+   - STATE.md GitHub Issue Mapping uses `v1.0.0/NN` keys (e.g., `v1.0.0/01`) — leave Branch/PR columns empty (—), they will be populated in Phase 9
 6. Return ROADMAP CREATED with summary
 
 Write files first, then return. This ensures artifacts persist even if context is lost.
@@ -933,17 +933,17 @@ EOF
 Create the milestone branch so all planning docs and feature work land there, not on main:
 
 ```bash
-git checkout -b "milestone/v1.0"
+git checkout -b "milestone/v1.0.0"
 ```
 
 If this fails (branch already exists), check it out:
 ```bash
-git checkout "milestone/v1.0"
+git checkout "milestone/v1.0.0"
 ```
 
 Display:
 ```
-◆ Milestone branch created: milestone/v1.0
+◆ Milestone branch created: milestone/v1.0.0
 ```
 
 ## Phase 9: Create GitHub Milestone & Feature Issues
@@ -961,7 +961,7 @@ If not available, skip this phase silently and proceed to Phase 10.
 ```bash
 GH_MILESTONE=$(gh api repos/:owner/:repo/milestones \
   --method POST \
-  --field title="v1.0 — [Project Name]" \
+  --field title="v1.0.0 — [Project Name]" \
   --field description="## Goal
 [One sentence project goal from PROJECT.md]
 
@@ -969,7 +969,7 @@ GH_MILESTONE=$(gh api repos/:owner/:repo/milestones \
 [2-3 sentences describing what this milestone delivers to users]
 
 ## Out of scope
-[Key things explicitly NOT in v1.0, from REQUIREMENTS.md Out of Scope section]
+[Key things explicitly NOT in v1.0.0, from REQUIREMENTS.md Out of Scope section]
 
 ## Requirements
 [X] requirements across [N] categories — see REQUIREMENTS.md for full list." \
@@ -992,7 +992,7 @@ For each phase:
 
 ```bash
 FEATURE_ISSUE=$(gh issue create \
-  --title "feat(v1.0): Phase [N] — [Phase Name]" \
+  --title "feat(v1.0.0): Phase [N] — [Phase Name]" \
   --label "enhancement" \
   --milestone "$GH_MILESTONE" \
   --body "## What we're building
@@ -1014,9 +1014,9 @@ FEATURE_ISSUE=$(gh issue create \
 Sub-issues will be created automatically by \`/vit:plan-phase [N]\`.
 
 ## Meta
-milestone: v1.0
+milestone: v1.0.0
 phase: [N]
-base-branch: feature/v1.0-[N]-[phase-slug]" \
+base-branch: feature/v1.0.0-[N]-[phase-slug]" \
   --jq '.number' 2>/dev/null || echo "")
 ```
 
@@ -1033,8 +1033,8 @@ Store the mapping in STATE.md under GitHub Issue Mapping:
 
 | Phase | Feature Issue | Branch | PR |
 |-------|---------------|--------|----|
-| v1.0/[N] | #[FEATURE_ISSUE] | feature/v1.0-[N]-[phase-slug] | — |
-| v1.0/[N+1] | #[FEATURE_ISSUE] | feature/v1.0-[N+1]-[phase-slug] | — |
+| v1.0.0/[N] | #[FEATURE_ISSUE] | feature/v1.0.0-[N]-[phase-slug] | — |
+| v1.0.0/[N+1] | #[FEATURE_ISSUE] | feature/v1.0.0-[N+1]-[phase-slug] | — |
 ```
 
 **Print summary:**
@@ -1043,12 +1043,12 @@ Store the mapping in STATE.md under GitHub Issue Mapping:
  VIT ► GITHUB SYNC ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Milestone: v1.0 — [Name] (GitHub milestone #[GH_MILESTONE])
+Milestone: v1.0.0 — [Name] (GitHub milestone #[GH_MILESTONE])
 
 | Phase | Feature Issue | Branch | PR |
 |-------|---------------|--------|----|
-| v1.0/[N]   | #[X]  | feature/v1.0-[N]-[slug] | — |
-| v1.0/[N+1] | #[X+1] | feature/v1.0-[N+1]-[slug] | — |
+| v1.0.0/[N]   | #[X]  | feature/v1.0.0-[N]-[slug] | — |
+| v1.0.0/[N+1] | #[X+1] | feature/v1.0.0-[N+1]-[slug] | — |
 
 Sub-issues will be created when you run /vit:plan-phase [N].
 ```
@@ -1056,7 +1056,7 @@ Sub-issues will be created when you run /vit:plan-phase [N].
 Commit STATE.md with the mapping:
 ```bash
 git add .planning/STATE.md
-git commit -m "docs: link project v1.0 to GitHub milestone #[GH_MILESTONE]"
+git commit -m "docs: link project v1.0.0 to GitHub milestone #[GH_MILESTONE]"
 ```
 
 ## Phase 9.5: Create ONBOARDING.md
@@ -1091,7 +1091,7 @@ All commits (STATE.md mapping, ONBOARDING.md) must land before creating feature 
 
 **Push the milestone branch first:**
 ```bash
-git push -u origin "milestone/v1.0"
+git push -u origin "milestone/v1.0.0"
 ```
 
 **Then create feature branches for each phase:**
@@ -1104,13 +1104,13 @@ for i in "${!PHASE_ISSUES[@]}"; do
   PHASE_SLUG="${PHASE_SLUGS[$i]}"
 
   gh issue develop $FEATURE_ISSUE \
-    --base "milestone/v1.0" \
-    --name "feature/v1.0-${PHASE_SLUG}" \
+    --base "milestone/v1.0.0" \
+    --name "feature/v1.0.0-${PHASE_SLUG}" \
     2>/dev/null || {
       # Fallback if gh issue develop fails (e.g. older gh version)
-      git checkout -b "feature/v1.0-${PHASE_SLUG}" "milestone/v1.0" 2>/dev/null
-      git push -u origin "feature/v1.0-${PHASE_SLUG}" 2>/dev/null || true
-      git checkout "milestone/v1.0" 2>/dev/null
+      git checkout -b "feature/v1.0.0-${PHASE_SLUG}" "milestone/v1.0.0" 2>/dev/null
+      git push -u origin "feature/v1.0.0-${PHASE_SLUG}" 2>/dev/null || true
+      git checkout "milestone/v1.0.0" 2>/dev/null
     }
 done
 ```
@@ -1188,10 +1188,10 @@ Present completion with next steps:
 - [ ] Roadmap files written immediately (not draft)
 - [ ] User feedback incorporated (if any)
 - [ ] ROADMAP.md created with phases, requirement mappings, success criteria
-- [ ] STATE.md initialized with `Milestone: v1.0` field
-- [ ] STATE.md GitHub Issue Mapping uses `v1.0/NN` keys
+- [ ] STATE.md initialized with `Milestone: v1.0.0` field
+- [ ] STATE.md GitHub Issue Mapping uses `v1.0.0/NN` keys
 - [ ] REQUIREMENTS.md traceability updated
-- [ ] Milestone branch milestone/v1.0 created
+- [ ] Milestone branch milestone/v1.0.0 created
 - [ ] GitHub milestone created (if gh CLI available)
 - [ ] Parent feature issue created per phase (if gh CLI available)
 - [ ] Feature branch created per phase (if gh CLI available)

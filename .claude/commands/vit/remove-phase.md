@@ -53,7 +53,7 @@ Parse current phase number from STATE.md "Current Position" section.
 ```bash
 MILESTONE=$(grep "^Milestone:" .planning/STATE.md 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 ```
 </step>

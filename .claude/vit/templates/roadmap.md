@@ -2,7 +2,7 @@
 
 Template for `.planning/ROADMAP.md`.
 
-## Initial Roadmap (v1.0 Greenfield)
+## Initial Roadmap (v1.0.0 Greenfield)
 
 ```markdown
 # Roadmap: [Project Name]
@@ -104,7 +104,7 @@ Phases execute in numeric order: 2 → 2.1 → 2.2 → 3 → 3.1 → 4
 ```
 
 <guidelines>
-**Initial planning (v1.0):**
+**Initial planning (v1.0.0):**
 - Phase count depends on depth setting (quick: 3-5, standard: 5-8, comprehensive: 8-12)
 - Each phase delivers something coherent
 - Phases can have 1+ plans (split if >3 tasks or multiple subsystems)
@@ -133,7 +133,7 @@ Phases execute in numeric order: 2 → 2.1 → 2.2 → 3 → 3.1 → 4
 - `Deferred` - Pushed to later (with reason)
 </status_values>
 
-## Milestone-Grouped Roadmap (After v1.0 Ships)
+## Milestone-Grouped Roadmap (After v1.0.0 Ships)
 
 After completing first milestone, reorganize with milestone groupings:
 
@@ -142,14 +142,14 @@ After completing first milestone, reorganize with milestone groupings:
 
 ## Milestones
 
-- ✅ **v1.0 MVP** - Phases 1-4 (shipped YYYY-MM-DD)
-- 🚧 **v1.1 [Name]** - Phases 5-6 (in progress)
-- 📋 **v2.0 [Name]** - Phases 7-10 (planned)
+- ✅ **v1.0.0 MVP** - Phases 1-4 (shipped YYYY-MM-DD)
+- 🚧 **v1.1.0 [Name]** - Phases 5-6 (in progress)
+- 📋 **v2.0.0 [Name]** - Phases 7-10 (planned)
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 MVP (Phases 1-4) - SHIPPED YYYY-MM-DD</summary>
+<summary>✅ v1.0.0 MVP (Phases 1-4) - SHIPPED YYYY-MM-DD</summary>
 
 ### Phase 1: [Name]
 **Goal**: [What this phase delivers]
@@ -160,13 +160,13 @@ Plans:
 - [x] 01-02: [Brief description]
 - [x] 01-03: [Brief description]
 
-[... remaining v1.0 phases ...]
+[... remaining v1.0.0 phases ...]
 
 </details>
 
-### 🚧 v1.1 [Name] (In Progress)
+### 🚧 v1.1.0 [Name] (In Progress)
 
-**Milestone Goal:** [What v1.1 delivers]
+**Milestone Goal:** [What v1.1.0 delivers]
 
 #### Phase 5: [Name]
 **Goal**: [What this phase delivers]
@@ -177,21 +177,21 @@ Plans:
 - [ ] 05-01: [Brief description]
 - [ ] 05-02: [Brief description]
 
-[... remaining v1.1 phases ...]
+[... remaining v1.1.0 phases ...]
 
-### 📋 v2.0 [Name] (Planned)
+### 📋 v2.0.0 [Name] (Planned)
 
-**Milestone Goal:** [What v2.0 delivers]
+**Milestone Goal:** [What v2.0.0 delivers]
 
-[... v2.0 phases ...]
+[... v2.0.0 phases ...]
 
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 1. Foundation | v1.0 | 3/3 | Complete | YYYY-MM-DD |
-| 2. Features | v1.0 | 2/2 | Complete | YYYY-MM-DD |
-| 5. Security | v1.1 | 0/2 | Not started | - |
+| 1. Foundation | v1.0.0 | 3/3 | Complete | YYYY-MM-DD |
+| 2. Features | v1.0.0 | 2/2 | Complete | YYYY-MM-DD |
+| 5. Security | v1.1.0 | 0/2 | Not started | - |
 ```
 
 **Notes:**

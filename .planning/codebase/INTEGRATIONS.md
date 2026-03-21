@@ -65,7 +65,7 @@
   1. Checkout code
   2. Setup Node.js 22 with npm cache
   3. `npm ci` - Install dependencies
-  4. `npm run check` - Type checking (continue-on-error)
+  4. `npm run type-check` - Type checking (continue-on-error)
   5. Run Vitest: `npx vitest run tests/phases/ --reporter=json --reporter=verbose`
   6. Parse test results from JSON
   7. Extract phase/milestone from branch name

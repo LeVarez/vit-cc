@@ -71,7 +71,7 @@ grep -A5 "Phase ${PHASE}:" .planning/ROADMAP.md 2>/dev/null
 ```bash
 MILESTONE=$(grep "^Milestone:" .planning/STATE.md 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 
 PHASE_DIR=$(ls -d ".planning/phases/${MILESTONE}/${PHASE}-"* 2>/dev/null | head -1)

@@ -74,7 +74,7 @@ Store resolved models for use in Task calls below.
 PHASE_NUM=$(echo "$ARGUMENTS" | grep -o '^[0-9]*')
 MILESTONE=$(grep "^Milestone:" .planning/STATE.md 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 # Try milestone-scoped key first, fall back to legacy global key
 DESIGNATED_BRANCH=$(grep "| ${MILESTONE}/${PHASE_NUM} " .planning/STATE.md 2>/dev/null | grep -o 'feature/[^ |]*' | head -1)
@@ -544,7 +544,7 @@ If gh not available or no GitHub Issue Mapping in STATE.md, skip silently and pr
 
 **Read the feature issue number and base branch for this phase from STATE.md:**
 
-Look for the row matching `${MILESTONE}/{X}` in the GitHub Issue Mapping table (e.g., `v1.6/01`). For historical phases without a milestone prefix, fall back to matching phase `{X}` directly.
+Look for the row matching `${MILESTONE}/{X}` in the GitHub Issue Mapping table (e.g., `v1.6.0/01`). For historical phases without a milestone prefix, fall back to matching phase `{X}` directly.
 Extract: `FEATURE_ISSUE_NUMBER` and `BASE_BRANCH`.
 
 **Read each PLAN.md file in the phase directory to extract title and objectives.**

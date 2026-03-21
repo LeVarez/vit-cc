@@ -28,7 +28,7 @@ IMPORTANT CONSTRAINTS:
 Extract from the prompt context provided by complete-milestone:
 
 - `VERSION` — the version being released (e.g., `1.0`)
-- `MILESTONE` — milestone identifier (e.g., `v1.0`)
+- `MILESTONE` — milestone identifier (e.g., `v1.0.0`)
 - `WORK_DIR` — absolute path to the working directory
 - `PHASES_DIR` — path to phases directory (e.g., `$WORK_DIR/.planning/phases/`)
 
@@ -229,8 +229,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Phase 2 (AI PR Reviewer): vit-pr-reviewer agent spawns after verify-work with severity-tiered findings
 - Phase 3 (Documentation & Changelog Agents): vit-doc-updater and vit-changelog-writer agents
 
-[unreleased]: https://github.com/owner/repo/compare/v1.0...HEAD
-[1.0]: https://github.com/owner/repo/releases/tag/v1.0
+[unreleased]: https://github.com/owner/repo/compare/v1.0.0...HEAD
+[1.0]: https://github.com/owner/repo/releases/tag/v1.0.0
 ```
 
 **Format rules:**

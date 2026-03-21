@@ -47,10 +47,10 @@ If one or more worktrees have `.planning/STATE.md`:
 
 | Directory              | Branch              | Milestone   | Phase     | Status       | Last Activity         |
 |------------------------|---------------------|-------------|-----------|--------------|----------------------|
-| . (current)            | main                | v1.5 [Name] | 37 of 42  | In progress  | 2026-03-15 — plan 03 |
-| ../project-v2.0        | milestone/v2.0      | v2.0 [Name] | 1 of 8    | Not started  | 2026-03-16 — init    |
+| . (current)            | main                | v1.5.0 [Name] | 37 of 42  | In progress  | 2026-03-15 — plan 03 |
+| ../project-v2.0.0        | milestone/v2.0.0      | v2.0.0 [Name] | 1 of 8    | Not started  | 2026-03-16 — init    |
 
-To switch:  cd ../project-v2.0
+To switch:  cd ../project-v2.0.0
 To resume:  /vit:resume-work  (run in target directory)
 ```
 

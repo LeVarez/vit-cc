@@ -157,7 +157,7 @@ NEW_PR=$(cd "$WORK_DIR" && gh pr create --draft \
   2>/dev/null || echo "")
 ```
 
-The `--base` flag MUST target `milestone/vX.Y`, never `main`.
+The `--base` flag MUST target `milestone/vX.Y.Z`, never `main`.
 
 **5. Update STATE.md PR column immediately after creation:**
 

@@ -183,7 +183,7 @@ Start a new milestone through unified flow.
 Mirrors `/vit:new-project` flow for brownfield projects (existing PROJECT.md).
 If a milestone is already in progress, offers to create an isolated git worktree so both can run in parallel.
 
-Usage: `/vit:new-milestone "v2.0 Features"`
+Usage: `/vit:new-milestone "v2.0.0 Features"`
 
 **`/vit:complete-milestone <version>`**
 Archive completed milestone and prepare for next version.
@@ -202,7 +202,7 @@ Show all active milestone worktrees and their current state.
 
 - Scans all git worktrees for VIT `.planning/` directories
 - Displays milestone name, current phase, status, and last activity per worktree
-- Shows how to switch between milestones (`cd ../project-v2.0`)
+- Shows how to switch between milestones (`cd ../project-v2.0.0`)
 
 Usage: `/vit:list-milestones`
 

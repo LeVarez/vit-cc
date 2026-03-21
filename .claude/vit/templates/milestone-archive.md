@@ -97,7 +97,7 @@ _For current project status, see .planning/ROADMAP.md_
 
 <guidelines>
 **When to create milestone archives:**
-- After completing all phases in a milestone (v1.0, v1.1, v2.0, etc.)
+- After completing all phases in a milestone (v1.0.0, v1.1.0, v2.0.0, etc.)
 - Triggered by complete-milestone workflow
 - Before planning next milestone work
 
@@ -113,7 +113,7 @@ _For current project status, see .planning/ROADMAP.md_
 **Archive location:**
 
 - Save to `.planning/milestones/v{VERSION}-{NAME}.md`
-- Example: `.planning/milestones/v1.0-mvp.md`
+- Example: `.planning/milestones/v1.0.0-mvp.md`
 
 **After archiving:**
 

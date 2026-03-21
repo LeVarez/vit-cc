@@ -119,7 +119,7 @@ Common types: Tech stack, Timeline, Budget, Dependencies, Compatibility, Perform
 
 **Last Updated:**
 - Always note when and why the document was updated
-- Format: `after Phase 2` or `after v1.0 milestone`
+- Format: `after Phase 2` or `after v1.0.0 milestone`
 - Triggers review of whether content is still accurate
 
 </guidelines>

@@ -452,7 +452,7 @@ if [ -z "$MILESTONE" ]; then
   MILESTONE=$(grep "^Milestone:" "$WORK_DIR/.planning/STATE.md" 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 fi
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(cd "$WORK_DIR" && git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(cd "$WORK_DIR" && git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 
 # Match both zero-padded (05-*) and unpadded (5-*) folders

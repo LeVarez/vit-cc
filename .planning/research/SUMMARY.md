@@ -78,7 +78,7 @@ Eight pitfalls identified; the top five are build-time requirements, not optiona
 
 1. **Duplicate PR creation on re-run** — Guard every `gh pr create` call with `gh pr list --head <branch> --json number -q '.[0].number'`; only create if result is empty. Failing to do this causes execute-phase to error on re-run.
 
-2. **PR targeting `main` instead of `milestone/vX.Y`** — Always pass `--base milestone/v${MILESTONE_VERSION}` explicitly; `gh pr create` defaults to the repo's default branch. Wrong base branch breaks the entire merge order.
+2. **PR targeting `main` instead of `milestone/vX.Y.Z`** — Always pass `--base milestone/v${MILESTONE_VERSION}` explicitly; `gh pr create` defaults to the repo's default branch. Wrong base branch breaks the entire merge order.
 
 3. **`gh pr ready` called before verification passes** — Promotion must be gated strictly on Route A of `verify-work`. Routes B, C, and D must leave the PR as draft. An explicit `if [[ "$ROUTE" == "A" ]]` guard is required.
 

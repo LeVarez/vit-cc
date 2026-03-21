@@ -575,6 +575,24 @@ plan: {N}" \
   --jq '.number' 2>/dev/null || echo "")
 ```
 
+**Create a plan branch for each sub-issue:**
+
+After creating each sub-issue, create a dedicated plan branch that will receive the plan's implementation and PR into the phase branch:
+
+```bash
+PLAN_SLUG=$(basename "$PLAN_PATH" .md | sed 's/-PLAN$//' | tr '[:upper:]' '[:lower:]')
+PLAN_BRANCH="feature/v${MILESTONE}-${PLAN_SLUG}"
+
+gh issue develop $SUB_ISSUE \
+  --base "${BASE_BRANCH}" \
+  --name "$PLAN_BRANCH" \
+  2>/dev/null || {
+    cd "$WORK_DIR" && git checkout -b "$PLAN_BRANCH" "${BASE_BRANCH}" 2>/dev/null
+    cd "$WORK_DIR" && git push -u origin "$PLAN_BRANCH" 2>/dev/null || true
+    cd "$WORK_DIR" && git checkout "${BASE_BRANCH}" 2>/dev/null
+  }
+```
+
 **Update the parent feature issue body** to include sub-issue checklist:
 
 ```bash
@@ -587,15 +605,21 @@ gh issue edit ${FEATURE_ISSUE_NUMBER} \
 ${CHECKLIST}" 2>/dev/null || true
 ```
 
-**Update STATE.md** — add sub-issue numbers to the GitHub Issue Mapping:
+**Update STATE.md** — add sub-issue numbers and plan branches to the GitHub Issue Mapping:
 
-```markdown
-## GitHub Issue Mapping
+First check if the `Sub-issues` and `Plan Branches` columns exist in the header row. If not, add them to both the header and separator rows, and append `| — | — |` to every existing data row.
 
-| Phase | Feature Issue | Branch | Sub-issues |
-|-------|---------------|--------|------------|
-| ${MILESTONE}/{X} | #[FEATURE_ISSUE] | [BASE_BRANCH] | #[01-issue], #[02-issue] |
+Then update the phase row with the actual sub-issue numbers and plan branch names:
+
+```bash
+# Extract existing row for this phase
+PHASE_ROW=$(grep "| ${MILESTONE}/${PHASE_NUM} " "$WORK_DIR/.planning/STATE.md" 2>/dev/null | head -1)
+
+# Update the row — replace trailing ' |' with sub-issue and plan branch data
+# Result: | v1.0.1/01 | #28 | feature/... | — | — | #33, #34 | feature/v1.0.1-01-01, feature/v1.0.1-01-02 |
 ```
+
+The plan branches column should list branches using the corrected formula: `feature/v${MILESTONE}-${PLAN_SLUG}` (e.g., `feature/v1.0.1-01-01`).
 
 **Print summary:**
 ```

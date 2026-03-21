@@ -828,7 +828,7 @@ if [ -z "$MILESTONE" ]; then
   MILESTONE=$(grep "^Milestone:" "$WORK_DIR/.planning/STATE.md" 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 fi
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(cd "$WORK_DIR" && git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(cd "$WORK_DIR" && git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 # Try milestone-scoped path first, fall back to root for historical phases
 PHASE_DIR=$(ls -d "$WORK_DIR/.planning/phases/$MILESTONE/$PADDED_PHASE-"* "$WORK_DIR/.planning/phases/$MILESTONE/$PHASE_ARG-"* 2>/dev/null | head -1)
@@ -1131,7 +1131,7 @@ if [ -z "$MILESTONE" ]; then
   MILESTONE=$(grep "^Milestone:" "$WORK_DIR/.planning/STATE.md" 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 fi
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(cd "$WORK_DIR" && git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(cd "$WORK_DIR" && git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 # Try milestone-scoped path first, fall back to root for historical phases
 PHASE_DIR=$(ls -d "$WORK_DIR/.planning/phases/$MILESTONE/$PADDED_PHASE-"* "$WORK_DIR/.planning/phases/$MILESTONE/$PHASE-"* 2>/dev/null | head -1)

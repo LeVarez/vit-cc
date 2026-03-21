@@ -161,13 +161,13 @@ When there's no clear primary action:
 ```
 ---
 
-## 🎉 Milestone v1.0 Complete
+## 🎉 Milestone v1.0.0 Complete
 
 All 4 phases shipped
 
 ## ▶ Next Up
 
-**Start v1.1** — questioning → research → requirements → roadmap
+**Start v1.1.0** — questioning → research → requirements → roadmap
 
 `/vit:new-milestone`
 

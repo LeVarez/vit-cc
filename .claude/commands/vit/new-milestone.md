@@ -1,7 +1,7 @@
 ---
 name: vit:new-milestone
 description: Start a new milestone cycle — update PROJECT.md and route to requirements
-argument-hint: "[milestone name, e.g., 'v1.1 Notifications']"
+argument-hint: "[milestone name, e.g., 'v1.1.0 Notifications']"
 allowed-tools:
   - Read
   - Write
@@ -96,7 +96,7 @@ If `.planning/STATE.md` doesn't exist or no milestone in progress: set `USE_WORK
 ## Phase 3: Determine Milestone Version
 
 - Parse last version from MILESTONES.md
-- Suggest next version (v1.0 → v1.1, or v2.0 for major)
+- Suggest next version (v1.0.0 → v1.1.0, or v2.0.0 for major)
 - Confirm with user
 
 ## Phase 3.5: Create Milestone Branch (always)
@@ -142,7 +142,7 @@ That means: REQUIREMENTS.md, ROADMAP.md, STATE.md, research/ all land in the mil
 Add/update these sections:
 
 ```markdown
-## Current Milestone: v[X.Y] [Name]
+## Current Milestone: v[X.Y.Z] [Name]
 
 **Goal:** [One sentence describing milestone focus]
 
@@ -161,11 +161,11 @@ Update "Last updated" footer.
 ```markdown
 ## Current Position
 
-Milestone: v[X.Y]
+Milestone: v[X.Y.Z]
 Phase: Not started (defining requirements)
 Plan: —
 Status: Defining requirements
-Last activity: [today] — Milestone v[X.Y] started
+Last activity: [today] — Milestone v[X.Y.Z] started
 ```
 
 Keep Accumulated Context section (decisions, blockers) from previous milestone.
@@ -185,7 +185,7 @@ If `COMMIT_PLANNING_DOCS=false`: Skip git operations
 If `COMMIT_PLANNING_DOCS=true` (default):
 ```bash
 cd "$MILESTONE_WORKTREE" && git add .planning/PROJECT.md .planning/STATE.md
-cd "$MILESTONE_WORKTREE" && git commit -m "docs: start milestone v[X.Y] [Name]"
+cd "$MILESTONE_WORKTREE" && git commit -m "docs: start milestone v[X.Y.Z] [Name]"
 ```
 
 ## Phase 6.5: Resolve Model Profile
@@ -550,7 +550,7 @@ Good requirements are:
 Show every requirement (not counts) for user confirmation:
 
 ```
-## Milestone v[X.Y] Requirements
+## Milestone v[X.Y.Z] Requirements
 
 ### [Category 1]
 - [ ] **CAT1-01**: User can do X
@@ -576,7 +576,7 @@ If committing:
 ```bash
 cd "$MILESTONE_WORKTREE" && git add .planning/REQUIREMENTS.md
 cd "$MILESTONE_WORKTREE" && git commit -m "$(cat <<'EOF'
-docs: define milestone v[X.Y] requirements
+docs: define milestone v[X.Y.Z] requirements
 
 [X] requirements across [N] categories
 EOF
@@ -596,7 +596,7 @@ Display stage banner:
 
 **Determine starting phase number:**
 
-Phase numbering starts at `01` for each milestone and is scoped to the milestone directory. Phase `v1.6/01` and phase `v1.7/01` are distinct phases — there is no global phase counter. This prevents collision when two milestones run in parallel worktrees.
+Phase numbering starts at `01` for each milestone and is scoped to the milestone directory. Phase `v1.6.0/01` and phase `v1.7.0/01` are distinct phases — there is no global phase counter. This prevents collision when two milestones run in parallel worktrees.
 
 Spawn vit-roadmapper agent with context:
 
@@ -622,16 +622,16 @@ Task(prompt="
 </planning_context>
 
 <instructions>
-Create roadmap for milestone v[X.Y]:
+Create roadmap for milestone v[X.Y.Z]:
 1. Start phase numbering at 01 (milestone-scoped — NOT continuing from global count)
-2. Phase directories go under .planning/phases/v[X.Y]/ (e.g., .planning/phases/v[X.Y]/01-foundation/)
+2. Phase directories go under .planning/phases/v[X.Y.Z]/ (e.g., .planning/phases/v[X.Y.Z]/01-foundation/)
 3. Derive phases from THIS MILESTONE's requirements (don't include validated/existing)
 4. Map every requirement to exactly one phase
 5. Derive 2-5 success criteria per phase (observable user behaviors)
 6. Validate 100% coverage of new requirements
 7. Write files immediately (ROADMAP.md, STATE.md, update REQUIREMENTS.md traceability)
-   - STATE.md must include `Milestone: v[X.Y]` field under ## Current Position
-   - GitHub Issue Mapping uses `v[X.Y]/NN` keys (e.g., `v[X.Y]/01`)
+   - STATE.md must include `Milestone: v[X.Y.Z]` field under ## Current Position
+   - GitHub Issue Mapping uses `v[X.Y.Z]/NN` keys (e.g., `v[X.Y.Z]/01`)
 8. Return ROADMAP CREATED with summary
 
 Write files first, then return. This ensures artifacts persist even if context is lost.
@@ -718,7 +718,7 @@ If committing:
 ```bash
 cd "$MILESTONE_WORKTREE" && git add .planning/ROADMAP.md .planning/STATE.md .planning/REQUIREMENTS.md
 cd "$MILESTONE_WORKTREE" && git commit -m "$(cat <<'EOF'
-docs: create milestone v[X.Y] roadmap ([N] phases)
+docs: create milestone v[X.Y.Z] roadmap ([N] phases)
 
 Phases:
 [N]. [phase-name]: [requirements covered]
@@ -745,7 +745,7 @@ If not available, skip this phase silently and proceed to Phase 11.
 ```bash
 GH_MILESTONE=$(gh api repos/:owner/:repo/milestones \
   --method POST \
-  --field title="v[X.Y] — [Milestone Name]" \
+  --field title="v[X.Y.Z] — [Milestone Name]" \
   --field description="## Goal
 [One sentence milestone goal from REQUIREMENTS.md]
 
@@ -776,7 +776,7 @@ For each phase:
 
 ```bash
 FEATURE_ISSUE=$(gh issue create \
-  --title "feat(v[X.Y]): Phase [N] — [Phase Name]" \
+  --title "feat(v[X.Y.Z]): Phase [N] — [Phase Name]" \
   --label "enhancement" \
   --milestone "$GH_MILESTONE" \
   --body "## What we're building
@@ -798,9 +798,9 @@ FEATURE_ISSUE=$(gh issue create \
 Sub-issues will be created automatically by \`/vit:plan-phase [N]\`.
 
 ## Meta
-milestone: v[X.Y]
+milestone: v[X.Y.Z]
 phase: [N]
-base-branch: feature/v[X.Y]-[N]-[phase-slug]" \
+base-branch: feature/v[X.Y.Z]-[N]-[phase-slug]" \
   --jq '.number' 2>/dev/null || echo "")
 ```
 
@@ -817,8 +817,8 @@ Store the mapping of phase → feature issue number in STATE.md under a new sect
 
 | Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
 |-------|---------------|--------|----|----------|------------|---------------|
-| v[X.Y]/[N] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N]-[phase-slug] | — | — | — | — |
-| v[X.Y]/[N+1] | #[FEATURE_ISSUE] | feature/v[X.Y]-[N+1]-[phase-slug] | — | — | — | — |
+| v[X.Y.Z]/[N] | #[FEATURE_ISSUE] | feature/v[X.Y.Z]-[N]-[phase-slug] | — | — | — | — |
+| v[X.Y.Z]/[N+1] | #[FEATURE_ISSUE] | feature/v[X.Y.Z]-[N+1]-[phase-slug] | — | — | — | — |
 ```
 
 **Print summary:**
@@ -827,12 +827,12 @@ Store the mapping of phase → feature issue number in STATE.md under a new sect
  VIT ► GITHUB SYNC ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Milestone: v[X.Y] — [Name] (GitHub milestone #[GH_MILESTONE])
+Milestone: v[X.Y.Z] — [Name] (GitHub milestone #[GH_MILESTONE])
 
 | Phase | Feature Issue | Branch | PR | Assigned | Sub-issues | Plan Branches |
 |-------|---------------|--------|----|----------|------------|---------------|
-| v[X.Y]/[N]   | #[X]          | feature/v[X.Y]-[N]-[slug] | — | — | — | — |
-| v[X.Y]/[N+1] | #[X+1]        | feature/v[X.Y]-[N+1]-[slug] | — | — | — | — |
+| v[X.Y.Z]/[N]   | #[X]          | feature/v[X.Y.Z]-[N]-[slug] | — | — | — | — |
+| v[X.Y.Z]/[N+1] | #[X+1]        | feature/v[X.Y.Z]-[N+1]-[slug] | — | — | — | — |
 
 Sub-issues will be created when you run /vit:plan-phase [N].
 ```
@@ -840,7 +840,7 @@ Sub-issues will be created when you run /vit:plan-phase [N].
 Commit STATE.md with the mapping:
 ```bash
 cd "$MILESTONE_WORKTREE" && git add .planning/STATE.md
-cd "$MILESTONE_WORKTREE" && git commit -m "docs: link milestone v[X.Y] to GitHub milestone #[GH_MILESTONE]"
+cd "$MILESTONE_WORKTREE" && git commit -m "docs: link milestone v[X.Y.Z] to GitHub milestone #[GH_MILESTONE]"
 ```
 
 ## Phase 10.5: Create / Update ONBOARDING.md
@@ -866,7 +866,7 @@ Write to: `.planning/ONBOARDING.md`
 Commit:
 ```bash
 cd "$MILESTONE_WORKTREE" && git add .planning/ONBOARDING.md
-cd "$MILESTONE_WORKTREE" && git commit -m "docs: update team onboarding guide for v[X.Y]"
+cd "$MILESTONE_WORKTREE" && git commit -m "docs: update team onboarding guide for v[X.Y.Z]"
 ```
 
 Display:
@@ -913,7 +913,7 @@ Present completion with next steps:
  VIT ► MILESTONE INITIALIZED ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**Milestone v[X.Y]: [Name]**
+**Milestone v[X.Y.Z]: [Name]**
 
 | Artifact       | Location                    |
 |----------------|-----------------------------|
@@ -950,11 +950,11 @@ Present completion with next steps:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Your new milestone lives at: $WORKTREE_PATH
-Open that directory in your IDE to start working on v[X.Y].
+Open that directory in your IDE to start working on v[X.Y.Z].
 Your current milestone continues unchanged in this directory.
 
 To context-switch:
-  cd $WORKTREE_PATH    # v[X.Y] work
+  cd $WORKTREE_PATH    # v[X.Y.Z] work
   cd -                 # back to current milestone
 ```
 
@@ -981,7 +981,7 @@ To context-switch:
 - [ ] STATE.md updated with GitHub Issue Mapping table
 - [ ] User knows next step is `/vit:discuss-phase [N]`
 
-- [ ] Worktree created at `../project-vX.Y` on branch `milestone/vX.Y` (if worktree mode)
+- [ ] Worktree created at `../project-vX.Y.Z` on branch `milestone/vX.Y.Z` (if worktree mode)
 - [ ] New milestone's `.planning/` files written to worktree (if worktree mode)
 
 **Atomic commits:** Each phase commits its artifacts immediately. If context is lost, artifacts persist.

@@ -99,7 +99,7 @@ if echo "$DESIGNATED_BRANCH" | grep -q "^feature/"; then
 fi
 ```
 
-**Branch base:** PRs should target the `milestone/vX.Y` branch (not `main`), because feature branches diverge from the milestone branch. The milestone PR into main already exists at the complete-milestone step.
+**Branch base:** PRs should target the `milestone/vX.Y.Z` branch (not `main`), because feature branches diverge from the milestone branch. The milestone PR into main already exists at the complete-milestone step.
 
 **STATE.md write:** After creating the PR, write the PR number into the new PR Mapping table in STATE.md (see STATE.md schema changes below).
 
@@ -184,7 +184,7 @@ execute-phase (creates draft PR)
     │
     └── write to STATE.md PR Mapping:
         | Milestone/Phase | Branch | Issue | PR |
-        | v1.1/3          | feature/v1.1-3-auth | #45 | pr#67 |
+        | v1.1.0/3          | feature/v1.1.0-3-auth | #45 | pr#67 |
 
 verify-work (promotes PR)
     │
@@ -262,7 +262,7 @@ The existing "GitHub Issue Mapping" section uses this format:
 
 | Phase | Branch | Issues |
 |-------|--------|--------|
-| v1.0/1 | feature/v1.0-1-foundation | #12 #13 #14 |
+| v1.0.0/1 | feature/v1.0.0-1-foundation | #12 #13 #14 |
 ```
 
 Add a new column `PR` to the same row (not a separate section). This avoids creating another table that orchestrators must parse separately.
@@ -273,9 +273,9 @@ Add a new column `PR` to the same row (not a separate section). This avoids crea
 
 | Phase | Branch | Issues | PR |
 |-------|--------|--------|----|
-| v1.1/1 | feature/v1.1-1-foundation | #12 #13 #14 | pr#45 |
-| v1.1/2 | feature/v1.1-2-auth | #15 #16 | pr#46 |
-| v1.1/3 | feature/v1.1-3-api | #17 | — |
+| v1.1.0/1 | feature/v1.1.0-1-foundation | #12 #13 #14 | pr#45 |
+| v1.1.0/2 | feature/v1.1.0-2-auth | #15 #16 | pr#46 |
+| v1.1.0/3 | feature/v1.1.0-3-api | #17 | — |
 ```
 
 **Why same table:** All commands already parse the GitHub Issue Mapping table to get branch and issue. Adding the PR column to the same row means a single grep pattern captures all phase context. Splitting into two tables would require two separate greps and correlation logic.
@@ -349,7 +349,7 @@ fi
 
 **What people do:** Set `--base main` when creating the feature PR.
 
-**Why it's wrong:** Feature branches are cut from `milestone/vX.Y`, not from `main`. The complete-milestone command handles the milestone-to-main PR separately. Targeting main from a feature branch creates a PR with wrong diff scope and a broken merge order.
+**Why it's wrong:** Feature branches are cut from `milestone/vX.Y.Z`, not from `main`. The complete-milestone command handles the milestone-to-main PR separately. Targeting main from a feature branch creates a PR with wrong diff scope and a broken merge order.
 
 **Do this instead:** Use `--base "milestone/v${MILESTONE}"` for feature PRs. The milestone PR into main is managed by complete-milestone step 9 (already implemented).
 

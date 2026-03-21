@@ -20,7 +20,7 @@ Guard with `gh pr list --head <branch> --json number -q '.[0].number'` before cr
 
 ---
 
-### Pitfall 2: PR targeting `main` instead of `milestone/vX.Y`
+### Pitfall 2: PR targeting `main` instead of `milestone/vX.Y.Z`
 
 **What goes wrong:**
 `gh pr create` defaults `--base` to the repo's default branch when not specified. Feature branches merge into `main` instead of their milestone branch.
@@ -119,7 +119,7 @@ Use `recast` for write-back — it preserves original formatting for unchanged n
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Draft PR:** PR exists — verify base is `milestone/vX.Y` not `main`
+- [ ] **Draft PR:** PR exists — verify base is `milestone/vX.Y.Z` not `main`
 - [ ] **PR promotion:** Ready-for-review — verify only triggers on Route A
 - [ ] **PR reviewer:** Comment posted — verify `--comment` flag used, no 422 errors
 - [ ] **Doc updater:** README updated — verify manual sections preserved in git diff

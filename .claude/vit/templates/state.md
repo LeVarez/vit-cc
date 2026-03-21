@@ -82,7 +82,7 @@ Resume file: [Path to .continue-here*.md if exists, otherwise "None"]
 
 | Phase | Feature Issue | Branch | PR | Assigned |
 |-------|---------------|--------|----|----------|
-| v[X.Y]/[N] | #[N] | feature/v[X.Y]-[N]-[phase-slug] | — | — |
+| v[X.Y.Z]/[N] | #[N] | feature/v[X.Y.Z]-[N]-[phase-slug] | — | — |
 ```
 
 <purpose>
@@ -179,7 +179,7 @@ Enables instant resumption:
 ### GitHub Issue Mapping
 Tracks GitHub artifact numbers per phase. Created by `/vit:new-milestone`.
 Columns:
-- Phase: milestone-scoped key (e.g., `v1.0/01`)
+- Phase: milestone-scoped key (e.g., `v1.0.0/01`)
 - Feature Issue: `#N` linking to the parent feature issue
 - Branch: feature branch name
 - PR: Draft PR number. Values:

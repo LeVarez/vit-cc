@@ -61,7 +61,7 @@ Detect current milestone identifier:
 ```bash
 MILESTONE=$(grep "^Milestone:" .planning/STATE.md 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 ```
 
@@ -75,7 +75,7 @@ Parse the roadmap to find the current milestone section:
 Example structure:
 
 ```
-## Current Milestone: v1.0 Foundation
+## Current Milestone: v1.0.0 Foundation
 
 ### Phase 4: Focused Command System
 ### Phase 5: Path Routing & Validation

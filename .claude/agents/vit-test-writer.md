@@ -49,7 +49,7 @@ Each plan gets one test file. Tests within it map to the plan's must_haves.
 
 File location: `tests/phases/{milestone}/{NN}-{plan_slug}.test.ts`
 
-Example: `tests/phases/v1.6/01-01-typed-api-keys.test.ts`
+Example: `tests/phases/v1.6.0/01-01-typed-api-keys.test.ts`
 
 </philosophy>
 
@@ -109,7 +109,7 @@ if [ -z "$MILESTONE" ]; then
   MILESTONE=$(grep "^Milestone:" "$WORK_DIR/.planning/STATE.md" 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
 fi
 if [ -z "$MILESTONE" ]; then
-  MILESTONE=$(cd "$WORK_DIR" && git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+  MILESTONE=$(cd "$WORK_DIR" && git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
 fi
 TEST_DIR="$WORK_DIR/tests/phases/${MILESTONE}"
 mkdir -p "$TEST_DIR"

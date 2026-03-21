@@ -1,6 +1,6 @@
 <purpose>
 
-Mark a shipped version (v1.0, v1.1, v2.0) as complete. This creates a historical record in MILESTONES.md, performs full PROJECT.md evolution review, reorganizes ROADMAP.md with milestone groupings, and tags the release in git.
+Mark a shipped version (v1.0.0, v1.1.0, v2.0.0) as complete. This creates a historical record in MILESTONES.md, performs full PROJECT.md evolution review, reorganizes ROADMAP.md with milestone groupings, and tags the release in git.
 
 This is the ritual that separates "development" from "shipped."
 
@@ -22,8 +22,8 @@ This is the ritual that separates "development" from "shipped."
 
 When a milestone completes, this workflow:
 
-1. Extracts full milestone details to `.planning/milestones/v[X.Y]-ROADMAP.md`
-2. Archives requirements to `.planning/milestones/v[X.Y]-REQUIREMENTS.md`
+1. Extracts full milestone details to `.planning/milestones/v[X.Y.Z]-ROADMAP.md`
+2. Archives requirements to `.planning/milestones/v[X.Y.Z]-REQUIREMENTS.md`
 3. Updates ROADMAP.md to replace milestone details with one-line summary
 4. Deletes REQUIREMENTS.md (fresh one created for next milestone)
 5. Performs full PROJECT.md evolution review
@@ -66,7 +66,7 @@ ls .planning/phases/*/SUMMARY.md 2>/dev/null | wc -l
 Present:
 
 ```
-Milestone: [Name from user, e.g., "v1.0 MVP"]
+Milestone: [Name from user, e.g., "v1.0.0 MVP"]
 
 Appears to include:
 - Phase 1: Foundation (2/2 plans complete)
@@ -277,7 +277,7 @@ cat .planning/phases/*-*/*-SUMMARY.md
 
    **Validated section:**
    - All Active requirements shipped in this milestone → Move to Validated
-   - Format: `- ✓ [Requirement] — v[X.Y]`
+   - Format: `- ✓ [Requirement] — v[X.Y.Z]`
 
    **Active section:**
    - Remove requirements that moved to Validated
@@ -309,10 +309,10 @@ Make all edits inline. Update "Last updated" footer:
 
 ```markdown
 ---
-*Last updated: [date] after v[X.Y] milestone*
+*Last updated: [date] after v[X.Y.Z] milestone*
 ```
 
-**Example full evolution (v1.0 → v1.1 prep):**
+**Example full evolution (v1.0.0 → v1.1.0 prep):**
 
 Before:
 
@@ -344,7 +344,7 @@ Real-time sync that feels instant.
 - Video chat — use external tools
 ```
 
-After v1.0:
+After v1.0.0:
 
 ```markdown
 ## What This Is
@@ -359,9 +359,9 @@ Real-time sync that feels instant.
 
 ### Validated
 
-- ✓ Canvas drawing tools — v1.0
-- ✓ Real-time sync < 500ms — v1.0 (achieved 200ms avg)
-- ✓ User authentication — v1.0
+- ✓ Canvas drawing tools — v1.0.0
+- ✓ Real-time sync < 500ms — v1.0.0 (achieved 200ms avg)
+- ✓ User authentication — v1.0.0
 
 ### Active
 
@@ -377,7 +377,7 @@ Real-time sync that feels instant.
 
 ## Context
 
-Shipped v1.0 with 2,400 LOC TypeScript.
+Shipped v1.0.0 with 2,400 LOC TypeScript.
 Tech stack: Next.js, Supabase, Canvas API.
 Initial user testing showed demand for shape tools.
 ```
@@ -406,14 +406,14 @@ Add milestone headers and collapse completed work:
 
 ## Milestones
 
-- ✅ **v1.0 MVP** — Phases 1-4 (shipped YYYY-MM-DD)
-- 🚧 **v1.1 Security** — Phases 5-6 (in progress)
-- 📋 **v2.0 Redesign** — Phases 7-10 (planned)
+- ✅ **v1.0.0 MVP** — Phases 1-4 (shipped YYYY-MM-DD)
+- 🚧 **v1.1.0 Security** — Phases 5-6 (in progress)
+- 📋 **v2.0.0 Redesign** — Phases 7-10 (planned)
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 MVP (Phases 1-4) — SHIPPED YYYY-MM-DD</summary>
+<summary>✅ v1.0.0 MVP (Phases 1-4) — SHIPPED YYYY-MM-DD</summary>
 
 - [x] Phase 1: Foundation (2/2 plans) — completed YYYY-MM-DD
 - [x] Phase 2: Authentication (2/2 plans) — completed YYYY-MM-DD
@@ -431,12 +431,12 @@ Add milestone headers and collapse completed work:
 
 | Phase             | Milestone | Plans Complete | Status      | Completed  |
 | ----------------- | --------- | -------------- | ----------- | ---------- |
-| 1. Foundation     | v1.0      | 2/2            | Complete    | YYYY-MM-DD |
-| 2. Authentication | v1.0      | 2/2            | Complete    | YYYY-MM-DD |
-| 3. Core Features  | v1.0      | 3/3            | Complete    | YYYY-MM-DD |
-| 4. Polish         | v1.0      | 1/1            | Complete    | YYYY-MM-DD |
-| 5. Security Audit | v1.1      | 0/1            | Not started | -          |
-| 6. Hardening      | v1.1      | 0/2            | Not started | -          |
+| 1. Foundation     | v1.0.0      | 2/2            | Complete    | YYYY-MM-DD |
+| 2. Authentication | v1.0.0      | 2/2            | Complete    | YYYY-MM-DD |
+| 3. Core Features  | v1.0.0      | 3/3            | Complete    | YYYY-MM-DD |
+| 4. Polish         | v1.0.0      | 1/1            | Complete    | YYYY-MM-DD |
+| 5. Security Audit | v1.1.0      | 0/1            | Not started | -          |
+| 6. Hardening      | v1.1.0      | 0/2            | Not started | -          |
 ```
 
 </step>
@@ -447,7 +447,7 @@ Extract completed milestone details and create archive file.
 
 **Process:**
 
-1. Create archive file path: `.planning/milestones/v[X.Y]-ROADMAP.md`
+1. Create archive file path: `.planning/milestones/v[X.Y.Z]-ROADMAP.md`
 
 2. Read `./.claude/vit/templates/milestone-archive.md` template
 
@@ -472,7 +472,7 @@ Extract completed milestone details and create archive file.
    - {{DECISIONS_FROM_PROJECT}} — Key decisions from PROJECT.md
    - {{ISSUES_RESOLVED_DURING_MILESTONE}} — From summaries
 
-6. Write filled template to `.planning/milestones/v[X.Y]-ROADMAP.md`
+6. Write filled template to `.planning/milestones/v[X.Y.Z]-ROADMAP.md`
 
 7. Delete ROADMAP.md (fresh one created for next milestone):
    ```bash
@@ -481,17 +481,17 @@ Extract completed milestone details and create archive file.
 
 8. Verify archive exists:
    ```bash
-   ls .planning/milestones/v[X.Y]-ROADMAP.md
+   ls .planning/milestones/v[X.Y.Z]-ROADMAP.md
    ```
 
 9. Confirm roadmap archive complete:
 
    ```
-   ✅ v[X.Y] roadmap archived to milestones/v[X.Y]-ROADMAP.md
+   ✅ v[X.Y.Z] roadmap archived to milestones/v[X.Y.Z]-ROADMAP.md
    ✅ ROADMAP.md deleted (fresh one for next milestone)
    ```
 
-**Note:** Phase directories (`.planning/phases/`) are NOT deleted. They accumulate across milestones as the raw execution history. Phase numbering continues (v1.0 phases 1-4, v1.1 phases 5-8, etc.).
+**Note:** Phase directories (`.planning/phases/`) are NOT deleted. They accumulate across milestones as the raw execution history. Phase numbering continues (v1.0.0 phases 1-4, v1.1.0 phases 5-8, etc.).
 
 </step>
 
@@ -506,7 +506,7 @@ Archive requirements and prepare for fresh requirements in next milestone.
    cat .planning/REQUIREMENTS.md
    ```
 
-2. Create archive file: `.planning/milestones/v[X.Y]-REQUIREMENTS.md`
+2. Create archive file: `.planning/milestones/v[X.Y.Z]-REQUIREMENTS.md`
 
 3. Transform requirements for archive:
    - Mark all v1 requirements as `[x]` complete
@@ -519,12 +519,12 @@ Archive requirements and prepare for fresh requirements in next milestone.
 
 4. Write archive file with header:
    ```markdown
-   # Requirements Archive: v[X.Y] [Milestone Name]
+   # Requirements Archive: v[X.Y.Z] [Milestone Name]
 
    **Archived:** [DATE]
    **Status:** ✅ SHIPPED
 
-   This is the archived requirements specification for v[X.Y].
+   This is the archived requirements specification for v[X.Y.Z].
    For current requirements, see `.planning/REQUIREMENTS.md` (created for next milestone).
 
    ---
@@ -540,7 +540,7 @@ Archive requirements and prepare for fresh requirements in next milestone.
    **Dropped:** [list any requirements removed and why]
 
    ---
-   *Archived: [DATE] as part of v[X.Y] milestone completion*
+   *Archived: [DATE] as part of v[X.Y.Z] milestone completion*
    ```
 
 5. Delete original REQUIREMENTS.md:
@@ -550,7 +550,7 @@ Archive requirements and prepare for fresh requirements in next milestone.
 
 6. Confirm:
    ```
-   ✅ Requirements archived to milestones/v[X.Y]-REQUIREMENTS.md
+   ✅ Requirements archived to milestones/v[X.Y.Z]-REQUIREMENTS.md
    ✅ REQUIREMENTS.md deleted (fresh one needed for next milestone)
    ```
 
@@ -564,12 +564,12 @@ Move the milestone audit file to the archive (if it exists):
 
 ```bash
 # Move audit to milestones folder (if exists)
-[ -f .planning/v[X.Y]-MILESTONE-AUDIT.md ] && mv .planning/v[X.Y]-MILESTONE-AUDIT.md .planning/milestones/
+[ -f .planning/v[X.Y.Z]-MILESTONE-AUDIT.md ] && mv .planning/v[X.Y.Z]-MILESTONE-AUDIT.md .planning/milestones/
 ```
 
 Confirm:
 ```
-✅ Audit archived to milestones/v[X.Y]-MILESTONE-AUDIT.md
+✅ Audit archived to milestones/v[X.Y.Z]-MILESTONE-AUDIT.md
 ```
 
 (Skip silently if no audit file exists — audit is optional)
@@ -597,7 +597,7 @@ See: .planning/PROJECT.md (updated [today])
 Phase: [Next phase] of [Total] ([Phase name])
 Plan: Not started
 Status: Ready to plan
-Last activity: [today] — v[X.Y] milestone complete
+Last activity: [today] — v[X.Y.Z] milestone complete
 
 Progress: [updated progress bar]
 ```
@@ -615,8 +615,8 @@ Progress: [updated progress bar]
 Create git tag for milestone:
 
 ```bash
-git tag -a v[X.Y] -m "$(cat <<'EOF'
-v[X.Y] [Name]
+git tag -a v[X.Y.Z] -m "$(cat <<'EOF'
+v[X.Y.Z] [Name]
 
 Delivered: [One sentence]
 
@@ -630,14 +630,14 @@ EOF
 )"
 ```
 
-Confirm: "Tagged: v[X.Y]"
+Confirm: "Tagged: v[X.Y.Z]"
 
 Ask: "Push tag to remote? (y/n)"
 
 If yes:
 
 ```bash
-git push origin v[X.Y]
+git push origin v[X.Y.Z]
 ```
 
 </step>
@@ -659,9 +659,9 @@ git check-ignore -q .planning 2>/dev/null && COMMIT_PLANNING_DOCS=false
 
 ```bash
 # Stage archive files (new)
-git add .planning/milestones/v[X.Y]-ROADMAP.md
-git add .planning/milestones/v[X.Y]-REQUIREMENTS.md
-git add .planning/milestones/v[X.Y]-MILESTONE-AUDIT.md 2>/dev/null || true
+git add .planning/milestones/v[X.Y.Z]-ROADMAP.md
+git add .planning/milestones/v[X.Y.Z]-REQUIREMENTS.md
+git add .planning/milestones/v[X.Y.Z]-MILESTONE-AUDIT.md 2>/dev/null || true
 
 # Stage updated files
 git add .planning/MILESTONES.md
@@ -673,12 +673,12 @@ git add -u .planning/
 
 # Commit with descriptive message
 git commit -m "$(cat <<'EOF'
-chore: complete v[X.Y] milestone
+chore: complete v[X.Y.Z] milestone
 
 Archived:
-- milestones/v[X.Y]-ROADMAP.md
-- milestones/v[X.Y]-REQUIREMENTS.md
-- milestones/v[X.Y]-MILESTONE-AUDIT.md (if audit was run)
+- milestones/v[X.Y.Z]-ROADMAP.md
+- milestones/v[X.Y.Z]-REQUIREMENTS.md
+- milestones/v[X.Y.Z]-MILESTONE-AUDIT.md (if audit was run)
 
 Deleted (fresh for next milestone):
 - ROADMAP.md
@@ -689,30 +689,30 @@ Updated:
 - PROJECT.md (requirements → Validated)
 - STATE.md (reset for next milestone)
 
-Tagged: v[X.Y]
+Tagged: v[X.Y.Z]
 EOF
 )"
 ```
 
-Confirm: "Committed: chore: complete v[X.Y] milestone"
+Confirm: "Committed: chore: complete v[X.Y.Z] milestone"
 
 </step>
 
 <step name="offer_next">
 
 ```
-✅ Milestone v[X.Y] [Name] complete
+✅ Milestone v[X.Y.Z] [Name] complete
 
 Shipped:
 - [N] phases ([M] plans, [P] tasks)
 - [One sentence of what shipped]
 
 Archived:
-- milestones/v[X.Y]-ROADMAP.md
-- milestones/v[X.Y]-REQUIREMENTS.md
+- milestones/v[X.Y.Z]-ROADMAP.md
+- milestones/v[X.Y.Z]-REQUIREMENTS.md
 
 Summary: .planning/MILESTONES.md
-Tag: v[X.Y]
+Tag: v[X.Y.Z]
 
 ---
 
@@ -734,16 +734,16 @@ Tag: v[X.Y]
 <milestone_naming>
 
 **Version conventions:**
-- **v1.0** — Initial MVP
-- **v1.1, v1.2, v1.3** — Minor updates, new features, fixes
-- **v2.0, v3.0** — Major rewrites, breaking changes, significant new direction
+- **v1.0.0** — Initial MVP
+- **v1.1.0, v1.2.0, v1.3.0** — Minor updates, new features, fixes
+- **v2.0.0, v3.0.0** — Major rewrites, breaking changes, significant new direction
 
 **Name conventions:**
-- v1.0 MVP
-- v1.1 Security
-- v1.2 Performance
-- v2.0 Redesign
-- v2.0 iOS Launch
+- v1.0.0 MVP
+- v1.1.0 Security
+- v1.2.0 Performance
+- v2.0.0 Redesign
+- v2.0.0 iOS Launch
 
 Keep names short (1-2 words describing the focus).
 
@@ -752,7 +752,7 @@ Keep names short (1-2 words describing the focus).
 <what_qualifies>
 
 **Create milestones for:**
-- Initial release (v1.0)
+- Initial release (v1.0.0)
 - Public releases
 - Major feature sets shipped
 - Before archiving planning
@@ -776,11 +776,11 @@ Milestone completion is successful when:
 - [ ] All shipped requirements moved to Validated in PROJECT.md
 - [ ] Key Decisions updated with outcomes
 - [ ] ROADMAP.md reorganized with milestone grouping
-- [ ] Roadmap archive created (milestones/v[X.Y]-ROADMAP.md)
-- [ ] Requirements archive created (milestones/v[X.Y]-REQUIREMENTS.md)
+- [ ] Roadmap archive created (milestones/v[X.Y.Z]-ROADMAP.md)
+- [ ] Requirements archive created (milestones/v[X.Y.Z]-REQUIREMENTS.md)
 - [ ] REQUIREMENTS.md deleted (fresh for next milestone)
 - [ ] STATE.md updated with fresh project reference
-- [ ] Git tag created (v[X.Y])
+- [ ] Git tag created (v[X.Y.Z])
 - [ ] Milestone commit made (includes archive files and deletion)
 - [ ] User knows next step (/vit:new-milestone)
 

@@ -128,7 +128,7 @@ Output: Milestone archived (roadmap + requirements), PROJECT.md evolved, git tag
 
    - Add "Current State" section with shipped version
    - Add "Next Milestone Goals" section
-   - Archive previous content in `<details>` (if v1.1+)
+   - Archive previous content in `<details>` (if v1.1.0+)
 
 7. **Commit and tag:**
 
@@ -154,7 +154,7 @@ Output: Milestone archived (roadmap + requirements), PROJECT.md evolved, git tag
    ```bash
    MILESTONE=$(grep "^Milestone:" .planning/STATE.md 2>/dev/null | sed 's/Milestone: //' | tr -d ' ')
    if [ -z "$MILESTONE" ]; then
-     MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*' | head -1)
+     MILESTONE=$(git branch --show-current | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | head -1)
    fi
    ```
 

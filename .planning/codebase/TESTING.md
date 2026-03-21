@@ -21,7 +21,7 @@ tests/
 └── phases/
     ├── results.json          # Machine-readable test results (CI parsing)
     ├── results.txt           # Human-readable verbose output
-    └── v1.6/                 # Milestone-scoped test directories (new)
+    └── v1.6.0/                 # Milestone-scoped test directories (new)
         └── phase-01.test.ts
     # OR legacy layout:
     └── phase-01.test.ts
@@ -30,7 +30,7 @@ tests/
 **CI Detection Logic:**
 - If `tests/phases/` exists AND contains `*.test.ts` → run tests
 - Otherwise → skip (output `has_tests=false`)
-- Supports both milestone-scoped (`tests/phases/v1.6/`) and legacy (`tests/phases/`) layouts
+- Supports both milestone-scoped (`tests/phases/v1.6.0/`) and legacy (`tests/phases/`) layouts
 
 ## Generated Tests
 
